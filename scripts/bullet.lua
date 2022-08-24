@@ -7,7 +7,7 @@ function bullet.new()
 	position = vec2.new();
 	rotation = 0;
 	lifetime = 0;
-	speed = 200;
+	speed = 500;
     }
     
     function b.update(delta, i)
