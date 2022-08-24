@@ -10,7 +10,9 @@ function player.new()
     }
 
     function p.update(delta)
-
+	-- Point towards mouse
+	mX, mY = love.mouse.getPosition()
+	p.rotation = math.atan2(mY - p.position.y, mX - p.position.x)
     end
 
     function p.draw()
