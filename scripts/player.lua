@@ -8,7 +8,8 @@ local player = {}
 function player.new()
     local p = {
         position = vec2.new();
-        rotation = 0;
+        velocity = vec2.new();
+	rotation = 0;
         image = love.graphics.newImage("images/player.png");
 	bullets = {};
 	-- TODO: implement inventory & weapon system
@@ -48,6 +49,28 @@ function player.new()
 	p.bullets[#p.bullets+1] = newBullet
     end
 
+    function p.movement(delta)
+	local speed = 200
+	p.velocity = vec2.new()
+	-- Get key input
+	if love.keyboard.isDown("right", "d") then
+	    p.velocity.x = p.velocity.x + 1 end
+	if love.keyboard.isDown("left", "a") then
+	    p.velocity.x = p.velocity.x - 1 end
+	if love.keyboard.isDown("up", "w") then
+	    p.velocity.y = p.velocity.y - 1 end
+	if love.keyboard.isDown("down", "s") then
+	    p.velocity.y = p.velocity.y + 1 end
+	-- Normalize velocity
+	if math.abs(p.velocity.x) == math.abs(p.velocity.y) then
+	    p.velocity.x = p.velocity.x / 1.25
+	    p.velocity.y = p.velocity.y / 1.25
+	end
+	-- Move by velocity
+	p.position.x = p.position.x + speed * p.velocity.x * delta
+	p.position.y = p.position.y + speed * p.velocity.y * delta
+    end
+
     -- Event functions
     function p.update(delta)
 	-- Point towards mouse
@@ -55,6 +78,7 @@ function player.new()
 	p.rotation = math.atan2(mY - p.position.y, mX - p.position.x)
 	-- Functions
 	p.shoot(delta)
+	p.movement(delta)
 	p.updateBullets(delta)
     end
 

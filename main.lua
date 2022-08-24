@@ -1,4 +1,5 @@
 local player = require("scripts/player")
+local interface = require("scripts/interface")
 
 function love.load()
     love.graphics.setBackgroundColor(0.07, 0.07, 0.07, 1)
@@ -15,9 +16,11 @@ end
 
 function love.update(delta)
     Player.update(delta)
+    interface.update()
 end
 
 function love.draw()
     Player.draw()
+    interface.draw()
 end
 
