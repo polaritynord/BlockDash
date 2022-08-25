@@ -2,6 +2,7 @@ local vec2 = require("lib/vec2")
 local uniform = require("lib/uniform")
 
 local bullet = require("scripts/bullet")
+local playerTrail = require("scripts/playerTrail")
 
 local player = {}
 
@@ -12,9 +13,33 @@ function player.new()
 	rotation = 0;
         image = love.graphics.newImage("images/player.png");
 	bullets = {};
+	trails = {};
 	-- TODO: implement inventory & weapon system
 	shootCooldown = 0;
+	trailCooldown = 0;
     }
+
+    -- Trail related functions
+    function p.updateTrail(delta)
+	-- Draw exsiting trails
+	for i, v in ipairs(p.trails) do
+	    v.update(delta, i)
+	end
+	-- Add new trails
+	p.trailCooldown = p.trailCooldown + delta
+	if p.trailCooldown < 0.1 then return end
+	-- Instance trail
+	local newTrail = playerTrail.new()
+	newTrail.position = vec2.new(p.position.x, p.position.y)
+	-- Add instance to table
+	p.trails[#p.trails+1] = newTrail
+    end
+
+    function p.drawTrail()
+	for _, v in ipairs(p.trails) do
+	    v.draw()
+	end
+    end
 
     -- Bullet related functions
     function p.updateBullets(delta)
@@ -79,10 +104,12 @@ function player.new()
 	-- Functions
 	p.shoot(delta)
 	p.movement(delta)
+	p.updateTrail(delta)
 	p.updateBullets(delta)
     end
 
     function p.draw()
+	p.drawTrail()
 	local width = p.image:getWidth()
 	local height = p.image:getHeight()
 	local x = (p.position.x - Camera.position.x) * Camera.zoom	
