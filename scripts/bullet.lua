@@ -1,5 +1,4 @@
 local vec2 = require("lib/vec2")
-local bulletTrail = require("scripts/bulletTrail")
 
 local bullet = {}
 
@@ -10,19 +9,10 @@ function bullet.new()
 	lifetime = 0;
 	speed = 500;
 	trails = {};
+	trailCooldown = 0;
     }
 
-    -- Trail related functions
-    function b.updateTrail(delta)
-
-    end
-
-    function b.drawTrail()
-
-    end
-
     -- Event functions
-    
     function b.update(delta, i)
 	b.lifetime = b.lifetime + delta
 	-- Bullet despawning
@@ -36,7 +26,6 @@ function bullet.new()
     end
 
     function b.draw()
-	b.drawTrail()
 	local width = BulletImage:getWidth()
 	local height = BulletImage:getHeight()	
 	local x = (b.position.x - Camera.position.x) * Camera.zoom	
