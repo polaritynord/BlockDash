@@ -15,7 +15,7 @@ function love.load()
     Player.position.y = 270
     -- Setup camera
     Camera = camera.new()
-    --Camera.lockedTarget = Player
+    Camera.lockedTarget = Player
 end
 
 function love.update(delta)

@@ -1,6 +1,7 @@
 local vec2 = require("lib/vec2")
 local uniform = require("lib/uniform")
 
+local utils = require("utils")
 local bullet = require("scripts/bullet")
 local playerTrail = require("scripts/playerTrail")
 
@@ -99,8 +100,8 @@ function player.new()
     -- Event functions
     function p.update(delta)
 	-- Point towards mouse
-	mX, mY = love.mouse.getPosition()
-	p.rotation = math.atan2(mY - p.position.y, mX - p.position.x)
+	local m = utils.getMousePosition()
+	p.rotation = math.atan2(m.y - p.position.y, m.x - p.position.x)
 	-- Functions
 	p.shoot(delta)
 	p.movement(delta)
