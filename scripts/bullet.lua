@@ -1,4 +1,5 @@
 local vec2 = require("lib/vec2")
+local bulletTrail = require("scripts/bulletTrail")
 
 local bullet = {}
 
@@ -8,7 +9,12 @@ function bullet.new()
 	rotation = 0;
 	lifetime = 0;
 	speed = 500;
+	trails = {};
     }
+
+    -- Trail related functions
+    
+    -- Event functions
     
     function b.update(delta, i)
 	b.lifetime = b.lifetime + delta
@@ -23,6 +29,7 @@ function bullet.new()
     end
 
     function b.draw()
+	b.drawTrail()
 	local width = BulletImage:getWidth()
 	local height = BulletImage:getHeight()
 	love.graphics.draw(
