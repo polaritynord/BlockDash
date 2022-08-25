@@ -85,9 +85,11 @@ function player.new()
     function p.draw()
 	local width = p.image:getWidth()
 	local height = p.image:getHeight()
+	local x = (p.position.x - Camera.position.x) * Camera.zoom	
+	local y = (p.position.y - Camera.position.y) * Camera.zoom
 	love.graphics.draw(
-	    p.image, p.position.x, p.position.y, p.rotation,
-	    1, 1, width/2, height/2
+	    p.image, x, y, p.rotation,
+	    Camera.zoom, Camera.zoom, width/2, height/2
 	)
 	p.drawBullets()
     end
