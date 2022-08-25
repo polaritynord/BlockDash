@@ -11,6 +11,7 @@ function camera.new()
     }
     
     function c.update(delta)
+	if GamePaused then return end
 	-- Camera following
 	if not c.lockedTarget then return end
 	c.position.x = c.position.x + (c.lockedTarget.position.x - c.position.x-480/c.zoom) / (c.smoothness * delta)

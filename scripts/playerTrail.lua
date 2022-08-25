@@ -11,6 +11,7 @@ function playerTrail.new()
     }
 
     function p.update(delta, i)
+	if GamePaused then return end
 	p.alpha = p.alpha - 1 * delta
 	p.scale = p.scale - 2 * delta
 	p.rotation = p.rotation + 5 * delta

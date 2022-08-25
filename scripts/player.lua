@@ -99,6 +99,7 @@ function player.new()
 
     -- Event functions
     function p.update(delta)
+	if GamePaused then return end
 	-- Point towards mouse
 	local m = utils.getMousePosition()
 	p.rotation = math.atan2(m.y - p.position.y, m.x - p.position.x)

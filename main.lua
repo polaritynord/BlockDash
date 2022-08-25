@@ -7,8 +7,9 @@ function love.load()
     -- Set custom cursor
     local cursor = love.mouse.newCursor("images/cursor.png", 12, 12)
     love.mouse.setCursor(cursor)
-    -- Global images
+    -- Globals
     BulletImage = love.graphics.newImage("images/bullet.png")
+    GamePaused = false
     -- Setup player
     Player = player.new()
     Player.position.x = 480

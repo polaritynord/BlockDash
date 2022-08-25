@@ -14,6 +14,7 @@ function bullet.new()
 
     -- Event functions
     function b.update(delta, i)
+	if GamePaused then return end
 	b.lifetime = b.lifetime + delta
 	-- Bullet despawning
 	if b.lifetime > 3.5 then

@@ -1,5 +1,11 @@
 local interface = {}
 
+-- Pause key event
+function love.keypressed(key)
+    if key ~= "escape" then return end
+    GamePaused = not GamePaused
+end
+
 function interface.update()
 
 end
