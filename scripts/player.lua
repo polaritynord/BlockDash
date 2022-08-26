@@ -1,3 +1,4 @@
+local utils = require("utils")
 local vec2 = require("lib/vec2")
 local uniform = require("lib/uniform")
 
@@ -60,7 +61,7 @@ function player.new()
 
     -- Player related functions
     function p.shoot(delta)
-	-- Return player isn't holding a weapon
+	-- Return if player isn't holding a weapon
 	if not p.weapons[p.slot] then return end
 	-- Increment timer
 	p.shootCooldown = p.shootCooldown + delta
@@ -69,11 +70,12 @@ function player.new()
 	    return end
 	-- Instance bullet
 	local newBullet = bullet.new()
-	newBullet.position = vec2.new(p.position.x, p.position.y)
-	newBullet.rotation = p.rotation
-	-- Offset the bullet a bit
-	newBullet.position.x = newBullet.position.x + math.cos(p.rotation) * 25
-	newBullet.position.y = newBullet.position.y + math.sin(p.rotation) * 25
+	newBullet.position = vec2.new(p.weaponSprite.position.x, p.weaponSprite.position.y)
+	newBullet.rotation = p.weaponSprite.rotation
+	-- Offset the bullet
+	--newBullet.position = utils.vec2Add(newBullet.position, w.bulletOffset) 	
+	newBullet.position.x = newBullet.position.x + math.cos(p.weaponSprite.rotation) * w.bulletOffset
+	newBullet.position.y = newBullet.position.y + math.sin(p.weaponSprite.rotation) * w.bulletOffset
 	-- Spread bullet
 	newBullet.rotation = newBullet.rotation + uniform(-1, 1) * w.bulletSpread
 	-- Reset timer
