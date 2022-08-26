@@ -4,6 +4,7 @@ local uniform = require("lib/uniform")
 local utils = require("utils")
 local bullet = require("scripts/bullet")
 local playerTrail = require("scripts/playerTrail")
+local weapon = require("scripts/weapon")
 
 local player = {}
 
@@ -16,6 +17,8 @@ function player.new()
 	bullets = {};
 	trails = {};
 	-- TODO: implement inventory & weapon system
+	weapons = {nil, nil, nil};
+	slot = 1;
 	shootCooldown = 0;
 	trailCooldown = 0;
     }
