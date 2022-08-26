@@ -1,5 +1,7 @@
 local vec2 = require("lib/vec2")
 
+local assets = require("scripts/assets")
+
 local playerTrail = {}
 
 function playerTrail.new()
@@ -22,13 +24,13 @@ function playerTrail.new()
     end
 
     function p.draw()
-	local width = Player.image:getWidth()
-	local height = Player.image:getHeight()
+	local width = assets.playerImg:getWidth()
+	local height = assets.playerImg:getHeight()
 	local x = (p.position.x - Camera.position.x) * Camera.zoom	
 	local y = (p.position.y - Camera.position.y) * Camera.zoom
 	love.graphics.setColor(0.6, 0.6, 0.6, p.alpha)
 	love.graphics.draw(
-	    Player.image, x, y, p.rotation,
+	    assets.playerImg, x, y, p.rotation,
 	    p.scale*Camera.zoom, p.scale*Camera.zoom, width/2, height/2
 	)
 	love.graphics.setColor(1, 1, 1, 1)

@@ -1,3 +1,4 @@
+local assets = require("scripts/assets")
 local player = require("scripts/player")
 local interface = require("scripts/interface")
 local camera = require("scripts/camera")
@@ -8,6 +9,7 @@ function love.load()
     local cursor = love.mouse.newCursor("images/cursor.png", 12, 12)
     love.mouse.setCursor(cursor)
     -- Globals
+    assets.gameLoad()
     BulletImage = love.graphics.newImage("images/bullet.png")
     GamePaused = false
     -- Setup player

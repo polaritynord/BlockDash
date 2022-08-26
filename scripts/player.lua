@@ -1,8 +1,8 @@
 local vec2 = require("lib/vec2")
 local uniform = require("lib/uniform")
 
-local utils = require("utils")
 local bullet = require("scripts/bullet")
+local assets = require("scripts/assets")
 local playerTrail = require("scripts/playerTrail")
 local weaponData = require("scripts/weaponData")
 
@@ -13,7 +13,6 @@ function player.new()
         position = vec2.new();
         velocity = vec2.new();
 	rotation = 0;
-        image = love.graphics.newImage("images/player.png");
 	bullets = {};
 	trails = {};
 	-- TODO: implement inventory & weapon system
@@ -112,9 +111,6 @@ function player.new()
 
     function p.update(delta)
 	if GamePaused then return end
-	-- Point towards mouse
-	local m = utils.getMousePosition()
-	p.rotation = math.atan2(m.y - p.position.y, m.x - p.position.x)
 	-- Functions
 	p.shoot(delta)
 	p.movement(delta)
@@ -124,12 +120,12 @@ function player.new()
 
     function p.draw()
 	p.drawTrail()
-	local width = p.image:getWidth()
-	local height = p.image:getHeight()
+	local width = assets.playerImg:getWidth()
+	local height = assets.playerImg:getHeight()
 	local x = (p.position.x - Camera.position.x) * Camera.zoom	
 	local y = (p.position.y - Camera.position.y) * Camera.zoom
 	love.graphics.draw(
-	    p.image, x, y, p.rotation,
+	    assets.playerImg, x, y, p.rotation,
 	    Camera.zoom, Camera.zoom, width/2, height/2
 	)
 	p.drawBullets()
