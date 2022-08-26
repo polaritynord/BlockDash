@@ -4,7 +4,7 @@ local uniform = require("lib/uniform")
 local utils = require("utils")
 local bullet = require("scripts/bullet")
 local playerTrail = require("scripts/playerTrail")
-local weapon = require("scripts/weapon")
+local weaponData = require("scripts/weaponData")
 
 local player = {}
 
@@ -19,7 +19,7 @@ function player.new()
 	-- TODO: implement inventory & weapon system
 	weapons = {nil, nil, nil};
 	slot = 1;
-	shootCooldown = 0;
+	shootCooldown = 1000;
 	trailCooldown = 0;
     }
 
@@ -60,8 +60,12 @@ function player.new()
 
     -- Player related functions
     function p.shoot(delta)
+	-- Return player isn't holding a weapon
+	if not p.weapons[p.slot] then return end
+	-- Increment timer
 	p.shootCooldown = p.shootCooldown + delta
-	if not love.mouse.isDown(1) or p.shootCooldown < 0.05 then
+	local w = p.weapons[p.slot]
+	if not love.mouse.isDown(1) or p.shootCooldown < w.shootTime then
 	    return end
 	-- Instance bullet
 	local newBullet = bullet.new()
@@ -71,9 +75,10 @@ function player.new()
 	newBullet.position.x = newBullet.position.x + math.cos(p.rotation) * 25
 	newBullet.position.y = newBullet.position.y + math.sin(p.rotation) * 25
 	-- Spread bullet
-	newBullet.rotation = newBullet.rotation + uniform(-1, 1) * 0.25
+	newBullet.rotation = newBullet.rotation + uniform(-1, 1) * w.bulletSpread
 	-- Reset timer
 	p.shootCooldown = 0
+	-- TODO special bullet attributes
 	-- Add to table
 	p.bullets[#p.bullets+1] = newBullet
     end
@@ -101,6 +106,10 @@ function player.new()
     end
 
     -- Event functions
+    function p.load()
+	p.weapons[1] = weaponData.pistol	
+    end
+
     function p.update(delta)
 	if GamePaused then return end
 	-- Point towards mouse

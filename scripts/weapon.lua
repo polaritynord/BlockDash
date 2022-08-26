@@ -4,8 +4,6 @@ function weapon.new()
     local w = {
 	name;
 	weaponType;
-	bulletType;
-	ammoType;
 	bulletSpeed;
 	bulletDamage;
 	bulletSpread;
@@ -13,7 +11,6 @@ function weapon.new()
 	shootTime;
 	magSize;
 	magAmmo = 0;
-	rarity;
     }
 
     return w
