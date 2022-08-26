@@ -4,7 +4,7 @@ local weaponData = {}
 
 -- Pistol
 local pistol = weapon.new()
-pistol.name = "Pistol"
+pistol.name = "pistol"
 pistol.weaponType = "manual"
 pistol.bulletSpeed = 200
 pistol.bulletDamage = 10

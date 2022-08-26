@@ -5,6 +5,7 @@ local bullet = require("scripts/bullet")
 local assets = require("scripts/assets")
 local playerTrail = require("scripts/playerTrail")
 local weaponData = require("scripts/weaponData")
+local weaponSprite = require("scripts/weaponSprite")
 
 local player = {}
 
@@ -15,11 +16,11 @@ function player.new()
 	rotation = 0;
 	bullets = {};
 	trails = {};
-	-- TODO: implement inventory & weapon system
 	weapons = {nil, nil, nil};
 	slot = 1;
 	shootCooldown = 1000;
 	trailCooldown = 0;
+	weaponSprite = weaponSprite.new();
     }
 
     -- Trail related functions
@@ -116,6 +117,7 @@ function player.new()
 	p.movement(delta)
 	p.updateTrail(delta)
 	p.updateBullets(delta)
+	p.weaponSprite.update()
     end
 
     function p.draw()
@@ -128,6 +130,7 @@ function player.new()
 	    assets.playerImg, x, y, p.rotation,
 	    Camera.zoom, Camera.zoom, width/2, height/2
 	)
+	p.weaponSprite.draw()
 	p.drawBullets()
     end
 

@@ -5,6 +5,7 @@ local camera = require("scripts/camera")
 
 function love.load()
     love.graphics.setBackgroundColor(0.07, 0.07, 0.07, 1)
+    love.graphics.setDefaultFilter("nearest", "nearest")
     -- Set custom cursor
     local cursor = love.mouse.newCursor("images/cursor.png", 12, 12)
     love.mouse.setCursor(cursor)

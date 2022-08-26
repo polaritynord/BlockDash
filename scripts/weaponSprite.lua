@@ -16,17 +16,24 @@ function weaponSprite.new()
 	local m = utils.getMousePosition()
 	w.rotation = math.atan2(m.y - w.position.y, m.x - w.position.x)
 	-- Set position
-	w.position = vec2.new(Player.position.x, Player.position.y)	
+	w.position = vec2.new(Player.position.x + 12.5, Player.position.y + 3)	
     end
 
     function w.draw()
-	local width = assets.playerImg:getWidth()
-	local height = assets.playerImg:getHeight()
+	local weapon = Player.weapons[Player.slot]
+	if not weapon then return end
+
+	-- Get image
+	local image = assets.weapons[weapon.name .. "Img"]
+	
+	local width = image:getWidth()
+	local height = image:getHeight()
 	local x = (w.position.x - Camera.position.x) * Camera.zoom	
 	local y = (w.position.y - Camera.position.y) * Camera.zoom
+	
 	love.graphics.draw(
-	    a, x, y, p.rotation,
-	    Camera.zoom, Camera.zoom, width/2, height/2
+	    image, x, y, w.rotation,
+	    Camera.zoom*2, Camera.zoom*2, width/2, height/2
 	)
     end
 
