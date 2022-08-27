@@ -1,4 +1,9 @@
+local vec2 = require("lib/vec2")
+
+local button = require("scripts/button")
+
 local interface = {
+    buttons = {};
     pauseScreenAlpha = 0;
 }
 
@@ -6,6 +11,14 @@ local interface = {
 function love.keypressed(key)
     if key ~= "escape" then return end
     GamePaused = not GamePaused
+end
+
+-- Event functions
+function interface.gameLoad()
+    interface.buttons = {}
+    -- Pause menu buttons
+    local pContinueButton = button.new()
+    interface.buttons.pContinueButton = pContinueButton
 end
 
 function interface.update(delta)
