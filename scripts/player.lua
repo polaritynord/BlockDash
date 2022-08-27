@@ -14,7 +14,7 @@ function player.new()
     local p = {
         position = vec2.new();
         velocity = vec2.new();
-	rotation = 0;
+	facing = "right";
 	bullets = {};
 	trails = {};
 	weapons = {nil, nil, nil};
@@ -22,17 +22,19 @@ function player.new()
 	shootCooldown = 1000;
 	trailCooldown = 0;
 	weaponSprite = weaponSprite.new();
+	width = 1;
+	moving = false;
     }
 
     -- Trail related functions
     function p.updateTrail(delta)
-	-- Draw exsiting trails
+	-- Draw existing trails
 	for i, v in ipairs(p.trails) do
 	    v.update(delta, i)
 	end
 	-- Add new trails
 	p.trailCooldown = p.trailCooldown + delta
-	if p.trailCooldown < 0.1 then return end
+	if p.trailCooldown < 0.1 or not p.moving then return end
 	-- Instance trail
 	local newTrail = playerTrail.new()
 	newTrail.position = vec2.new(p.position.x, p.position.y)
@@ -60,6 +62,21 @@ function player.new()
     end
 
     -- Player related functions
+    function p.setFacing(delta)
+	-- Set facing value
+	local m = utils.getMousePosition()
+	if m.x > p.position.x then
+	    p.facing = "right" else
+	    p.facing = "left" end
+	-- Change width
+	local sm = 250 * delta
+	if p.facing == "right" then
+	    p.width = p.width + (1-p.width) / sm
+	else
+	    p.width = p.width + (-1-p.width) / sm
+	end
+    end
+
     function p.shoot(delta)
 	-- Return if player isn't holding a weapon
 	if not p.weapons[p.slot] then return end
@@ -97,6 +114,8 @@ function player.new()
 	    p.velocity.y = p.velocity.y - 1 end
 	if love.keyboard.isDown("down", "s") then
 	    p.velocity.y = p.velocity.y + 1 end
+	-- Set p.moving
+	p.moving = math.abs(p.velocity.x) > 0 or math.abs(p.velocity.y) > 0
 	-- Normalize velocity
 	if math.abs(p.velocity.x) == math.abs(p.velocity.y) then
 	    p.velocity.x = p.velocity.x / 1.25
@@ -110,6 +129,7 @@ function player.new()
     -- Event functions
     function p.load()
 	p.weapons[1] = weaponData.pistol	
+	-- TODO find a way to copy objects from weaponData!!!!
     end
 
     function p.update(delta)
@@ -117,6 +137,7 @@ function player.new()
 	-- Functions
 	p.shoot(delta)
 	p.movement(delta)
+	p.setFacing(delta)
 	p.updateTrail(delta)
 	p.updateBullets(delta)
 	p.weaponSprite.update()
@@ -130,7 +151,7 @@ function player.new()
 	local y = (p.position.y - Camera.position.y) * Camera.zoom
 	love.graphics.draw(
 	    assets.playerImg, x, y, p.rotation,
-	    Camera.zoom, Camera.zoom, width/2, height/2
+	    Camera.zoom * p.width, Camera.zoom, width/2, height/2
 	)
 	p.weaponSprite.draw()
 	p.drawBullets()

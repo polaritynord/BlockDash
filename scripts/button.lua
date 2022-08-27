@@ -27,10 +27,10 @@ function button.new()
 	love.graphics.setNewFont("fonts/Minecraftia-Regular.ttf", 24)
 	local t = b.text
 	if b.uppercaseText then t = string.upper(t) end
-	local w = #t * 24
-	print(w)
-	love.graphics.print(t, b.position.x+(b.size.x/2)-(w/2), b.position.y+b.size.y/4)
-	-- TODO figure out a way to center the text (maybe printf?)
+	-- Couldn't find a proper way to center the text in the rectangle, dammit
+	-- Hope some dude with more than 2 braincells can figure a way out
+	-- Probably won't happen but whatever
+	love.graphics.print(t, b.position.x + 16, b.position.y + b.size.y/4)
     end
 
     return b

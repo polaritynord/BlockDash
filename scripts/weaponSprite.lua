@@ -24,17 +24,18 @@ function weaponSprite.new()
 	if not weapon then return end
 
 	-- Get image
-	local image = assets.weapons[weapon.name .. "Img"]
+	local image = assets.weapons[weapon.name .. "ImgI"]
 	
 	local width = image:getWidth()
 	local height = image:getHeight()
 	local x = (w.position.x - Camera.position.x) * Camera.zoom	
 	local y = (w.position.y - Camera.position.y) * Camera.zoom
-	
+	--love.graphics.setColor(0, 0, 0, 1)	
 	love.graphics.draw(
 	    image, x, y, w.rotation,
-	    Camera.zoom*2, Camera.zoom*2, width/2, height/2
+	    Camera.zoom*1.7, Camera.zoom*1.7, width/2, height/2
 	)
+	love.graphics.setColor(1, 1, 1, 1)
     end
 
     return w

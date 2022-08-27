@@ -31,7 +31,7 @@ function playerTrail.new()
 	love.graphics.setColor(0.6, 0.6, 0.6, p.alpha)
 	love.graphics.draw(
 	    assets.playerImg, x, y, p.rotation,
-	    p.scale*Camera.zoom, p.scale*Camera.zoom, width/2, height/2
+	    p.scale*Camera.zoom*Player.width, p.scale*Camera.zoom, width/2, height/2
 	)
 	love.graphics.setColor(1, 1, 1, 1)
     end

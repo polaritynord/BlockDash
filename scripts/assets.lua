@@ -5,7 +5,7 @@ function assets.gameLoad()
     assets.bulletImg = love.graphics.newImage("images/bullet.png")
     -- Weapon images
     assets.weapons = {}
-    assets.weapons.pistolImg = love.graphics.newImage("images/weapons/pistol.png")
+    assets.weapons.pistolImgI = love.graphics.newImage("images/weapons/pistol_i.png")
 end
 
 function assets.menuLoad()
