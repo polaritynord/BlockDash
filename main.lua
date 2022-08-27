@@ -25,7 +25,7 @@ end
 
 function love.update(delta)
     Player.update(delta)
-    interface.update()
+    interface.update(delta)
     Camera.update(delta)
 end
 
