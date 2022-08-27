@@ -89,10 +89,15 @@ function player.new()
 	local newBullet = bullet.new()
 	newBullet.position = vec2.new(p.weaponSprite.position.x, p.weaponSprite.position.y)
 	newBullet.rotation = p.weaponSprite.rotation
+	-- Check where the player is facing
+	local t = 1
+	if p.facing == "left" then
+	    t = -1
+	   newBullet.rotation = newBullet.rotation + 135
+	end
 	-- Offset the bullet
-	--newBullet.position = utils.vec2Add(newBullet.position, w.bulletOffset) 	
-	newBullet.position.x = newBullet.position.x + math.cos(p.weaponSprite.rotation) * w.bulletOffset
-	newBullet.position.y = newBullet.position.y + math.sin(p.weaponSprite.rotation) * w.bulletOffset
+	newBullet.position.x = newBullet.position.x + math.cos(p.weaponSprite.rotation) * w.bulletOffset * t
+	newBullet.position.y = newBullet.position.y + math.sin(p.weaponSprite.rotation) * w.bulletOffset * t
 	-- Spread bullet
 	newBullet.rotation = newBullet.rotation + uniform(-1, 1) * w.bulletSpread
 	-- Reset timer

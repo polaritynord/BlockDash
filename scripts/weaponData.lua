@@ -13,7 +13,7 @@ pistol.bulletSpread = 0.15
 pistol.reloadTime = 1.54
 pistol.shootTime = 0.25
 pistol.magSize = 13
-pistol.bulletOffset = 17
+pistol.bulletOffset = 15
 
 weaponData["pistol"] = pistol
 
