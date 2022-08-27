@@ -11,6 +11,7 @@ function love.load()
     love.mouse.setCursor(cursor)
     -- Globals
     assets.gameLoad()
+    interface.gameLoad()
     BulletImage = love.graphics.newImage("images/bullet.png")
     GamePaused = false
     -- Setup player

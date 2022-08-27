@@ -18,6 +18,8 @@ function interface.gameLoad()
     interface.buttons = {}
     -- Pause menu buttons
     local pContinueButton = button.new()
+    pContinueButton.position = vec2.new(50, 50)
+
     interface.buttons.pContinueButton = pContinueButton
 end
 
@@ -26,6 +28,7 @@ function interface.update(delta)
     local a = interface.pauseScreenAlpha
     if GamePaused then
 	interface.pauseScreenAlpha = a+(0.65-a) / (250 * delta) 
+	interface.buttons.pContinueButton.update(delta)
     else
 	interface.pauseScreenAlpha = a+(0-a) / (250 * delta)
     end
@@ -46,6 +49,8 @@ function interface.draw()
 	love.graphics.setNewFont("fonts/Minecraftia-Regular.ttf", 32)
 	love.graphics.setColor(1, 1, 1, interface.pauseScreenAlpha+0.35)
 	love.graphics.print("GAME PAUSED", 355, 120)
+	--- Buttons
+	interface.buttons.pContinueButton.draw()
 
 	love.graphics.setColor(1, 1, 1, 1)
     end
