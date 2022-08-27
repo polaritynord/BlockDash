@@ -1,10 +1,12 @@
 local vec2 = require("lib/vec2")
 
 local button = require("scripts/button")
+local invSlot = require("scripts/invSlot")
 
 local interface = {
     buttons = {};
     pauseScreenAlpha = 0;
+    invSlots = {};
 }
 
 -- Pause key event
@@ -21,6 +23,8 @@ function interface.gameLoad()
     pContinueButton.position = vec2.new(50, 50)
 
     interface.buttons.pContinueButton = pContinueButton
+    -- Inventory slots (test)
+    interface.invSlots[1] = invSlot.new()
 end
 
 function interface.update(delta)
@@ -32,6 +36,10 @@ function interface.update(delta)
     else
 	interface.pauseScreenAlpha = a+(0-a) / (250 * delta)
     end
+    -- Update inventory slots
+    for _, v in ipairs(interface.invSlots) do
+	v.update(delta)
+    end
 end
 
 function interface.draw()
@@ -39,6 +47,10 @@ function interface.draw()
     love.graphics.setNewFont("fonts/Minecraftia-Regular.ttf", 16)
     love.graphics.print(love.timer.getFPS() .. " FPS", 5, 5)
     love.graphics.setColor(1, 1, 1, 1)
+    -- Inventory slots
+    for _, v in ipairs(interface.invSlots) do
+	v.draw()
+    end
 
     -- Pause menu
     if GamePaused then

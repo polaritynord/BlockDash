@@ -94,7 +94,7 @@ function player.new()
 	if p.facing == "left" then
 	    t = -1
 	   newBullet.rotation = newBullet.rotation + 135
-	end
+       end
 	-- Offset the bullet
 	newBullet.position.x = newBullet.position.x + math.cos(p.weaponSprite.rotation) * w.bulletOffset * t
 	newBullet.position.y = newBullet.position.y + math.sin(p.weaponSprite.rotation) * w.bulletOffset * t
