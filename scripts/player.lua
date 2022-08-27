@@ -24,6 +24,7 @@ function player.new()
 	weaponSprite = weaponSprite.new();
 	width = 1;
 	moving = false;
+	health = 100;
     }
 
     -- Trail related functions
