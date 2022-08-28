@@ -13,4 +13,10 @@ function utils.vec2Add(a, b)
     return c
 end
 
+-- Thanks to https://stackoverflow.com/questions/2421695/first-character-uppercase-lua
+function utils.capitalize(str)
+    return (str:gsub("^%l", string.upper))
+end
+
+
 return utils

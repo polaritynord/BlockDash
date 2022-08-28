@@ -1,3 +1,4 @@
+local utils = require("utils")
 local vec2 = require("lib/vec2")
 
 local assets = require("scripts/assets")
@@ -65,11 +66,31 @@ function interface.draw()
     -- FPS text
     love.graphics.setNewFont("fonts/Minecraftia-Regular.ttf", 16)
     love.graphics.print(love.timer.getFPS() .. " FPS", 5, 5)
-    --love.graphics.setColor(1, 1, 1, 1)
+    
     -- Inventory slots
     for _, v in ipairs(interface.invSlots) do
 	v.draw()
     end
+    -- Weapon UI
+    if Player.weapons[Player.slot] then
+	local w = Player.weapons[Player.slot]
+	-- Image
+	local image = assets.weapons[w.name .. "Img"]
+	interface.drawImage(image, vec2.new(60, 445), 3)
+	-- Name
+	love.graphics.setNewFont("fonts/Minecraftia-Regular.ttf", 24)
+	love.graphics.print(utils.capitalize(w.name), 25, 470)
+	-- Mag ammo
+	love.graphics.setNewFont("fonts/Minecraftia-Regular.ttf", 20)
+	local len = #tostring(w.magAmmo)
+	love.graphics.print(w.magAmmo, 25 - (len-1)*15, 505)
+	-- Ammo icon
+	local image = assets.ammoIconImg
+	interface.drawImage(image, vec2.new(55, 518.5), 1)
+	-- Infinite text
+	love.graphics.print("∞", 71, 503)
+    end
+
     -- Health icon
     interface.drawImage(assets.healthIconImg, vec2.new(930+(SC_WIDTH-960), 452+(SC_HEIGHT-540)), 4)
     -- Health text

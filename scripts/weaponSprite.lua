@@ -38,7 +38,7 @@ function weaponSprite.new()
 	if not weapon then return end
 
 	-- Get image
-	local image = assets.weapons[weapon.name .. "ImgI"]
+	local image = assets.weapons[weapon.name .. "Img"]
 	
 	local width = image:getWidth()
 	local height = image:getHeight()
