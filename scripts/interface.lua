@@ -28,16 +28,19 @@ end
 -- Event functions
 function interface.gameLoad()
     interface.buttons = {}
-    -- Pause menu buttons
+    -- Pause menu - comtinue button
     local pContinueButton = button.new()
     pContinueButton.position = vec2.new(480, 270)
-    
+    pContinueButton.size = vec2.new(175, 65);
+    pContinueButton.text = "continue"
+    pContinueButton.uppercaseText = false
+
     function pContinueButton.clickEvent()
-	print("clicked!")
+	GamePaused = false
     end
 
     interface.buttons.pContinueButton = pContinueButton
-    -- Inventory slots
+    -- Create inventory slots
     interface.invSlots = {}
     local x = 926 ; local y = 510;
     for i = 1, 3 do

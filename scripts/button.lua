@@ -26,7 +26,7 @@ function button.new()
 	-- Hover animation
 	local sm = 250 * delta
 	if x and y then
-	    b.scale = b.scale + (1.12-b.scale) / sm
+	    b.scale = b.scale + (1.08-b.scale) / sm
 	    -- Click animation
 	    if love.mouse.isDown(1) then
 		b.scale = b.scale + (1.03-b.scale) / sm	

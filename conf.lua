@@ -2,6 +2,6 @@
 function love.conf(t)
     t.version = "11.3"
     t.title = "Insane Shooter"
-    t.window.width = 960 ; t.window.height = 540
-    --t.window.vsync = 0
+    SC_WIDTH = 960 ; SC_HEIGHT = 540
+    t.window.width = SC_WIDTH ; t.window.height = SC_HEIGHT
 end
