@@ -10,12 +10,6 @@ local interface = {
     invSlots = {};
 }
 
--- Pause key event
-function love.keypressed(key)
-    if key ~= "escape" then return end
-    GamePaused = not GamePaused
-end
-
 function interface.drawImage(image, position, scale)
     local width = image:getWidth()
     local height = image:getHeight()
@@ -77,20 +71,20 @@ function interface.draw()
 	v.draw()
     end
     -- Health icon
-    interface.drawImage(assets.healthIconImg, vec2.new(930, 452), 4)
+    interface.drawImage(assets.healthIconImg, vec2.new(930+(SC_WIDTH-960), 452+(SC_HEIGHT-540)), 4)
     -- Health text
     love.graphics.setNewFont("fonts/Minecraftia-Regular.ttf", 24)
-    love.graphics.printf(tostring(Player.health), -95, 438, 1000, "right")
+    love.graphics.printf(tostring(Player.health), -95+(SC_WIDTH-960), 438+(SC_HEIGHT-540), 1000, "right")
 
     -- Pause menu
     if GamePaused then
 	-- Background
 	love.graphics.setColor(0, 0, 0, interface.pauseScreenAlpha)
-	love.graphics.rectangle("fill", 0, 0, 960, 540)
+	love.graphics.rectangle("fill", 0, 0, SC_WIDTH, SC_HEIGHT)
 	-- Title
 	love.graphics.setNewFont("fonts/Minecraftia-Regular.ttf", 32)
 	love.graphics.setColor(1, 1, 1, interface.pauseScreenAlpha+0.35)
-	love.graphics.print("GAME PAUSED", 355, 120)
+	love.graphics.print("GAME PAUSED", 355+(SC_WIDTH-960)/2, 120+(SC_HEIGHT-540)/2)
 	--- Buttons
 	interface.buttons.pContinueButton.draw()
 

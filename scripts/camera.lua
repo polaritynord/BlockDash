@@ -14,8 +14,8 @@ function camera.new()
 	if GamePaused then return end
 	-- Camera following
 	if not c.lockedTarget then return end
-	c.position.x = c.position.x + (c.lockedTarget.position.x - c.position.x-480/c.zoom) / (c.smoothness * delta)
-	c.position.y = c.position.y + (c.lockedTarget.position.y - c.position.y-270/c.zoom) / (c.smoothness * delta)
+	c.position.x = c.position.x + (c.lockedTarget.position.x - c.position.x-(SC_WIDTH/2)/c.zoom) / (c.smoothness * delta)
+	c.position.y = c.position.y + (c.lockedTarget.position.y - c.position.y-(SC_HEIGHT/2)/c.zoom) / (c.smoothness * delta)
 	--c.zoom = c.zoom - 0.0015
     end
     

@@ -17,7 +17,7 @@ function invSlot.new()
 	local width = assets.invSlotImg:getWidth()
 	local height = assets.invSlotImg:getHeight()
 	love.graphics.draw(
-	    assets.invSlotImg, s.position.x, s.position.y, 0,
+	    assets.invSlotImg, s.position.x+(SC_WIDTH-960), s.position.y+(SC_HEIGHT-540), 0,
 	    2, 2, width/2, height/2
 	)
     end

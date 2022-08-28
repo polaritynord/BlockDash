@@ -3,6 +3,23 @@ local player = require("scripts/player")
 local interface = require("scripts/interface")
 local camera = require("scripts/camera")
 
+local fullscreen = false
+
+function love.keypressed(key, unicode)
+    -- Pause key (TODO add game state check)
+    if key == "escape" then
+	GamePaused = not GamePaused end
+    -- Fullscreen key
+    if key == "f11" then
+	fullscreen = not fullscreen
+	love.window.setFullscreen(fullscreen, "desktop")
+	-- Set window dimensions to default
+	if not fullscreen then
+	    love.window.setMode(960, 540) end
+    end
+end
+
+
 function love.load()
     love.graphics.setBackgroundColor(0.07, 0.07, 0.07, 1)
     love.graphics.setDefaultFilter("nearest", "nearest")
@@ -25,6 +42,7 @@ function love.load()
 end
 
 function love.update(delta)
+    SC_WIDTH, SC_HEIGHT = love.graphics.getDimensions()
     Player.update(delta)
     interface.update(delta)
     Camera.update(delta)

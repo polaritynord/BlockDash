@@ -4,4 +4,5 @@ function love.conf(t)
     t.title = "Insane Shooter"
     SC_WIDTH = 960 ; SC_HEIGHT = 540
     t.window.width = SC_WIDTH ; t.window.height = SC_HEIGHT
+    t.window.resizable = true
 end
