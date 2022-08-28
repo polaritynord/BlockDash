@@ -1,5 +1,7 @@
 local vec2 = require("lib/vec2")
 
+local assets = require("scripts/assets")
+
 local bullet = {}
 
 function bullet.new()
@@ -27,12 +29,13 @@ function bullet.new()
     end
 
     function b.draw()
-	local width = BulletImage:getWidth()
-	local height = BulletImage:getHeight()	
+	local image = assets.bulletImg
+	local width = image:getWidth()
+	local height = image:getHeight()	
 	local x = (b.position.x - Camera.position.x) * Camera.zoom	
 	local y = (b.position.y - Camera.position.y) * Camera.zoom
 	love.graphics.draw(
-	    BulletImage, x, y, b.rotation,
+	    image, x, y, b.rotation,
 	    Camera.zoom, Camera.zoom, width/2, height/2
 	)
     end

@@ -62,7 +62,7 @@ function interface.update(delta)
     end
 end
 
-function interface.draw()
+function interface.drawGame()
     -- FPS text
     love.graphics.setNewFont("fonts/Minecraftia-Regular.ttf", 16)
     love.graphics.print(love.timer.getFPS() .. " FPS", 5, 5)
@@ -76,19 +76,19 @@ function interface.draw()
 	local w = Player.weapons[Player.slot]
 	-- Image
 	local image = assets.weapons[w.name .. "Img"]
-	interface.drawImage(image, vec2.new(60, 445), 3)
+	interface.drawImage(image, vec2.new(60, 445+(SC_HEIGHT-540)), 3)
 	-- Name
 	love.graphics.setNewFont("fonts/Minecraftia-Regular.ttf", 24)
-	love.graphics.print(utils.capitalize(w.name), 25, 470)
+	love.graphics.print(utils.capitalize(w.name), 25, 470+(SC_HEIGHT-540))
 	-- Mag ammo
 	love.graphics.setNewFont("fonts/Minecraftia-Regular.ttf", 20)
 	local len = #tostring(w.magAmmo)
-	love.graphics.print(w.magAmmo, 25 - (len-1)*15, 505)
+	love.graphics.print(w.magAmmo, 25 - (len-1)*15, 505+(SC_HEIGHT-540))
 	-- Ammo icon
 	local image = assets.ammoIconImg
-	interface.drawImage(image, vec2.new(55, 518.5), 1)
+	interface.drawImage(image, vec2.new(55, 518.5+(SC_HEIGHT-540)), 1)
 	-- Infinite text
-	love.graphics.print("∞", 71, 503)
+	love.graphics.print("∞", 71, 503+(SC_HEIGHT-540))
     end
 
     -- Health icon
@@ -108,9 +108,12 @@ function interface.draw()
 	love.graphics.print("GAME PAUSED", 355+(SC_WIDTH-960)/2, 120+(SC_HEIGHT-540)/2)
 	--- Buttons
 	interface.buttons.pContinueButton.draw()
-
-	love.graphics.setColor(1, 1, 1, 1)
     end
+end
+
+function interface.draw()
+    if GameState == "game" then interface.drawGame() end
+    love.graphics.setColor(1, 1, 1, 1)
 end
 
 return interface

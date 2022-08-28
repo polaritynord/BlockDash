@@ -1,6 +1,10 @@
 local assets = {}
 
 function assets.gameLoad()
+    -- Cursors
+    assets.cursorDefault = love.mouse.newCursor("images/cursor_default.png", 0, 0)
+    assets.cursorCombat = love.mouse.newCursor("images/cursor_combat.png", 12, 12)
+    -- Other
     assets.playerImg = love.graphics.newImage("images/player.png")
     assets.bulletImg = love.graphics.newImage("images/bullet.png")
     assets.invSlotImg = love.graphics.newImage("images/inv_slot.png")

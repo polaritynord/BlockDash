@@ -6,8 +6,8 @@ local camera = require("scripts/camera")
 local fullscreen = false
 
 function love.keypressed(key, unicode)
-    -- Pause key (TODO add game state check)
-    if key == "escape" then
+    -- Pause key
+    if key == "escape" and GameState == "game" then
 	GamePaused = not GamePaused end
     -- Fullscreen key
     if key == "f11" then
@@ -19,17 +19,11 @@ function love.keypressed(key, unicode)
     end
 end
 
-
-function love.load()
-    love.graphics.setBackgroundColor(0.07, 0.07, 0.07, 1)
-    love.graphics.setDefaultFilter("nearest", "nearest")
-    -- Set custom cursor
-    local cursor = love.mouse.newCursor("images/cursor.png", 12, 12)
-    love.mouse.setCursor(cursor)
+function GameLoad()
+    GameState = "game"
     -- Globals
     assets.gameLoad()
     interface.gameLoad()
-    BulletImage = love.graphics.newImage("images/bullet.png")
     GamePaused = false
     -- Setup player
     Player = player.new()
@@ -41,15 +35,31 @@ function love.load()
     Camera.lockedTarget = Player
 end
 
+function love.load()
+    love.graphics.setBackgroundColor(0.07, 0.07, 0.07, 1)
+    love.graphics.setDefaultFilter("nearest", "nearest")
+    -- Set custom cursor
+    GameLoad()
+end
+
 function love.update(delta)
     SC_WIDTH, SC_HEIGHT = love.graphics.getDimensions()
-    Player.update(delta)
+    -- Set cursor
+    if GameState == "menu" or GamePaused then
+	love.mouse.setCursor(assets.cursorDefault)	
+    else love.mouse.setCursor(assets.cursorCombat) end
+
     interface.update(delta)
-    Camera.update(delta)
+    if GameState == "game" then
+	Player.update(delta)
+	Camera.update(delta)
+    else end
 end
 
 function love.draw()
-    Player.draw()
+    if GameState == "game" then
+	Player.draw()
+    end
     interface.draw()
 end
 
