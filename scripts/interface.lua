@@ -23,18 +23,42 @@ end
 -- Event functions
 function interface.gameLoad()
     interface.buttons = {}
-    -- Pause menu - comtinue button
+    -- Main menu - play button
+    local mPlayButton = button.new()
+    mPlayButton.position = vec2.new(480, 270)
+    mPlayButton.text = "play"
+    mPlayButton.uppercaseText = false
+
+    function mPlayButton.clickEvent()
+	GameLoad()
+    end
+
+    -- Pause menu - continue button
     local pContinueButton = button.new()
     pContinueButton.position = vec2.new(480, 270)
     pContinueButton.size = vec2.new(175, 65);
     pContinueButton.text = "continue"
     pContinueButton.uppercaseText = false
-
+    pContinueButton.style = 2
+    
     function pContinueButton.clickEvent()
 	GamePaused = false
     end
+    -- Pause menu - quit button
+    local pQuitButton = button.new()
+    pQuitButton.position = vec2.new(480, 350)
+    pQuitButton.size = vec2.new(175, 65);
+    pQuitButton.text = "quit"
+    pQuitButton.uppercaseText = false
+    pQuitButton.style = 2 
+    
+    function pQuitButton.clickEvent()
+	GameState = "menu"
+    end
 
+    interface.buttons.mPlayButton = mPlayButton
     interface.buttons.pContinueButton = pContinueButton
+    interface.buttons.pQuitButton = pQuitButton
     -- Create inventory slots
     interface.invSlots = {}
     local x = 926 ; local y = 510;
@@ -47,7 +71,7 @@ function interface.gameLoad()
     end
 end
 
-function interface.update(delta)
+function interface.updateGame(delta) 
     -- Change alpha of pause screen
     local a = interface.pauseScreenAlpha
     if GamePaused then
@@ -56,10 +80,34 @@ function interface.update(delta)
     else
 	interface.pauseScreenAlpha = a+(0-a) / (250 * delta)
     end
+    -- Change alpha of pause screen
+    local a = interface.pauseScreenAlpha
+    if GamePaused then
+	interface.pauseScreenAlpha = a+(0.65-a) / (250 * delta) 
+	-- Update buttons
+	interface.buttons.pContinueButton.update(delta)
+	interface.buttons.pQuitButton.update(delta)
+    else
+	interface.pauseScreenAlpha = a+(0-a) / (250 * delta)
+    end
     -- Update inventory slots
     for _, v in ipairs(interface.invSlots) do
 	v.update(delta)
     end
+    -- Update inventory slots
+    for _, v in ipairs(interface.invSlots) do
+	v.update(delta)
+    end
+end
+
+function interface.updateMenu(delta)
+    interface.buttons.mPlayButton.update(delta)
+end
+
+function interface.update(delta)
+    if GameState == "game" then
+	interface.updateGame(delta) else
+	interface.updateMenu(delta) end
 end
 
 function interface.drawGame()
@@ -108,6 +156,7 @@ function interface.drawGame()
 	love.graphics.print("GAME PAUSED", 355+(SC_WIDTH-960)/2, 120+(SC_HEIGHT-540)/2)
 	--- Buttons
 	interface.buttons.pContinueButton.draw()
+	interface.buttons.pQuitButton.draw()
     end
 end
 
@@ -118,6 +167,8 @@ function interface.drawMenu()
     -- Suspicious Stew
     love.graphics.setNewFont("fonts/Minecraftia-Regular.ttf", 8)
     love.graphics.printf("or idk i havent decided on the name yet", (SC_WIDTH-960)/2, 94+(SC_HEIGHT-540)/2, 1000, "center")
+    -- Buttons
+    interface.buttons.mPlayButton.draw()
 end
 
 function interface.draw()
