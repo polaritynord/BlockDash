@@ -40,6 +40,7 @@ function love.load()
     love.graphics.setDefaultFilter("nearest", "nearest")
     -- Set custom cursor
     GameLoad()
+    GameState = "menu"
 end
 
 function love.update(delta)

@@ -42,7 +42,7 @@ function interface.gameLoad()
 	local s = invSlot.new()
 	s.position.x = x ; s.position.y = y
 	x = x - 60
-
+	
 	interface.invSlots[#interface.invSlots+1] = s
     end
 end
@@ -111,8 +111,20 @@ function interface.drawGame()
     end
 end
 
+function interface.drawMenu()
+    -- Title
+    love.graphics.setNewFont("fonts/Minecraftia-Regular.ttf", 38)
+    love.graphics.printf("Insane Shooter", (SC_WIDTH-960)/2, 45+(SC_HEIGHT-540)/2, 1000, "center")
+    -- Suspicious Stew
+    love.graphics.setNewFont("fonts/Minecraftia-Regular.ttf", 8)
+    love.graphics.printf("or idk i havent decided on the name yet", (SC_WIDTH-960)/2, 94+(SC_HEIGHT-540)/2, 1000, "center")
+end
+
 function interface.draw()
-    if GameState == "game" then interface.drawGame() end
+    if GameState == "game" then
+	interface.drawGame() else
+	interface.drawMenu() end
+
     love.graphics.setColor(1, 1, 1, 1)
 end
 
