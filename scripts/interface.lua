@@ -9,15 +9,28 @@ local interface = {
     buttons = {};
     pauseScreenAlpha = 0;
     invSlots = {};
+    wScale = 1;
+    wRot = 0;
+    wAlpha = 1;
 }
 
-function interface.drawImage(image, position, scale)
+function interface.drawImage(image, position, scale, rotation, alpha)
+    local rotation = rotation or 0
+    local alpha = alpha or 1
     local width = image:getWidth()
     local height = image:getHeight()
+    love.graphics.setColor(1, 1, 1, alpha)
     love.graphics.draw(
-	image, position.x, position.y, 0,
+	image, position.x, position.y, rotation,
 	scale, scale, width/2, height/2
     )
+    love.graphics.setColor(1, 1, 1, 1)
+end
+
+-- Custom events
+function interface.playerShot()
+    interface.wScale = 1.15
+    interface.wRot = -0.12
 end
 
 -- Event functions
@@ -72,14 +85,9 @@ function interface.gameLoad()
 end
 
 function interface.updateGame(delta) 
-    -- Change alpha of pause screen
-    local a = interface.pauseScreenAlpha
-    if GamePaused then
-	interface.pauseScreenAlpha = a+(0.65-a) / (250 * delta) 
-	interface.buttons.pContinueButton.update(delta)
-    else
-	interface.pauseScreenAlpha = a+(0-a) / (250 * delta)
-    end
+    -- Change rot & scale of weapon image
+    interface.wScale = interface.wScale + (1-interface.wScale) / (250 * delta)
+    interface.wRot = interface.wRot + (-interface.wRot) / (250 * delta)
     -- Change alpha of pause screen
     local a = interface.pauseScreenAlpha
     if GamePaused then
@@ -124,14 +132,21 @@ function interface.drawGame()
 	local w = Player.weapons[Player.slot]
 	-- Image
 	local image = assets.weapons[w.name .. "Img"]
-	interface.drawImage(image, vec2.new(60, 445+(SC_HEIGHT-540)), 3)
+	local a = 1
+	if Player.reloading then
+	    local w = Player.weapons[Player.slot]
+	    a = 1 / (w.reloadTime - Player.reloadTimer) / w.reloadTime / 10
+	end
+	interface.drawImage(image, vec2.new(60, 445+(SC_HEIGHT-540)), 3*interface.wScale, interface.wRot, a)
 	-- Name
 	love.graphics.setNewFont("fonts/Minecraftia-Regular.ttf", 24)
 	love.graphics.print(utils.capitalize(w.name), 25, 470+(SC_HEIGHT-540))
 	-- Mag ammo
 	love.graphics.setNewFont("fonts/Minecraftia-Regular.ttf", 20)
-	local len = #tostring(w.magAmmo)
-	love.graphics.print(w.magAmmo, 25 - (len-1)*15, 505+(SC_HEIGHT-540))
+	local t = w.magAmmo
+	local len = #tostring(t)
+	if Player.reloading then t = ". ." end
+	love.graphics.print(t, 25 - (len-1)*15, 505+(SC_HEIGHT-540))
 	-- Ammo icon
 	local image = assets.ammoIconImg
 	interface.drawImage(image, vec2.new(55, 518.5+(SC_HEIGHT-540)), 1)

@@ -1,6 +1,6 @@
 local assets = require("scripts/assets")
 local player = require("scripts/player")
-local interface = require("scripts/interface")
+Interface = require("scripts/interface")
 local camera = require("scripts/camera")
 
 local fullscreen = false
@@ -23,7 +23,7 @@ function GameLoad()
     GameState = "game"
     -- Globals
     assets.gameLoad()
-    interface.gameLoad()
+    Interface.gameLoad()
     GamePaused = false
     -- Setup player
     Player = player.new()
@@ -50,7 +50,7 @@ function love.update(delta)
 	love.mouse.setCursor(assets.cursorDefault)	
     else love.mouse.setCursor(assets.cursorCombat) end
 
-    interface.update(delta)
+    Interface.update(delta)
     if GameState == "game" then
 	Player.update(delta)
 	Camera.update(delta)
@@ -61,6 +61,6 @@ function love.draw()
     if GameState == "game" then
 	Player.draw()
     end
-    interface.draw()
+    Interface.draw()
 end
 

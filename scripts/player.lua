@@ -25,6 +25,8 @@ function player.new()
 	width = 1;
 	moving = false;
 	health = 100;
+	reloading = false;
+	reloadTimer = 0;
     }
 
     -- Trail related functions
@@ -79,11 +81,11 @@ function player.new()
     end
 
     function p.shoot(delta)
-	-- Return if player isn't holding a weapon
-	if not p.weapons[p.slot] then return end
+	-- Return if player isn't holding a weapon / reloading / out of ammo
+	local w = p.weapons[p.slot]
+	if not w or p.reloading or w.magAmmo < 1 then return end
 	-- Increment timer
 	p.shootCooldown = p.shootCooldown + delta
-	local w = p.weapons[p.slot]
 	if not love.mouse.isDown(1) or p.shootCooldown < w.shootTime then
 	    return end
 	-- Instance bullet
@@ -103,9 +105,32 @@ function player.new()
 	newBullet.rotation = newBullet.rotation + uniform(-1, 1) * w.bulletSpread
 	-- Reset timer
 	p.shootCooldown = 0
+	-- Decrease mag ammo
+	w.magAmmo = w.magAmmo - 1
+	-- Shoot event for UI
+	Interface.playerShot()	
 	-- TODO special bullet attributes
 	-- Add to table
 	p.bullets[#p.bullets+1] = newBullet
+    end
+
+    function p.reload(delta)
+	local w = p.weapons[p.slot]
+	-- Increment timer
+	if p.reloading then
+	    p.reloadTimer = p.reloadTimer + delta
+	    if p.reloadTimer > w.reloadTime then
+		-- Reload current weapon
+		p.reloading = false
+		w.magAmmo = w.magSize
+	    end
+	else
+	    -- Get input
+	    if love.keyboard.isDown("r") then
+		p.reloading = true
+		p.reloadTimer = 0
+	    end
+	end
     end
 
     function p.movement(delta)
@@ -134,7 +159,8 @@ function player.new()
 
     -- Event functions
     function p.load()
-	p.weapons[1] = weaponData.pistol	
+	p.weapons[1] = weaponData.pistol
+	p.weapons[1].magAmmo = 13 
 	-- TODO find a way to copy objects from weaponData!!!!
     end
 
@@ -144,9 +170,10 @@ function player.new()
 	p.shoot(delta)
 	p.movement(delta)
 	p.setFacing(delta)
+	p.reload(delta)
 	p.updateTrail(delta)
 	p.updateBullets(delta)
-	p.weaponSprite.update()
+	p.weaponSprite.update(delta)
     end
 
     function p.draw()

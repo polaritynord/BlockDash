@@ -12,7 +12,7 @@ function weaponSprite.new()
 	width = 1;
     }
     
-    function w.update()
+    function w.update(delta)
 	-- Set position
 	if Player.facing == "right" then
 	    w.position.x = Player.position.x + 12.5
@@ -23,13 +23,18 @@ function weaponSprite.new()
 	end
 	w.position.y = Player.position.y + 3
 	
-	-- Point towards mouse
-	local m = utils.getMousePosition()
-	w.rotation = math.atan2(m.y - w.position.y, m.x - w.position.x)
-	-- Invert rotation if player is facing left
-	if Player.facing == "left" then 
-	    w.rotation = w.rotation + 135
-	    -- This works just fine but I'm not sure its the best way to do this
+	if Player.reloading then
+	    -- Reload animation
+	    w.rotation = w.rotation + 12 * delta
+	else
+	    -- Point towards mouse
+	    local m = utils.getMousePosition()
+	    w.rotation = math.atan2(m.y - w.position.y, m.x - w.position.x)
+	    -- Invert rotation if player is facing left
+	    if Player.facing == "left" then 
+		w.rotation = w.rotation + 135
+		-- This works just fine but I'm not sure its the best way to do this
+	    end
 	end
     end
 
