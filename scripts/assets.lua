@@ -1,5 +1,11 @@
 local assets = {}
 
+function assets.load()
+    -- Sounds
+    assets.sounds = {}
+    assets.sounds.buttonClick = love.audio.newSource("sounds/button_click.wav", "static") 
+end
+
 function assets.gameLoad()
     -- Cursors
     assets.cursorDefault = love.mouse.newCursor("images/cursor_default.png", 0, 0)
@@ -13,6 +19,9 @@ function assets.gameLoad()
     -- Weapon images
     assets.weapons = {}
     assets.weapons.pistolImg = love.graphics.newImage("images/weapons/pistol.png")
+    -- Sounds
+    assets.sounds.shoot = love.audio.newSource("sounds/shoot.wav", "static")
+    assets.sounds.reload = love.audio.newSource("sounds/reload.wav", "static")
 end
 
 function assets.menuLoad()

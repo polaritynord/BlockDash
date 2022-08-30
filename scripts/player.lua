@@ -109,6 +109,8 @@ function player.new()
 	w.magAmmo = w.magAmmo - 1
 	-- Shoot event for UI
 	Interface.playerShot()	
+	-- Play sound
+	assets.sounds.shoot:play()
 	-- TODO special bullet attributes
 	-- Add to table
 	p.bullets[#p.bullets+1] = newBullet
@@ -123,6 +125,8 @@ function player.new()
 		-- Reload current weapon
 		p.reloading = false
 		w.magAmmo = w.magSize
+		-- Play reload sound
+		assets.sounds.reload:play()
 	    end
 	else
 	    -- Get input

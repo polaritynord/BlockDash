@@ -22,6 +22,7 @@ end
 function GameLoad()
     GameState = "game"
     -- Globals
+    assets.load()
     assets.gameLoad()
     Interface.gameLoad()
     GamePaused = false

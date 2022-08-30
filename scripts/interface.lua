@@ -19,15 +19,12 @@ function interface.drawImage(image, position, scale, rotation, alpha)
     local alpha = alpha or 1
     local width = image:getWidth()
     local height = image:getHeight()
-    love.graphics.setColor(1, 1, 1, alpha)
     love.graphics.draw(
 	image, position.x, position.y, rotation,
 	scale, scale, width/2, height/2
     )
-    love.graphics.setColor(1, 1, 1, 1)
 end
 
--- Custom events
 function interface.playerShot()
     interface.wScale = 1.15
     interface.wRot = -0.12
@@ -132,12 +129,7 @@ function interface.drawGame()
 	local w = Player.weapons[Player.slot]
 	-- Image
 	local image = assets.weapons[w.name .. "Img"]
-	local a = 1
-	if Player.reloading then
-	    local w = Player.weapons[Player.slot]
-	    a = 1 / (w.reloadTime - Player.reloadTimer) / w.reloadTime / 10
-	end
-	interface.drawImage(image, vec2.new(60, 445+(SC_HEIGHT-540)), 3*interface.wScale, interface.wRot, a)
+	interface.drawImage(image, vec2.new(60, 445+(SC_HEIGHT-540)), 3*interface.wScale, interface.wRot)
 	-- Name
 	love.graphics.setNewFont("fonts/Minecraftia-Regular.ttf", 24)
 	love.graphics.print(utils.capitalize(w.name), 25, 470+(SC_HEIGHT-540))
