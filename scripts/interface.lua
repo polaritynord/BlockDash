@@ -72,10 +72,13 @@ function interface.gameLoad()
     -- Create inventory slots
     interface.invSlots = {}
     local x = 926 ; local y = 510;
+    local j = 3
     for i = 1, 3 do
 	local s = invSlot.new()
 	s.position.x = x ; s.position.y = y
+	s.slot = j
 	x = x - 60
+	j = j - 1
 	
 	interface.invSlots[#interface.invSlots+1] = s
     end

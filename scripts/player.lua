@@ -27,6 +27,7 @@ function player.new()
 	health = 100;
 	reloading = false;
 	reloadTimer = 0;
+	slotKeys = {false, false, false};
     }
 
     -- Trail related functions
@@ -77,6 +78,20 @@ function player.new()
 	    p.width = p.width + (1-p.width) / sm
 	else
 	    p.width = p.width + (-1-p.width) / sm
+	end
+    end
+
+    function p.switchSlot()
+	if p.reloading then return end
+	-- Switch slot
+	for i = 1, 3 do
+	    if not p.slotKeys[i] and love.keyboard.isDown(tostring(i)) then
+		p.slot = i
+	    end
+	end
+	-- Get key input
+	for i = 1, 3 do
+	    p.slotKeys[i] = love.keyboard.isDown(tostring(i))
 	end
     end
 
@@ -171,6 +186,7 @@ function player.new()
     function p.update(delta)
 	if GamePaused then return end
 	-- Functions
+	p.switchSlot()
 	p.shoot(delta)
 	p.movement(delta)
 	p.setFacing(delta)
