@@ -42,7 +42,21 @@ function interface.gameLoad()
     function mPlayButton.clickEvent()
 	GameLoad()
     end
+    -- Main menu - settings button
+    local mSetButton = button.new()
+    mSetButton.position = vec2.new(480, 310)
+    mSetButton.text = "settings"
+    mSetButton.uppercaseText = false
+    -- Main menu - quit button
+    local mQuitButton = button.new()
+    mQuitButton.position = vec2.new(480, 350)
+    mQuitButton.text = "quit"
+    mQuitButton.uppercaseText = false
 
+    function mQuitButton.clickEvent()
+	love.event.quit()
+    end
+    
     -- Pause menu - continue button
     local pContinueButton = button.new()
     pContinueButton.position = vec2.new(480, 270)
@@ -67,6 +81,8 @@ function interface.gameLoad()
     end
 
     interface.buttons.mPlayButton = mPlayButton
+    interface.buttons.mSetButton = mSetButton
+    interface.buttons.mQuitButton = mQuitButton
     interface.buttons.pContinueButton = pContinueButton
     interface.buttons.pQuitButton = pQuitButton
     -- Create inventory slots
@@ -110,6 +126,8 @@ end
 
 function interface.updateMenu(delta)
     interface.buttons.mPlayButton.update(delta)
+    interface.buttons.mSetButton.update(delta)
+    interface.buttons.mQuitButton.update(delta)
 end
 
 function interface.update(delta)
@@ -179,6 +197,8 @@ function interface.drawMenu()
     love.graphics.printf("or idk i havent decided on the name yet", (SC_WIDTH-960)/2, 94+(SC_HEIGHT-540)/2, 1000, "center")
     -- Buttons
     interface.buttons.mPlayButton.draw()
+    interface.buttons.mSetButton.draw()
+    interface.buttons.mQuitButton.draw()
 end
 
 function interface.draw()
