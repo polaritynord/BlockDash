@@ -4,7 +4,8 @@ local utils = {}
 
 function utils.getMousePosition()
     local mX, mY = love.mouse.getPosition()
-    return vec2.new((mX + Camera.position.x) * Camera.zoom, (mY + Camera.position.y) * Camera.zoom)
+    local pos = vec2.new((mX + Camera.position.x) / Camera.zoom, (mY + Camera.position.y) / Camera.zoom)
+    return pos
 end
 
 function utils.vec2Add(a, b)

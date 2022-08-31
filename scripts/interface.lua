@@ -154,7 +154,7 @@ function interface.drawGame()
     love.graphics.setColor(0, 0, 1, 1)
     local s = Player.stamina/100
     love.graphics.setLineWidth(12)
-    love.graphics.line(950, 525, 950-s*300, 525)
+    love.graphics.line(950+(SC_WIDTH-960), 525+(SC_HEIGHT-540), 950-s*300+(SC_WIDTH-960), 525+(SC_HEIGHT-540))
     love.graphics.setColor(1, 1, 1, 1)
 
     -- Weapon UI

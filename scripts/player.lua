@@ -30,6 +30,8 @@ function player.new()
 	slotKeys = {false, false, false};
 	stamina = 100;
 	oldSlot = nil;
+	sprinting = false;
+	sprintCooldown = 3131;
     }
 
     -- Trail related functions
@@ -81,6 +83,28 @@ function player.new()
 	else
 	    p.width = p.width + (-1-p.width) / sm
 	end
+    end
+
+    function p.sprint(delta)
+	-- Increment timer
+	p.sprintCooldown = p.sprintCooldown + delta 
+	-- Get key input
+	if love.keyboard.isDown("lshift") and p.moving and p.sprintCooldown > 3.5 and p.stamina > 0 then
+	    p.sprinting = true
+	    p.stamina = p.stamina - (30 * delta)
+	    -- Reset timer
+	    if p.stamina < 0 then
+		p.sprintCooldown = 0 
+		p.sprinting = false
+	    end
+	else
+	    p.sprinting = false
+	    -- Increase stamina
+	    p.stamina = p.stamina + (24 * delta)
+	    if p.stamina > 100 then p.stamina = 100 end
+	end
+	-- Set camera zoom based on sprinting
+	Camera.zoom = Camera.zoom + 0.005 
     end
 
     function p.switchSlot()
@@ -208,6 +232,7 @@ function player.new()
 	p.movement(delta)
 	p.setFacing(delta)
 	p.reload(delta)
+	p.sprint(delta)
 	p.updateTrail(delta)
 	p.updateBullets(delta)
 	p.weaponSprite.update(delta)

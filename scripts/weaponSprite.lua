@@ -32,7 +32,7 @@ function weaponSprite.new()
 	    w.rotation = math.atan2(m.y - w.position.y, m.x - w.position.x)
 	    -- Invert rotation if player is facing left
 	    if Player.facing == "left" then 
-		w.rotation = w.rotation + 135
+		w.rotation = w.rotation + 135 
 		-- This works just fine but I'm not sure its the best way to do this
 	    end
 	end

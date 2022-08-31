@@ -15,7 +15,7 @@ function love.keypressed(key, unicode)
 	love.window.setFullscreen(fullscreen, "desktop")
 	-- Set window dimensions to default
 	if not fullscreen then
-	    love.window.setMode(960, 540) end
+	    love.window.setMode(960, 540, {resizable=true}) end
     end
 end
 
