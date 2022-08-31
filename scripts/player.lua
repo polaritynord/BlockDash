@@ -28,6 +28,8 @@ function player.new()
 	reloading = false;
 	reloadTimer = 0;
 	slotKeys = {false, false, false};
+	stamina = 100;
+	oldSlot = nil;
     }
 
     -- Trail related functions
@@ -86,13 +88,22 @@ function player.new()
 	-- Switch slot
 	for i = 1, 3 do
 	    if not p.slotKeys[i] and love.keyboard.isDown(tostring(i)) then
+		p.oldSlot = p.slot
 		p.slot = i
 	    end
+	end
+	-- Quick slot switch
+	if not p.slotKeys[#p.slotKeys] and love.keyboard.isDown("q") and p.oldSlot then
+	    local newSlot = p.oldSlot
+	    p.oldSlot = p.slot
+	    p.slot = newSlot
 	end
 	-- Get key input
 	for i = 1, 3 do
 	    p.slotKeys[i] = love.keyboard.isDown(tostring(i))
 	end
+	-- Get quick slot key input
+	p.slotKeys[#p.slotKeys] = love.keyboard.isDown("q")
     end
 
     function p.shoot(delta)
@@ -178,6 +189,12 @@ function player.new()
 
     -- Event functions
     function p.load()
+	-- Create inputKeys table
+	for i = 1, #p.weapons do
+	    p.slotKeys[i] = false
+	end
+	-- Quick slot switch
+	p.slotKeys[#p.slotKeys+1] = false
 	p.weapons[1] = weaponData.pistol
 	p.weapons[1].magAmmo = 13 
 	-- TODO find a way to copy objects from weaponData!!!!

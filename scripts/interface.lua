@@ -87,7 +87,7 @@ function interface.gameLoad()
     interface.buttons.pQuitButton = pQuitButton
     -- Create inventory slots
     interface.invSlots = {}
-    local x = 926 ; local y = 510;
+    local x = 926 ; local y = 480;
     local j = 3
     for i = 1, 3 do
 	local s = invSlot.new()
@@ -145,6 +145,18 @@ function interface.drawGame()
     for _, v in ipairs(interface.invSlots) do
 	v.draw()
     end
+    -- Health icon
+    interface.drawImage(assets.healthIconImg, vec2.new(930+(SC_WIDTH-960), 422+(SC_HEIGHT-540)), 4)
+    -- Health text
+    love.graphics.setNewFont("fonts/Minecraftia-Regular.ttf", 24)
+    love.graphics.printf(tostring(Player.health), -95+(SC_WIDTH-960), 408+(SC_HEIGHT-540), 1000, "right")
+    -- Stamina bar
+    love.graphics.setColor(0, 0, 1, 1)
+    local s = Player.stamina/100
+    love.graphics.setLineWidth(12)
+    love.graphics.line(950, 525, 950-s*300, 525)
+    love.graphics.setColor(1, 1, 1, 1)
+
     -- Weapon UI
     if Player.weapons[Player.slot] then
 	local w = Player.weapons[Player.slot]
@@ -166,12 +178,6 @@ function interface.drawGame()
 	-- Infinite text
 	love.graphics.print("∞", 71, 503+(SC_HEIGHT-540))
     end
-
-    -- Health icon
-    interface.drawImage(assets.healthIconImg, vec2.new(930+(SC_WIDTH-960), 452+(SC_HEIGHT-540)), 4)
-    -- Health text
-    love.graphics.setNewFont("fonts/Minecraftia-Regular.ttf", 24)
-    love.graphics.printf(tostring(Player.health), -95+(SC_WIDTH-960), 438+(SC_HEIGHT-540), 1000, "right")
 
     -- Pause menu
     if GamePaused then
