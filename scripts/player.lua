@@ -103,8 +103,6 @@ function player.new()
 	    p.stamina = p.stamina + (24 * delta)
 	    if p.stamina > 100 then p.stamina = 100 end
 	end
-	-- Set camera zoom based on sprinting
-	Camera.zoom = Camera.zoom + 0.005 
     end
 
     function p.switchSlot()
@@ -201,6 +199,12 @@ function player.new()
 	    p.velocity.y = p.velocity.y + 1 end
 	-- Set p.moving
 	p.moving = math.abs(p.velocity.x) > 0 or math.abs(p.velocity.y) > 0
+	-- Multiply vector by sprinting
+	local sprintMultiplier = 1.45
+	if p.sprinting then
+	    p.velocity.x = p.velocity.x * sprintMultiplier 
+	    p.velocity.y = p.velocity.y * sprintMultiplier 
+	end
 	-- Normalize velocity
 	if math.abs(p.velocity.x) == math.abs(p.velocity.y) then
 	    p.velocity.x = p.velocity.x / 1.25
