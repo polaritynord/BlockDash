@@ -14,6 +14,12 @@ function utils.vec2Add(a, b)
     return c
 end
 
+function utils.distanceTo(vec1, vec2)
+    local x = vec1.x - vec2.x
+    local y = vec1.y - vec2.y
+    return math.sqrt(x*x + y*y)
+end
+
 -- Thanks to https://stackoverflow.com/questions/2421695/first-character-uppercase-lua
 function utils.capitalize(str)
     return (str:gsub("^%l", string.upper))

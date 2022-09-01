@@ -17,7 +17,8 @@ function player.new()
 	facing = "right";
 	bullets = {};
 	trails = {};
-	weapons = {nil, nil, nil};
+	weapons = {};
+	slotCount = 4;
 	slot = 1;
 	shootCooldown = 1000;
 	trailCooldown = 0;
@@ -108,7 +109,7 @@ function player.new()
     function p.switchSlot()
 	if p.reloading then return end
 	-- Switch slot
-	for i = 1, 3 do
+	for i = 1, p.slotCount do
 	    if not p.slotKeys[i] and love.keyboard.isDown(tostring(i)) then
 		p.oldSlot = p.slot
 		p.slot = i
@@ -121,7 +122,7 @@ function player.new()
 	    p.slot = newSlot
 	end
 	-- Get key input
-	for i = 1, 3 do
+	for i = 1, p.slotCount do
 	    p.slotKeys[i] = love.keyboard.isDown(tostring(i))
 	end
 	-- Get quick slot key input
@@ -166,6 +167,7 @@ function player.new()
 
     function p.reload(delta)
 	local w = p.weapons[p.slot]
+	if not w then return end
 	-- Increment timer
 	if p.reloading then
 	    p.reloadTimer = p.reloadTimer + delta
@@ -178,7 +180,7 @@ function player.new()
 	    end
 	else
 	    -- Get input
-	    if love.keyboard.isDown("r") then
+	    if love.keyboard.isDown("r") and w.magAmmo < w.magSize then
 		p.reloading = true
 		p.reloadTimer = 0
 	    end
@@ -217,15 +219,17 @@ function player.new()
 
     -- Event functions
     function p.load()
+	-- Generate weapon slots
+	for i = 1, p.slotCount do
+	    p.weapons[#p.weapons+1] = nil end
 	-- Create inputKeys table
 	for i = 1, #p.weapons do
 	    p.slotKeys[i] = false
 	end
 	-- Quick slot switch
 	p.slotKeys[#p.slotKeys+1] = false
-	p.weapons[1] = weaponData.pistol
+	p.weapons[1] = weaponData.pistol.new()
 	p.weapons[1].magAmmo = 13 
-	-- TODO find a way to copy objects from weaponData!!!!
     end
 
     function p.update(delta)
@@ -248,10 +252,12 @@ function player.new()
 	local height = assets.playerImg:getHeight()
 	local x = (p.position.x - Camera.position.x) * Camera.zoom	
 	local y = (p.position.y - Camera.position.y) * Camera.zoom
+	love.graphics.setColor(0.13, 0.34, 0.8, 1)
 	love.graphics.draw(
 	    assets.playerImg, x, y, p.rotation,
 	    Camera.zoom * p.width, Camera.zoom, width/2, height/2
 	)
+	love.graphics.setColor(1, 1, 1, 1)
 	p.weaponSprite.draw()
 	p.drawBullets()
     end

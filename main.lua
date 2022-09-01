@@ -2,6 +2,8 @@ local assets = require("scripts/assets")
 local player = require("scripts/player")
 Interface = require("scripts/interface")
 local camera = require("scripts/camera")
+local weaponDrop = require("scripts/weaponDrop")
+local weaponData = require("scripts/weaponData")
 
 local fullscreen = false
 
@@ -24,16 +26,35 @@ function GameLoad()
     -- Globals
     assets.load()
     assets.gameLoad()
-    Interface.gameLoad()
-    GamePaused = false
     -- Setup player
     Player = player.new()
     Player.position.x = 480
     Player.position.y = 270
     Player.load()
+    -- Weapon drops
+    WeaponDrops = {}
+    local temp = weaponDrop.new()
+    temp.weapon = weaponData.pistol.new()
+    temp.position.x = 600 ; temp.position.y = 300
+    WeaponDrops[#WeaponDrops+1] = temp
+    -- Setup interface
+    Interface.gameLoad()
+    GamePaused = false
     -- Setup camera
     Camera = camera.new()
     Camera.lockedTarget = Player
+end
+
+local function updateWeaponDrops(delta)
+    for i, v in ipairs(WeaponDrops) do
+	v.update(delta, i)
+    end
+end
+
+local function drawWeaponDrops()
+    for _, v in ipairs(WeaponDrops) do
+	v.draw()
+    end
 end
 
 function love.load()
@@ -55,11 +76,13 @@ function love.update(delta)
     if GameState == "game" then
 	Player.update(delta)
 	Camera.update(delta)
+	updateWeaponDrops(delta, i)
     else end
 end
 
 function love.draw()
     if GameState == "game" then
+	drawWeaponDrops()
 	Player.draw()
     end
     Interface.draw()
