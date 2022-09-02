@@ -7,6 +7,7 @@ local assets = require("scripts/assets")
 local playerTrail = require("scripts/playerTrail")
 local weaponData = require("scripts/weaponData")
 local weaponSprite = require("scripts/weaponSprite")
+local weaponDrop = require("scripts/weaponDrop")
 
 local player = {}
 
@@ -129,6 +130,21 @@ function player.new()
 	p.slotKeys[#p.slotKeys] = love.keyboard.isDown("q")
     end
 
+    function p.drop()
+	local w = p.weapons[p.slot]
+	if not w or not love.keyboard.isDown("v") then return end
+	-- Instance weaponDrop
+	local newDrop = weaponDrop.new()
+	newDrop.position = vec2.new(
+	    p.position.x+math.cos(p.weaponSprite.rotation) * 45,
+	    p.position.y+math.sin(p.weaponSprite.rotation) * 45
+	)
+	newDrop.weapon = w
+	WeaponDrops[#WeaponDrops+1] = newDrop
+	-- Clear current slot
+	p.weapons[p.slot] = nil
+    end
+
     function p.shoot(delta)
 	-- Return if player isn't holding a weapon / reloading / out of ammo
 	local w = p.weapons[p.slot]
@@ -238,6 +254,7 @@ function player.new()
 	p.movement(delta)
 	p.setFacing(delta)
 	p.reload(delta)
+	p.drop()
 	p.sprint(delta)
 	p.updateTrail(delta)
 	p.updateBullets(delta)
