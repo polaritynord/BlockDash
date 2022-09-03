@@ -180,6 +180,14 @@ function player.new()
 	-- TODO special bullet attributes
 	-- Add to table
 	p.bullets[#p.bullets+1] = newBullet
+	-- Particle effects
+	for i = 1, 4 do
+	    ParticleManager.new(
+		vec2.new(newBullet.position.x, newBullet.position.y),
+		vec2.new(5, 5),
+		3, {1, 0, 0}, nil
+	    )
+	end
     end
 
     function p.reload(delta)

@@ -1,6 +1,7 @@
 local assets = require("scripts/assets")
 local player = require("scripts/player")
 Interface = require("scripts/interface")
+ParticleManager = require("scripts/particleManager")
 local camera = require("scripts/camera")
 local weaponDrop = require("scripts/weaponDrop")
 local weaponData = require("scripts/weaponData")
@@ -35,6 +36,7 @@ function GameLoad()
     WeaponDrops = {}
     local temp = weaponDrop.new()
     temp.weapon = weaponData.pistol.new()
+    temp.weapon.magAmmo = 13
     temp.position.x = 600 ; temp.position.y = 300
     WeaponDrops[#WeaponDrops+1] = temp
     -- Setup interface
@@ -77,6 +79,7 @@ function love.update(delta)
 	Player.update(delta)
 	Camera.update(delta)
 	updateWeaponDrops(delta, i)
+	ParticleManager.update(delta)
     else end
 end
 
@@ -84,6 +87,7 @@ function love.draw()
     if GameState == "game" then
 	drawWeaponDrops()
 	Player.draw()
+	ParticleManager.draw()
     end
     Interface.draw()
 end
