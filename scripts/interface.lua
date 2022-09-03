@@ -47,6 +47,11 @@ function interface.gameLoad()
     mSetButton.position = vec2.new(480, 310)
     mSetButton.text = "settings"
     mSetButton.uppercaseText = false
+    
+    function mSetButton.clickEvent()
+	print(8)
+    end
+
     -- Main menu - quit button
     local mQuitButton = button.new()
     mQuitButton.position = vec2.new(480, 350)

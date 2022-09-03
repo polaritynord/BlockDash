@@ -34,6 +34,7 @@ function weaponDrop.new()
     end
 
     function w.update(delta, i)
+	if GamePaused then return end
 	if not w.weapon then return end
 	    local distance = utils.distanceTo(w.position, Player.position)
 	    if w.beingObtained then

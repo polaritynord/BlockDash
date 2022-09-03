@@ -33,10 +33,11 @@ function button.new()
 	    if my > b.position.y+(SC_HEIGHT-540)/2 and my < b.position.y+(SC_HEIGHT-540)/2 + 24 then
 		b.mouseHover = true
 		if love.mouse.isDown(1) then
-		    b.mouseClick = true end
+		    b.mouseClick = true else
+		    b.mouseClick = false end
 	    else
 		b.mouseHover = false
-		b.mouseClick = false
+		--b.mouseClick = false
 	    end
 	elseif b.style == 2 then
 	    -- Check for mouse collision
