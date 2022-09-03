@@ -49,7 +49,7 @@ function interface.gameLoad()
     mSetButton.uppercaseText = false
     
     function mSetButton.clickEvent()
-	print(8)
+	GameState = "settings"
     end
 
     -- Main menu - quit button
@@ -137,8 +137,10 @@ end
 
 function interface.update(delta)
     if GameState == "game" then
-	interface.updateGame(delta) else
-	interface.updateMenu(delta) end
+	interface.updateGame(delta)
+    elseif GameState == "menu" then
+	interface.updateMenu(delta)
+    else end
 end
 
 function interface.drawGame()
@@ -214,8 +216,10 @@ end
 
 function interface.draw()
     if GameState == "game" then
-	interface.drawGame() else
-	interface.drawMenu() end
+	interface.drawGame()
+    elseif GameState == "menu" then
+	interface.drawMenu()
+    else end
 
     love.graphics.setColor(1, 1, 1, 1)
 end

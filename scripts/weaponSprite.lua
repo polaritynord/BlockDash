@@ -10,9 +10,19 @@ function weaponSprite.new()
 	position = vec2.new();
 	rotation = 0;
 	width = 1;
+	shootRot = 0;
     }
+
+    function w.playerShot()
+	local weapon = Player.weapons[Player.slot]
+	local recoil = weapon.recoil
+	if Player.facing == "right" then recoil = -recoil end
+	w.shootRot = recoil
+    end
     
     function w.update(delta)
+	-- Decrease recoil rotation
+	w.shootRot = w.shootRot - w.shootRot / (250 * delta)
 	-- Set position
 	if Player.facing == "right" then
 	    w.position.x = Player.position.x + 12.5
@@ -51,7 +61,7 @@ function weaponSprite.new()
 	local y = (w.position.y - Camera.position.y) * Camera.zoom
 	
 	love.graphics.draw(
-	    image, x, y, w.rotation,
+	    image, x, y, w.rotation+w.shootRot,
 	    Camera.zoom*1.7*w.width, Camera.zoom*1.7, width/2, height/2
 	)
 	love.graphics.setColor(1, 1, 1, 1)

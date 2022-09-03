@@ -14,6 +14,7 @@ pistol.reloadTime = 1.54
 pistol.shootTime = 0.25
 pistol.magSize = 13
 pistol.bulletOffset = 15
+pistol.recoil = 0.35
 
 weaponData["pistol"] = pistol
 

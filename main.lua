@@ -68,7 +68,7 @@ end
 function love.update(delta)
     SC_WIDTH, SC_HEIGHT = love.graphics.getDimensions()
     -- Set cursor
-    if GameState == "menu" or GamePaused then
+    if GameState == "menu" or GameState == "settings" or GamePaused then
 	love.mouse.setCursor(assets.cursorDefault)	
     else love.mouse.setCursor(assets.cursorCombat) end
 

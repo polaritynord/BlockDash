@@ -10,6 +10,7 @@ function weapon.new()
 	reloadTime;
 	shootTime;
 	magSize;
+	recoil;
 	magAmmo = 0;
     }
     

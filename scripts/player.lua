@@ -172,8 +172,9 @@ function player.new()
 	p.shootCooldown = 0
 	-- Decrease mag ammo
 	w.magAmmo = w.magAmmo - 1
-	-- Shoot event for UI
-	Interface.playerShot()	
+	-- Shoot event for UI & Sprite
+	Interface.playerShot()
+	p.weaponSprite.playerShot()
 	-- Play sound
 	assets.sounds.shoot:play()
 	-- TODO special bullet attributes
