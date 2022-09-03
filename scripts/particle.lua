@@ -23,7 +23,7 @@ function particle.new()
 	if p.lifetime < p.lifetimeTimer then
 	    table.remove(ParticleManager.particles, i) end
 	-- Call special function
-	if p.tick then p.tick(delta) end
+	if p.tick then p.tick(p, delta) end
     end
 
     function p.draw()

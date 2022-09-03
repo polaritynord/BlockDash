@@ -182,12 +182,24 @@ function player.new()
 	p.bullets[#p.bullets+1] = newBullet
 	-- Particle effects
 	for i = 1, 4 do
-	    ParticleManager.new(
+	    local particle = ParticleManager.new(
 		vec2.new(newBullet.position.x, newBullet.position.y),
-		vec2.new(5, 5),
-		3, {1, 0, 0}, nil
+		vec2.new(8, 8),
+		3, {1, 0.36, 0}, p.shootParticleTick
 	    )
+	    particle.realRotation = p.weaponSprite.rotation + uniform(-0.35, 0.35)
+	    particle.speed = 250
+	    if p.facing == "left" then particle.speed = -particle.speed end
 	end
+    end
+
+    function p.shootParticleTick(particle, delta)
+	particle.position.x = particle.position.x + math.cos(particle.realRotation) * particle.speed * delta
+	particle.position.y = particle.position.y + math.sin(particle.realRotation) * particle.speed * delta
+	particle.rotation = particle.rotation + (4 * delta)
+	particle.size.x = particle.size.x - (8 * delta)
+	particle.size.y = particle.size.y - (8 * delta)
+	particle.alpha = particle.alpha - (8.5 * delta)
     end
 
     function p.reload(delta)

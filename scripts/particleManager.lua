@@ -22,6 +22,7 @@ function particleManager.new(position, size, lifetime, color, tick)
     p.tick = tick
     p.r = color[1] ; p.g = color[2] ; p.b = color[3]
     particleManager.particles[#ParticleManager.particles+1] = p
+    return p
 end
 
 return particleManager
