@@ -92,7 +92,7 @@ function interface.gameLoad()
     interface.buttons.pQuitButton = pQuitButton
     -- Create inventory slots
     interface.invSlots = {}
-    local x = 926 ; local y = 480;
+    local x = 926 ; local y = 510;
     local j = Player.slotCount
     for i = 1, Player.slotCount do
 	local s = invSlot.new()
@@ -153,16 +153,17 @@ function interface.drawGame()
 	v.draw()
     end
     -- Health icon
-    interface.drawImage(assets.healthIconImg, vec2.new(930+(SC_WIDTH-960), 422+(SC_HEIGHT-540)), 4)
+    interface.drawImage(assets.healthIconImg, vec2.new(930+(SC_WIDTH-960), 452+(SC_HEIGHT-540)), 4)
     -- Health text
     love.graphics.setNewFont("fonts/Minecraftia-Regular.ttf", 24)
-    love.graphics.printf(tostring(Player.health), -95+(SC_WIDTH-960), 408+(SC_HEIGHT-540), 1000, "right")
-    -- Stamina bar
+    love.graphics.printf(tostring(Player.health), -95+(SC_WIDTH-960), 438+(SC_HEIGHT-540), 1000, "right")
+    --[[ Stamina bar
     love.graphics.setColor(0, 0, 1, 1)
     local s = Player.stamina/100
     love.graphics.setLineWidth(12)
     love.graphics.line(950+(SC_WIDTH-960), 525+(SC_HEIGHT-540), 950-s*300+(SC_WIDTH-960), 525+(SC_HEIGHT-540))
     love.graphics.setColor(1, 1, 1, 1)
+    ]]--
 
     -- Weapon UI
     if Player.weapons[Player.slot] then
