@@ -18,7 +18,7 @@ function particle.new()
     function p.update(delta, i)
 	if GamePaused then return end
 	-- Increment lifetime timer
-	p.lifetimeTimer = p.lifetimeTimer + delta
+	p.lifetimeTimer = p.lifetimeTimer + delta * MotionSpeed
 	-- Despawning
 	if p.lifetime < p.lifetimeTimer then
 	    table.remove(ParticleManager.particles, i) end

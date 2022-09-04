@@ -34,6 +34,8 @@ function player.new()
 	oldSlot = nil;
 	sprinting = false;
 	sprintCooldown = 3131;
+	dashTimer = 0;
+	invertShader = love.graphics.newShader[[ vec4 effect(vec4 color, Image texture, vec2 texture_coords, vec2 pixel_coords) { vec4 col = texture2D( texture, texture_coords ); return vec4(1-col.r, 1-col.g, 1-col.b, col.a); } ]];
     }
 
     -- Trail related functions
@@ -81,9 +83,9 @@ function player.new()
 	    -- Change width
 	    local sm = 250 * delta
 	    if p.facing == "right" then
-		p.width = p.width + (1-p.width) / sm
+		p.width = p.width + (1-p.width) / sm * MotionSpeed
 	    else
-		p.width = p.width + (-1-p.width) / sm
+		p.width = p.width + (-1-p.width) / sm * MotionSpeed
 	    end
     end
 
@@ -146,11 +148,11 @@ function player.new()
     end
 
     function p.shoot(delta)
-	-- Return if player isn't holding a weapon / reloading / out of ammo
+	-- Return if player isn't holding a weapon / reloading / out of ammo / slowmo mode
 	local w = p.weapons[p.slot]
-	if not w or p.reloading or w.magAmmo < 1 then return end
+	if not w or p.reloading or w.magAmmo < 1 or MotionSpeed < 0.9 then return end
 	-- Increment timer
-	p.shootCooldown = p.shootCooldown + delta
+	p.shootCooldown = p.shootCooldown + delta * MotionSpeed
 	if not love.mouse.isDown(1) or p.shootCooldown < w.shootTime then
 	    return end
 	-- Instance bullet
@@ -185,7 +187,7 @@ function player.new()
 	    local particle = ParticleManager.new(
 		vec2.new(newBullet.position.x, newBullet.position.y),
 		vec2.new(8, 8),
-		3, {1, 0.36, 0}, p.shootParticleTick
+		0.5, {1, 0.36, 0}, p.shootParticleTick
 	    )
 	    particle.realRotation = p.weaponSprite.rotation + uniform(-0.35, 0.35)
 	    particle.speed = 250
@@ -207,7 +209,7 @@ function player.new()
 	if not w then return end
 	-- Increment timer
 	if p.reloading then
-	    p.reloadTimer = p.reloadTimer + delta
+	    p.reloadTimer = p.reloadTimer + delta * MotionSpeed
 	    if p.reloadTimer > w.reloadTime then
 		-- Reload current weapon
 		p.reloading = false
@@ -255,6 +257,41 @@ function player.new()
 	p.position.y = p.position.y + speed * p.velocity.y * MotionSpeed * delta
     end
 
+    function p.drawDashLine()
+	local w = 20
+	local pos = vec2.new((p.position.x-Camera.position.x)*Camera.zoom, (p.position.y-Camera.position.y)*Camera.zoom)
+	local mousePos = utils.getMousePosition()
+	local rot = p.weaponSprite.rotation
+	if p.facing == "left" then rot = rot - 135 end
+	-- Disable shader
+	love.graphics.setShader(nil)
+	-- Draw
+	love.graphics.setColor(1, 0, 0, 1)
+	repeat
+	    love.graphics.setLineWidth(w)
+	    local oldPos = vec2.new(pos.x, pos.y)
+	    pos.x = pos.x + math.cos(rot) * 10
+	    pos.y = pos.y + math.sin(rot) * 10
+	    love.graphics.line(oldPos.x, oldPos.y, pos.x, pos.y)
+	    w = w - 3
+	until w < 0
+	love.graphics.setColor(1, 1, 1, 1)
+	-- Re-enable shader
+	love.graphics.setShader(CurrentShader)
+    end
+    
+
+    function p.motionControl(delta)
+	if GamePaused or p.reloading then return end
+	if love.keyboard.isDown("space") then
+	    MotionSpeed = MotionSpeed + (0.25-MotionSpeed) / (200*delta)
+	    CurrentShader = p.invertShader
+	else
+	    MotionSpeed = MotionSpeed + (1-MotionSpeed) / (200*delta)
+	    CurrentShader = nil
+	end
+    end
+
     -- Event functions
     function p.load()
 	-- Generate weapon slots
@@ -276,14 +313,17 @@ function player.new()
 	p.movement(delta)
 	p.setFacing(delta)
 	p.reload(delta)
+	p.motionControl(delta)
 	p.drop()
-	--p.sprint(delta)
 	p.updateTrail(delta)
 	p.updateBullets(delta)
 	p.weaponSprite.update(delta)
     end
 
     function p.draw()
+	if CurrentShader then
+	    p.drawDashLine() end
+	
 	p.drawTrail()
 	local width = assets.playerImg:getWidth()
 	local height = assets.playerImg:getHeight()

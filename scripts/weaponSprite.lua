@@ -50,7 +50,7 @@ function weaponSprite.new()
 
     function w.draw()
 	local weapon = Player.weapons[Player.slot]
-	if not weapon then return end
+	if not weapon or CurrentShader then return end
 
 	-- Get image
 	local image = assets.weapons[weapon.name .. "Img"]

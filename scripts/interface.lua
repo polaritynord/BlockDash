@@ -187,6 +187,11 @@ function interface.drawGame()
 	love.graphics.print("∞", 71, 503+(SC_HEIGHT-540))
     end
 
+    -- Dash text
+    if CurrentShader then
+	love.graphics.printf("CLICK TO DASH", 0, 360, 1000, "center")
+    end
+
     -- Pause menu
     if GamePaused then
 	-- Background

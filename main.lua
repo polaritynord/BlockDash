@@ -7,7 +7,8 @@ local weaponDrop = require("scripts/weaponDrop")
 local weaponData = require("scripts/weaponData")
 
 local fullscreen = false
-local currentShader
+local invertShader 
+CurrentShader = nil
 
 function love.keypressed(key, unicode)
     -- Pause key
@@ -47,8 +48,6 @@ function GameLoad()
     -- Setup camera
     Camera = camera.new()
     Camera.lockedTarget = Player
-    -- Shaders (test)
-    InvertShader = love.graphics.newShader[[ vec4 effect(vec4 color, Image texture, vec2 texture_coords, vec2 pixel_coords) { vec4 col = texture2D( texture, texture_coords ); return vec4(1-col.r, 1-col.g, 1-col.b, col.a); } ]]
 end
 
 local function updateWeaponDrops(delta)
@@ -60,17 +59,6 @@ end
 local function drawWeaponDrops()
     for _, v in ipairs(WeaponDrops) do
 	v.draw()
-    end
-end
-
-local function motionControl(delta)
-    if GamePaused then return end
-    if love.keyboard.isDown("space") then
-	MotionSpeed = MotionSpeed + (0.25-MotionSpeed) / (200*delta)
-	currentShader = InvertShader
-    else
-	MotionSpeed = MotionSpeed + (1-MotionSpeed) / (200*delta)
-	currentShader = nil
     end
 end
 
@@ -87,7 +75,7 @@ function love.update(delta)
     if GameState == "menu" or GameState == "settings" or GamePaused then
 	love.mouse.setCursor(assets.cursorDefault)	
     else
-	if currentShader then
+	if CurrentShader then
 	    love.mouse.setCursor(assets.cursorCombatI) else
 	    love.mouse.setCursor(assets.cursorCombat) end
     end
@@ -97,18 +85,17 @@ function love.update(delta)
 	Player.update(delta)
 	Camera.update(delta)
 	updateWeaponDrops(delta, i)
-	motionControl(delta)
 	ParticleManager.update(delta)
     else end
 end
 
 function love.draw()
-    if currentShader then
+    if CurrentShader then
 	love.graphics.setBackgroundColor(1-0.07, 1-0.07, 1-0.07, 1)
     else
 	love.graphics.setBackgroundColor(0.07, 0.07, 0.07, 1)
     end
-    love.graphics.setShader(currentShader)
+    love.graphics.setShader(CurrentShader)
     if GameState == "game" then
 	drawWeaponDrops()
 	Player.draw()
