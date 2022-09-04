@@ -194,12 +194,12 @@ function player.new()
     end
 
     function p.shootParticleTick(particle, delta)
-	particle.position.x = particle.position.x + math.cos(particle.realRotation) * particle.speed * delta
-	particle.position.y = particle.position.y + math.sin(particle.realRotation) * particle.speed * delta
-	particle.rotation = particle.rotation + (4 * delta)
-	particle.size.x = particle.size.x - (8 * delta)
-	particle.size.y = particle.size.y - (8 * delta)
-	particle.alpha = particle.alpha - (8.5 * delta)
+	particle.position.x = particle.position.x + math.cos(particle.realRotation) * particle.speed * MotionSpeed * delta
+	particle.position.y = particle.position.y + math.sin(particle.realRotation) * particle.speed * MotionSpeed * delta
+	particle.rotation = particle.rotation + (4 * delta) * MotionSpeed
+	particle.size.x = particle.size.x - (8 * delta) * MotionSpeed
+	particle.size.y = particle.size.y - (8 * delta) * MotionSpeed
+	particle.alpha = particle.alpha - (8.5 * delta) * MotionSpeed
     end
 
     function p.reload(delta)
@@ -251,8 +251,8 @@ function player.new()
 	    p.velocity.y = p.velocity.y / 1.25
 	end
 	-- Move by velocity
-	p.position.x = p.position.x + speed * p.velocity.x * delta
-	p.position.y = p.position.y + speed * p.velocity.y * delta
+	p.position.x = p.position.x + speed * p.velocity.x * MotionSpeed * delta
+	p.position.y = p.position.y + speed * p.velocity.y * MotionSpeed * delta
     end
 
     -- Event functions

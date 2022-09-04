@@ -7,6 +7,7 @@ local weaponDrop = require("scripts/weaponDrop")
 local weaponData = require("scripts/weaponData")
 
 local fullscreen = false
+local currentShader
 
 function love.keypressed(key, unicode)
     -- Pause key
@@ -27,6 +28,7 @@ function GameLoad()
     -- Globals
     assets.load()
     assets.gameLoad()
+    MotionSpeed = 1
     -- Setup player
     Player = player.new()
     Player.position.x = 480
@@ -45,6 +47,8 @@ function GameLoad()
     -- Setup camera
     Camera = camera.new()
     Camera.lockedTarget = Player
+    -- Shaders (test)
+    InvertShader = love.graphics.newShader[[ vec4 effect(vec4 color, Image texture, vec2 texture_coords, vec2 pixel_coords) { vec4 col = texture2D( texture, texture_coords ); return vec4(1-col.r, 1-col.g, 1-col.b, col.a); } ]]
 end
 
 local function updateWeaponDrops(delta)
@@ -59,8 +63,18 @@ local function drawWeaponDrops()
     end
 end
 
+local function motionControl(delta)
+    if GamePaused then return end
+    if love.keyboard.isDown("space") then
+	MotionSpeed = MotionSpeed + (0.25-MotionSpeed) / (200*delta)
+	currentShader = InvertShader
+    else
+	MotionSpeed = MotionSpeed + (1-MotionSpeed) / (200*delta)
+	currentShader = nil
+    end
+end
+
 function love.load()
-    love.graphics.setBackgroundColor(0.07, 0.07, 0.07, 1)
     love.graphics.setDefaultFilter("nearest", "nearest")
     -- Set custom cursor
     GameLoad()
@@ -72,18 +86,29 @@ function love.update(delta)
     -- Set cursor
     if GameState == "menu" or GameState == "settings" or GamePaused then
 	love.mouse.setCursor(assets.cursorDefault)	
-    else love.mouse.setCursor(assets.cursorCombat) end
+    else
+	if currentShader then
+	    love.mouse.setCursor(assets.cursorCombatI) else
+	    love.mouse.setCursor(assets.cursorCombat) end
+    end
 
     Interface.update(delta)
     if GameState == "game" then
 	Player.update(delta)
 	Camera.update(delta)
 	updateWeaponDrops(delta, i)
+	motionControl(delta)
 	ParticleManager.update(delta)
     else end
 end
 
 function love.draw()
+    if currentShader then
+	love.graphics.setBackgroundColor(1-0.07, 1-0.07, 1-0.07, 1)
+    else
+	love.graphics.setBackgroundColor(0.07, 0.07, 0.07, 1)
+    end
+    love.graphics.setShader(currentShader)
     if GameState == "game" then
 	drawWeaponDrops()
 	Player.draw()

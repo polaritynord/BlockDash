@@ -24,8 +24,8 @@ function bullet.new()
 	    return
 	end
 	-- Movement
-	b.position.x = b.position.x + math.cos(b.rotation) * b.speed * delta
-	b.position.y = b.position.y + math.sin(b.rotation) * b.speed * delta
+	b.position.x = b.position.x + math.cos(b.rotation) * b.speed * MotionSpeed * delta
+	b.position.y = b.position.y + math.sin(b.rotation) * b.speed * MotionSpeed * delta
     end
 
     function b.draw()

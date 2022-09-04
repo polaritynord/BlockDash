@@ -22,7 +22,7 @@ function weaponSprite.new()
     
     function w.update(delta)
 	-- Decrease recoil rotation
-	w.shootRot = w.shootRot - w.shootRot / (250 * delta)
+	w.shootRot = w.shootRot - w.shootRot / (250 * delta) / MotionSpeed
 	-- Set position
 	if Player.facing == "right" then
 	    w.position.x = Player.position.x + 12.5
@@ -35,7 +35,7 @@ function weaponSprite.new()
 	
 	if Player.reloading then
 	    -- Reload animation
-	    w.rotation = w.rotation + 12 * delta
+	    w.rotation = w.rotation + 12 * MotionSpeed * delta
 	else
 	    -- Point towards mouse
 	    local m = utils.getMousePosition()
