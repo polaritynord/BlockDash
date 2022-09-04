@@ -36,6 +36,10 @@ function player.new()
 	sprintCooldown = 3131;
 	dashTimer = 0;
 	invertShader = love.graphics.newShader[[ vec4 effect(vec4 color, Image texture, vec2 texture_coords, vec2 pixel_coords) { vec4 col = texture2D( texture, texture_coords ); return vec4(1-col.r, 1-col.g, 1-col.b, col.a); } ]];
+	dashVelocity = 0;
+	dashRot = 0;
+	dashTimer = 111;
+	dashTrailTimer = 0;
     }
 
     -- Trail related functions
@@ -46,7 +50,7 @@ function player.new()
 	end
 	-- Add new trails
 	p.trailCooldown = p.trailCooldown + delta
-	if p.trailCooldown < 0.1 or not p.moving then return end
+	if p.trailCooldown < 0.1 or (not p.moving and CurrentShader) then return end
 	-- Instance trail
 	local newTrail = playerTrail.new()
 	newTrail.position = vec2.new(p.position.x, p.position.y)
@@ -205,6 +209,7 @@ function player.new()
     end
 
     function p.reload(delta)
+	if CurrentShader then return end
 	local w = p.weapons[p.slot]
 	if not w then return end
 	-- Increment timer
@@ -227,6 +232,10 @@ function player.new()
     end
 
     function p.movement(delta)
+	-- Decrease dash velocity
+	p.dashVelocity = p.dashVelocity - p.dashVelocity / (225 * delta)	
+	
+	if CurrentShader then return end
 	local speed = 200
 	p.velocity = vec2.new()
 	-- Get key input
@@ -240,13 +249,9 @@ function player.new()
 	    p.velocity.y = p.velocity.y + 1 end
 	-- Set p.moving
 	p.moving = math.abs(p.velocity.x) > 0 or math.abs(p.velocity.y) > 0
-	--[[ Multiply vector by sprinting
-	local sprintMultiplier = 1.45
-	if p.sprinting then
-	    p.velocity.x = p.velocity.x * sprintMultiplier 
-	    p.velocity.y = p.velocity.y * sprintMultiplier 
-	end
-	]]--
+	-- Increment velocity by dash
+	p.velocity.x = p.velocity.x + math.cos(p.dashRot) * p.dashVelocity	
+	p.velocity.y = p.velocity.y + math.sin(p.dashRot) * p.dashVelocity	
 	-- Normalize velocity
 	if math.abs(p.velocity.x) == math.abs(p.velocity.y) then
 	    p.velocity.x = p.velocity.x / 1.25
@@ -280,10 +285,21 @@ function player.new()
 	love.graphics.setShader(CurrentShader)
     end
     
+    function p.dash(delta)
+	p.dashTimer = p.dashTimer + delta
+	if p.dashTimer < 2.5 then return end
+	if CurrentShader and love.mouse.isDown(1) then
+	    p.dashTimer = 0
+	    p.dashVelocity = 50
+	    p.dashRot = p.weaponSprite.rotation
+	    if p.facing == "left" then
+		p.dashRot = p.dashRot - 135 end
+	end
+    end
 
     function p.motionControl(delta)
 	if GamePaused or p.reloading then return end
-	if love.keyboard.isDown("space") then
+	if love.keyboard.isDown("space") and p.dashTimer > 2.5 then
 	    MotionSpeed = MotionSpeed + (0.25-MotionSpeed) / (200*delta)
 	    CurrentShader = p.invertShader
 	else
@@ -314,6 +330,7 @@ function player.new()
 	p.setFacing(delta)
 	p.reload(delta)
 	p.motionControl(delta)
+	p.dash(delta)
 	p.drop()
 	p.updateTrail(delta)
 	p.updateBullets(delta)
