@@ -141,9 +141,11 @@ function player.new()
 	if not w or not love.keyboard.isDown("v") then return end
 	-- Instance weaponDrop
 	local newDrop = weaponDrop.new()
+	local rot = p.weaponSprite.rotation
+	if p.facing == "left" then rot = rot-135 end
 	newDrop.position = vec2.new(
-	    p.position.x+math.cos(p.weaponSprite.rotation) * 45,
-	    p.position.y+math.sin(p.weaponSprite.rotation) * 45
+	    p.position.x+math.cos(rot) * 45,
+	    p.position.y+math.sin(rot) * 45
 	)
 	newDrop.weapon = w
 	WeaponDrops[#WeaponDrops+1] = newDrop

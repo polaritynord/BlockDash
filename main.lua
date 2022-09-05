@@ -1,3 +1,5 @@
+local vec2 = require("lib/vec2")
+
 local assets = require("scripts/assets")
 local player = require("scripts/player")
 Interface = require("scripts/interface")
@@ -10,9 +12,17 @@ local fullscreen = false
 local invertShader 
 CurrentShader = nil
 
+function dropWeapon(weapon, position)
+    local newWeapon = weapon.new()
+    local drop = weaponDrop.new()
+    drop.weapon = newWeapon
+    drop.position = position
+    WeaponDrops[#WeaponDrops+1] = drop
+end
+
 function love.keypressed(key, unicode)
     -- Pause key
-    if key == "escape" and GameState == "game" then
+    if key == "escape" and GameState == "game" and not CurrentShader then
 	GamePaused = not GamePaused end
     -- Fullscreen key
     if key == "f11" then
@@ -37,11 +47,8 @@ function GameLoad()
     Player.load()
     -- Weapon drops
     WeaponDrops = {}
-    local temp = weaponDrop.new()
-    temp.weapon = weaponData.pistol.new()
-    temp.weapon.magAmmo = 13
-    temp.position.x = 600 ; temp.position.y = 300
-    WeaponDrops[#WeaponDrops+1] = temp
+    dropWeapon(weaponData.pistol, vec2.new(600, 450))
+    dropWeapon(weaponData.assaultRifle, vec2.new(650, 450))
     -- Setup interface
     Interface.gameLoad()
     GamePaused = false

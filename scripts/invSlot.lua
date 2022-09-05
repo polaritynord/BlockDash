@@ -30,9 +30,11 @@ function invSlot.new()
 	-- Draw slot weapon
 	if not w then return end
 	local image = assets.weapons[w.name.. "Img"]
+	width = image:getWidth()
+	height = image:getHeight()
 	love.graphics.draw(
 	    image, s.position.x+(SC_WIDTH-960)+4*s.scale, s.position.y+(SC_HEIGHT-540)+8*s.scale, 0,
-	    1.5*s.scale, 1.5*s.scale, width/2, height/2
+	    1.5*s.scale, 1.5*s.scale, width/2, 12
 	)
     end
 

@@ -189,7 +189,7 @@ function interface.drawGame()
 
     -- Dash text
     if CurrentShader then
-	love.graphics.printf("CLICK TO DASH", 0, 360, 1000, "center")
+	love.graphics.print("CLICK TO DASH", 380+(SC_WIDTH-960)/2, 360+(SC_HEIGHT-540)/2)
     end
 
     -- Pause menu

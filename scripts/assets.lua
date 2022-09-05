@@ -20,6 +20,7 @@ function assets.gameLoad()
     -- Weapon images
     assets.weapons = {}
     assets.weapons.pistolImg = love.graphics.newImage("images/weapons/pistol.png")
+    assets.weapons.assaultRifleImg = love.graphics.newImage("images/weapons/assault_rifle.png")
     -- Sounds
     assets.sounds.shoot = love.audio.newSource("sounds/shoot.wav", "static")
     assets.sounds.reload = love.audio.newSource("sounds/reload.wav", "static")
