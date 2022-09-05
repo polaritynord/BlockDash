@@ -157,14 +157,19 @@ function interface.drawGame()
     -- Health text
     love.graphics.setNewFont("fonts/Minecraftia-Regular.ttf", 24)
     love.graphics.printf(tostring(Player.health), -95+(SC_WIDTH-960), 438+(SC_HEIGHT-540), 1000, "right")
-    --[[ Stamina bar
-    love.graphics.setColor(0, 0, 1, 1)
-    local s = Player.stamina/100
-    love.graphics.setLineWidth(12)
-    love.graphics.line(950+(SC_WIDTH-960), 525+(SC_HEIGHT-540), 950-s*300+(SC_WIDTH-960), 525+(SC_HEIGHT-540))
-    love.graphics.setColor(1, 1, 1, 1)
-    ]]--
+    
+    -- Dash indicator
+    if Player.dashTimer < 2.5 then
+	love.graphics.setColor(1, 1, 1, 0.45)
+	love.graphics.printf("CHARGING", -90+(SC_WIDTH-960), 382.5+(SC_HEIGHT-540), 1000, "right")
+	love.graphics.setColor(0.35, 0.35, 0.35, 1)
+    else
+	love.graphics.setColor(1, 1, 1, 1)
+	love.graphics.printf("READY", -90+(SC_WIDTH-960), 382.5+(SC_HEIGHT-540), 1000, "right")
+    end
+    interface.drawImage(assets.dashIconImg, vec2.new(930+(SC_WIDTH-960), 400+(SC_HEIGHT-540)), 1.85)
 
+    love.graphics.setColor(1, 1, 1, 1)
     -- Weapon UI
     if Player.weapons[Player.slot] then
 	local w = Player.weapons[Player.slot]

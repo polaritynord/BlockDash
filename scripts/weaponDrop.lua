@@ -35,19 +35,19 @@ function weaponDrop.new()
 
     function w.update(delta, i)
 	if GamePaused then return end
-	if not w.weapon then return end
-	    local distance = utils.distanceTo(w.position, Player.position)
-	    if w.beingObtained then
-		-- Move towards player
-		local p = Player.position
-	        w.rotation = math.atan2(p.y - w.position.y, p.x - w.position.x)
-		local speed = distance / 0.12
-		w.position.x = w.position.x + math.cos(w.rotation) * (speed * delta)
-		w.position.y = w.position.y + math.sin(w.rotation) * (speed * delta)
-		w.alpha = distance / 65
-		-- Despawn if near player
-		if distance < 15 then
-		    table.remove(WeaponDrops, i) end
+	if not w.weapon or Player.nearWeapon then return end
+	local distance = utils.distanceTo(w.position, Player.position)
+	if w.beingObtained then
+	    -- Move towards player
+	    local p = Player.position
+	    w.rotation = math.atan2(p.y - w.position.y, p.x - w.position.x)
+	    local speed = distance / 0.12
+	    w.position.x = w.position.x + math.cos(w.rotation) * (speed * delta)
+	    w.position.y = w.position.y + math.sin(w.rotation) * (speed * delta)
+	    w.alpha = distance / 65
+	    -- Despawn if near player
+	    if distance < 15 then
+		table.remove(WeaponDrops, i) end
 	    else
 		local distance = utils.distanceTo(w.position, Player.position)
 		w.nearPlayer = distance < 63
@@ -57,10 +57,10 @@ function weaponDrop.new()
                 -- Check for key press
                 if love.keyboard.isDown("e") then
                     w.obtain() end
-		else
-		    w.scale = w.scale + (1-w.scale) / (250 * delta)
-		end
+	    else
+	        w.scale = w.scale + (1-w.scale) / (250 * delta)
 	    end
+	end
     end
 
     function w.draw()

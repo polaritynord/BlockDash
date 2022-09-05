@@ -237,18 +237,19 @@ function player.new()
 	-- Decrease dash velocity
 	p.dashVelocity = p.dashVelocity - p.dashVelocity / (225 * delta)	
 	
-	--if CurrentShader then return end
 	local speed = 200
 	p.velocity = vec2.new()
 	-- Get key input
-	if love.keyboard.isDown("right", "d") then
-	    p.velocity.x = p.velocity.x + 1 end
-	if love.keyboard.isDown("left", "a") then
-	    p.velocity.x = p.velocity.x - 1 end
-	if love.keyboard.isDown("up", "w") then
-	    p.velocity.y = p.velocity.y - 1 end
-	if love.keyboard.isDown("down", "s") then
-	    p.velocity.y = p.velocity.y + 1 end
+	if p.dashVelocity < 0.1 then
+	    if love.keyboard.isDown("right", "d") then
+		p.velocity.x = p.velocity.x + 1 end
+	    if love.keyboard.isDown("left", "a") then
+		p.velocity.x = p.velocity.x - 1 end
+	    if love.keyboard.isDown("up", "w") then
+		p.velocity.y = p.velocity.y - 1 end
+	    if love.keyboard.isDown("down", "s") then
+		p.velocity.y = p.velocity.y + 1 end
+	end
 	-- Set p.moving
 	p.moving = math.abs(p.velocity.x) > 0 or math.abs(p.velocity.y) > 0
 	-- Increment velocity by dash
