@@ -7,7 +7,7 @@ local weaponData = {}
 local pistol = weapon.new()
 pistol.name = "pistol"
 --pistol.weaponType = "manual"
-pistol.bulletSpeed = 200
+pistol.bulletSpeed = 560
 pistol.bulletDamage = 10
 pistol.bulletSpread = 0.15
 pistol.reloadTime = 0.875
@@ -19,7 +19,7 @@ pistol.recoil = 0.35
 -- Assault Rifle
 local ar = weapon.new()
 ar.name = "assaultRifle"
-ar.bulletSpeed = 250
+ar.bulletSpeed = 585
 ar.bulletDamage = 8.5
 ar.bulletSpread = 0.24
 ar.reloadTime = 1.0675

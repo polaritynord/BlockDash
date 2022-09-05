@@ -39,7 +39,6 @@ function player.new()
 	dashVelocity = 0;
 	dashRot = 0;
 	dashTimer = 111;
-	dashTrailTimer = 0;
     }
 
     -- Trail related functions
@@ -138,7 +137,7 @@ function player.new()
 
     function p.drop()
 	local w = p.weapons[p.slot]
-	if not w or not love.keyboard.isDown("v") then return end
+	if not w or not love.keyboard.isDown("v") or CurrentShader or p.reloading then return end
 	-- Instance weaponDrop
 	local newDrop = weaponDrop.new()
 	local rot = p.weaponSprite.rotation
@@ -185,7 +184,8 @@ function player.new()
 	p.weaponSprite.playerShot()
 	-- Play sound
 	assets.sounds.shoot:play()
-	-- TODO special bullet attributes
+	-- Special bullet attributes
+	newBullet.speed = w.bulletSpeed
 	-- Add to table
 	p.bullets[#p.bullets+1] = newBullet
 	-- Particle effects
@@ -237,7 +237,7 @@ function player.new()
 	-- Decrease dash velocity
 	p.dashVelocity = p.dashVelocity - p.dashVelocity / (225 * delta)	
 	
-	if CurrentShader then return end
+	--if CurrentShader then return end
 	local speed = 200
 	p.velocity = vec2.new()
 	-- Get key input
@@ -296,6 +296,7 @@ function player.new()
 	    p.dashRot = p.weaponSprite.rotation
 	    if p.facing == "left" then
 		p.dashRot = p.dashRot - 135 end
+	    assets.sounds.dash:play()
 	end
     end
 

@@ -24,6 +24,7 @@ function assets.gameLoad()
     -- Sounds
     assets.sounds.shoot = love.audio.newSource("sounds/shoot.wav", "static")
     assets.sounds.reload = love.audio.newSource("sounds/reload.wav", "static")
+    assets.sounds.dash = love.audio.newSource("sounds/dash.wav", "static")
 end
 
 function assets.menuLoad()
