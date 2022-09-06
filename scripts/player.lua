@@ -39,6 +39,7 @@ function player.new()
 	dashVelocity = 0;
 	dashRot = 0;
 	dashTimer = 111;
+	inReloadTimer = 0;
     }
 
     -- Trail related functions
@@ -230,9 +231,13 @@ function player.new()
 	    end
 	else
 	    -- Get input
-	    if (love.keyboard.isDown("r") or w.magAmmo < 1) and w.magAmmo < w.magSize then
+	    if Settings.intelligentReload and not love.mouse.isDown(1) then
+		p.inReloadTimer = p.inReloadTimer + delta end
+	    local intelliReload = w.magAmmo < w.magSize and Settings.intelligentReload
+	    if (love.keyboard.isDown("r") or w.magAmmo < 1 or (intelliReload and p.inReloadTimer > 0.45 and not love.mouse.isDown(1))) and w.magAmmo < w.magSize then
 		p.reloading = true
 		p.reloadTimer = 0
+		p.inReloadTimer = 0
 	    end
 	end
     end

@@ -87,7 +87,9 @@ function interface.gameLoad()
     -- Settings menu - sound effects button
     local sSoundButton = button.new()
     sSoundButton.position = vec2.new(480, 150)
-    sSoundButton.text = "sfx: ON"
+    local t = "ON"
+    if not Settings.sound then t = "OFF" end
+    sSoundButton.text = "sfx: " .. t 
     sSoundButton.uppercaseText = false
     sSoundButton.style = 1
     
@@ -108,6 +110,22 @@ function interface.gameLoad()
     function sQuitButton.clickEvent()
 	GameState = "menu"
     end
+    -- Settings menu - intelli-reload button
+    local sReloadButton = button.new()
+    sReloadButton.position = vec2.new(480, 185)
+    local t = "ON"
+    if not Settings.intelligentReload then t = "OFF" end
+    sReloadButton.text = "intelligent reload: " .. t 
+    sReloadButton.uppercaseText = false
+    sReloadButton.style = 1
+    
+    function sReloadButton.clickEvent()
+	Settings.intelligentReload = not Settings.intelligentReload
+	local text = "ON"
+	if not Settings.intelligentReload then
+	    text = "OFF" end
+	sReloadButton.text = "intelligent reload: " .. text
+    end
 
     interface.buttons.mPlayButton = mPlayButton
     interface.buttons.mSetButton = mSetButton
@@ -115,6 +133,7 @@ function interface.gameLoad()
     interface.buttons.pContinueButton = pContinueButton
     interface.buttons.pQuitButton = pQuitButton
     interface.buttons.sSoundButton = sSoundButton
+    interface.buttons.sReloadButton = sReloadButton 
     interface.buttons.sQuitButton = sQuitButton
     -- Create inventory slots
     interface.invSlots = {}
@@ -163,6 +182,7 @@ end
 
 function interface.updateSettings(delta) 
     interface.buttons.sSoundButton.update(delta)
+    interface.buttons.sReloadButton.update(delta)
     interface.buttons.sQuitButton.update(delta)
 end
 
@@ -264,6 +284,7 @@ function interface.drawSettings()
     love.graphics.printf("Settings", (SC_WIDTH-960)/2, 45+(SC_HEIGHT-540)/2, 1000, "center")
     -- Buttons
     interface.buttons.sSoundButton.draw() 
+    interface.buttons.sReloadButton.draw() 
     interface.buttons.sQuitButton.draw() 
 end
 
