@@ -17,7 +17,7 @@ function bullet.new()
     -- Event functions
     function b.update(delta, i)
 	if GamePaused then return end
-	b.lifetime = b.lifetime + delta
+	b.lifetime = b.lifetime + delta * MotionSpeed
 	-- Bullet despawning
 	if b.lifetime > 3.5 then
 	    table.remove(Player.bullets, i)

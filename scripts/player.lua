@@ -183,7 +183,9 @@ function player.new()
 	Interface.playerShot()
 	p.weaponSprite.playerShot()
 	-- Play sound
-	assets.sounds.shoot:play()
+	if Settings.sound then
+	    assets.sounds.shoot:play()
+	end
 	-- Special bullet attributes
 	newBullet.speed = w.bulletSpeed
 	-- Add to table
@@ -222,7 +224,9 @@ function player.new()
 		p.reloading = false
 		w.magAmmo = w.magSize
 		-- Play reload sound
-		assets.sounds.reload:play()
+		if Settings.sound then
+		    assets.sounds.reload:play()
+		end
 	    end
 	else
 	    -- Get input
@@ -237,7 +241,7 @@ function player.new()
 	-- Decrease dash velocity
 	p.dashVelocity = p.dashVelocity - p.dashVelocity / (225 * delta)	
 	
-	local speed = 200
+	local speed = 235
 	p.velocity = vec2.new()
 	-- Get key input
 	if p.dashVelocity < 0.1 then
@@ -297,7 +301,9 @@ function player.new()
 	    p.dashRot = p.weaponSprite.rotation
 	    if p.facing == "left" then
 		p.dashRot = p.dashRot - 135 end
-	    assets.sounds.dash:play()
+	    if Settings.sound then
+		assets.sounds.dash:play()
+	    end
 	end
     end
 

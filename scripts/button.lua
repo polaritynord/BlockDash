@@ -26,7 +26,8 @@ function button.new()
 	    local w = b.size.x * b.scale ; local h = b.size.y * b.scale
 	    -- Click event
 	    if not love.mouse.isDown(1) and b.mouseHover and b.mouseClick and b.clickEvent then
-		assets.sounds.buttonClick:play()
+		if Settings.sound then
+		    assets.sounds.buttonClick:play() end
 		b.clickEvent()
 	    end
 	    -- Hovering
@@ -46,7 +47,8 @@ function button.new()
 	    local y = my > b.position.y-h/2+(SC_HEIGHT-540)/2 and my < b.position.y+(SC_HEIGHT-540)/2 + h/2
 	    -- Click event
 	    if not love.mouse.isDown(1) and (x and y) and b.mouseClick and b.clickEvent then
-		assets.sounds.buttonClick:play()
+		if Settings.sound then
+		    assets.sounds.buttonClick:play() end
 		b.clickEvent()
 	    end
 	    -- Hover animation

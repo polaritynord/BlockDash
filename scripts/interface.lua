@@ -83,6 +83,30 @@ function interface.gameLoad()
     
     function pQuitButton.clickEvent()
 	GameState = "menu"
+    end 
+    -- Settings menu - sound effects button
+    local sSoundButton = button.new()
+    sSoundButton.position = vec2.new(480, 150)
+    sSoundButton.text = "sfx: ON"
+    sSoundButton.uppercaseText = false
+    sSoundButton.style = 1
+    
+    function sSoundButton.clickEvent()
+	Settings.sound = not Settings.sound
+	local text = "ON"
+	if not Settings.sound then
+	    text = "OFF" end
+	sSoundButton.text = "sfx: " .. text
+    end
+    -- Settings menu - quit button
+    local sQuitButton = button.new()
+    sQuitButton.position = vec2.new(480, 420)
+    sQuitButton.text = "quit"
+    sQuitButton.uppercaseText = false
+    sQuitButton.style = 2
+
+    function sQuitButton.clickEvent()
+	GameState = "menu"
     end
 
     interface.buttons.mPlayButton = mPlayButton
@@ -90,6 +114,8 @@ function interface.gameLoad()
     interface.buttons.mQuitButton = mQuitButton
     interface.buttons.pContinueButton = pContinueButton
     interface.buttons.pQuitButton = pQuitButton
+    interface.buttons.sSoundButton = sSoundButton
+    interface.buttons.sQuitButton = sQuitButton
     -- Create inventory slots
     interface.invSlots = {}
     local x = 926 ; local y = 510;
@@ -135,12 +161,19 @@ function interface.updateMenu(delta)
     interface.buttons.mQuitButton.update(delta)
 end
 
+function interface.updateSettings(delta) 
+    interface.buttons.sSoundButton.update(delta)
+    interface.buttons.sQuitButton.update(delta)
+end
+
 function interface.update(delta)
     if GameState == "game" then
 	interface.updateGame(delta)
     elseif GameState == "menu" then
 	interface.updateMenu(delta)
-    else end
+    elseif GameState == "settings" then
+	interface.updateSettings(delta)
+    end
 end
 
 function interface.drawGame()
@@ -225,12 +258,23 @@ function interface.drawMenu()
     interface.buttons.mQuitButton.draw()
 end
 
+function interface.drawSettings()
+    -- Title
+    love.graphics.setNewFont("fonts/Minecraftia-Regular.ttf", 38)
+    love.graphics.printf("Settings", (SC_WIDTH-960)/2, 45+(SC_HEIGHT-540)/2, 1000, "center")
+    -- Buttons
+    interface.buttons.sSoundButton.draw() 
+    interface.buttons.sQuitButton.draw() 
+end
+
 function interface.draw()
     if GameState == "game" then
 	interface.drawGame()
     elseif GameState == "menu" then
 	interface.drawMenu()
-    else end
+    elseif GameState == "settings" then
+	interface.drawSettings()
+    end
 
     love.graphics.setColor(1, 1, 1, 1)
 end
