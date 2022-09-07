@@ -7,17 +7,25 @@ local enemyManager = {
     spawnTime = 3.5;
 }
 
+function enemyManager.newEnemy(position)
+    local newEnemy = enemy.new()
+    newEnemy.position = position
+    enemyManager.enemies[#enemyManager.enemies+1] = newEnemy
+end
+
 function enemyManager.spawnEnemies(delta)
+    if 1 then return end
     -- Increment timer
     enemyManager.spawnTimer = enemyManager.spawnTimer + MotionSpeed * delta
     if enemyManager.spawnTimer < enemyManager.spawnTime then return end
     -- Spawn enemy
-    local newEnemy = enemy.new()
+    enemyManager.spawnEnemy()
 end
 
 function enemyManager.load()
     enemyManager.enemies = {}
     enemyManager.spawnTimer = 0
+    enemyManager.newEnemy(vec2.new(0, 0))
 end
 
 function enemyManager.update(delta)
