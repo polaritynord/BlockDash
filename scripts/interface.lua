@@ -247,7 +247,7 @@ function interface.drawGame()
 
     -- Dash text
     if CurrentShader then
-	love.graphics.print("CLICK TO DASH", 380+(SC_WIDTH-960)/2, 360+(SC_HEIGHT-540)/2)
+	love.graphics.print("RELEASE SPACE TO DASH", 327+(SC_WIDTH-960)/2, 360+(SC_HEIGHT-540)/2)
     end
 
     -- Pause menu

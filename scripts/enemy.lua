@@ -21,8 +21,8 @@ function enemy.new()
 	    e.deathAnim = true end
 	
 	if e.deathAnim then
-	    e.scale = e.scale - 0.42 * MotionSpeed * delta 
-	    e.alpha = e.alpha - 0.55 * MotionSpeed * delta 
+	    e.scale = e.scale + 2.5 * MotionSpeed * delta 
+	    e.alpha = e.alpha - 6 * MotionSpeed * delta 
 	    -- Despawn
 	    if e.alpha < 0 then
 		table.remove(EnemyManager.enemies, i) end
