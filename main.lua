@@ -8,6 +8,7 @@ Settings = require("scripts/settings")
 local camera = require("scripts/camera")
 local weaponDrop = require("scripts/weaponDrop")
 local weaponData = require("scripts/weaponData")
+EnemyManager = require("scripts/enemyManager")
 
 local fullscreen = false
 local invertShader 
@@ -50,6 +51,8 @@ function GameLoad()
     WeaponDrops = {}
     dropWeapon(weaponData.pistol, vec2.new(600, 450))
     dropWeapon(weaponData.assaultRifle, vec2.new(650, 450))
+    -- Enemies
+    EnemyManager.load()
     -- Setup interface
     Interface.gameLoad()
     GamePaused = false
@@ -93,6 +96,7 @@ function love.update(delta)
 	Player.update(delta)
 	Camera.update(delta)
 	updateWeaponDrops(delta, i)
+	EnemyManager.update(delta)
 	ParticleManager.update(delta)
     else end
 end
@@ -107,6 +111,7 @@ function love.draw()
     if GameState == "game" then
 	drawWeaponDrops()
 	Player.draw()
+	EnemyManager.draw()
 	ParticleManager.draw()
     end
     Interface.draw()

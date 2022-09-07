@@ -231,9 +231,9 @@ function player.new()
 	    end
 	else
 	    -- Get input
-	    if Settings.intelligentReload and not love.mouse.isDown(1) then
+	    if Settings.intelligentReload and not love.mouse.isDown(1) and not CurrentShader then
 		p.inReloadTimer = p.inReloadTimer + delta end
-	    local intelliReload = w.magAmmo < w.magSize and Settings.intelligentReload
+	    local intelliReload = w.magAmmo < w.magSize and Settings.intelligentReload and not CurrentShader
 	    if (love.keyboard.isDown("r") or w.magAmmo < 1 or (intelliReload and p.inReloadTimer > 0.45 and not love.mouse.isDown(1))) and w.magAmmo < w.magSize then
 		p.reloading = true
 		p.reloadTimer = 0
@@ -313,8 +313,9 @@ function player.new()
     end
 
     function p.motionControl(delta)
-	if GamePaused or p.reloading then return end
+	if GamePaused then return end
 	if love.keyboard.isDown("space") and p.dashTimer > 2.5 then
+	    p.reloading = false
 	    MotionSpeed = MotionSpeed + (0.25-MotionSpeed) / (200*delta)
 	    CurrentShader = p.invertShader
 	else
