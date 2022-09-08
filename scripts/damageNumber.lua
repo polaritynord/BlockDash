@@ -28,7 +28,7 @@ function damageNumber.new()
         love.graphics.setColor(1, 1, 1, d.alpha)
         local x = (d.position.x - Camera.position.x) * Camera.zoom
         local y = (d.position.y - Camera.position.y) * Camera.zoom
-        love.graphics.print(tostring(d.number), x, y)
+        love.graphics.print(tostring(math.floor(d.number)), x, y)
         love.graphics.setColor(1, 1, 1, 1)
     end
 

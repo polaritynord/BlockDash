@@ -14,18 +14,18 @@ function enemyManager.newEnemy(position)
 end
 
 function enemyManager.spawnEnemies(delta)
-    if 1 then return end
     -- Increment timer
     enemyManager.spawnTimer = enemyManager.spawnTimer + MotionSpeed * delta
     if enemyManager.spawnTimer < enemyManager.spawnTime then return end
     -- Spawn enemy
-    enemyManager.spawnEnemy()
+    enemyManager.newEnemy(vec2.new(math.random(-800, 800), math.random(-800, 800)))
+    enemyManager.spawnTimer = 0
 end
 
 function enemyManager.load()
     enemyManager.enemies = {}
     enemyManager.spawnTimer = 0
-    enemyManager.newEnemy(vec2.new(0, 0))
+    -- enemyManager.newEnemy(vec2.new(0, 0))
 end
 
 function enemyManager.update(delta)

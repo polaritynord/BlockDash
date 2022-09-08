@@ -46,8 +46,6 @@ function GameLoad()
     MotionSpeed = 1
     -- Setup player
     Player = player.new()
-    Player.position.x = 480
-    Player.position.y = 270
     Player.load()
     -- Weapon drops
     WeaponDrops = {}
@@ -73,6 +71,13 @@ local function drawWeaponDrops()
     for _, v in ipairs(WeaponDrops) do
 	       v.draw()
     end
+end
+
+local function drawWalls()
+    love.graphics.rectangle("fill", (-700-Camera.position.x)*Camera.zoom, (-700-Camera.position.y)*Camera.zoom, 12, 1400)
+    love.graphics.rectangle("fill", (-700-Camera.position.x)*Camera.zoom, (700-Camera.position.y)*Camera.zoom, 1400, 12)
+    love.graphics.rectangle("fill", (700-Camera.position.x)*Camera.zoom, (-700-Camera.position.y)*Camera.zoom, 12, 1400)
+    love.graphics.rectangle("fill", (-700-Camera.position.x)*Camera.zoom, (-700-Camera.position.y)*Camera.zoom, 1400, 12)
 end
 
 function love.load()
@@ -115,6 +120,7 @@ function love.draw()
 		Player.draw()
 		EnemyManager.draw()
   		ParticleManager.draw()
+        drawWalls()
     end
     Interface.draw()
     VD.draw()

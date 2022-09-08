@@ -255,6 +255,15 @@ function player.new()
     	-- Move by velocity
     	p.position.x = p.position.x + speed * p.velocity.x * MotionSpeed * delta
     	p.position.y = p.position.y + speed * p.velocity.y * MotionSpeed * delta
+        -- Prevent going outside the border
+        if p.position.x > 700 then
+            p.position.x = 700 end
+        if p.position.x < -700 then
+            p.position.x = -700 end
+        if p.position.y > 700 then
+            p.position.y = 700 end
+        if p.position.y < -700 then
+            p.position.y = -700 end
     end
 
     function p.drawDashLine()
@@ -321,6 +330,7 @@ function player.new()
     end
 
     function p.update(delta)
+        VD.log(p.position.x .. p.position.y)
     	if GamePaused then return end
         -- Functions
     	p.switchSlot()

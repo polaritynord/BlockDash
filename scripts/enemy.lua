@@ -22,7 +22,7 @@ function enemy.new()
         local w = img:getWidth()
         local h = img:getHeight()
         local c = collision(pos.x, pos.y, w, h, e.position.x, e.position.y, w, h)
-        if c and Player.dashVelocity > 0.05 then
+        if c and Player.dashVelocity > 0.5 then
             -- Damage enemy
             e.health = e.health - 100
         end
