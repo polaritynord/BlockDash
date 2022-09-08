@@ -170,6 +170,7 @@ function player.new()
     	end
     	-- Special bullet attributes
     	newBullet.speed = w.bulletSpeed
+        newBullet.damage = w.bulletDamage
     	-- Add to table
     	p.bullets[#p.bullets+1] = newBullet
     	-- Particle effects

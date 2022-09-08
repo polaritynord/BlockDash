@@ -2,6 +2,7 @@ local vec2 = require("lib/vec2")
 local collision = require("lib/collision")
 
 local assets = require("scripts/assets")
+local damageNumber = require("scripts/damageNumber")
 
 local bullet = {}
 
@@ -39,6 +40,11 @@ function bullet.new()
     	    if collision(p.x, p.y, w1, h1, p2.x, p2.y, w2, h2) then
                 v.health = v.health - b.damage
                 table.remove(Player.bullets, i)
+                -- Create damage number
+                local damageNum = damageNumber.new()
+                damageNum.position = vec2.new(v.position.x, v.position.y)
+                damageNum.number = b.damage
+                Interface.damageNums[#Interface.damageNums+1] = damageNum
     		    return
     	    end
     	end

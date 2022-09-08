@@ -42,7 +42,7 @@ function enemy.new()
                 vec2.new(e.position.x, e.position.y), vec2.new(size, size),
                 uniform(0.8, 1.7), {1, 0, 0, 1}, e.deathParticleTick
             )
-            particle.velocity = uniform(145, 225)
+            particle.velocity = uniform(75, 225)
             particle.rotation = uniform(0, 360)
         end
     end
@@ -70,9 +70,9 @@ function enemy.new()
     	    -- IDEA: Hard difficulty enemies have the ability to dash
     	    local distance = utils.distanceTo(Player.position, e.position)
     	    if distance > 225 then
-    		local speed = 245
-    		e.position.x = e.position.x + math.cos(e.rotation) * speed * MotionSpeed * delta
-    		e.position.y = e.position.y + math.sin(e.rotation) * speed * MotionSpeed * delta
+        		local speed = 245
+        		e.position.x = e.position.x + math.cos(e.rotation) * speed * MotionSpeed * delta
+        		e.position.y = e.position.y + math.sin(e.rotation) * speed * MotionSpeed * delta
     	    end
     	end
     end

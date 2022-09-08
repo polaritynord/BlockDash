@@ -13,6 +13,7 @@ local interface = {
     wRot = 0;
     wAlpha = 1;
     logKeyPress = false;
+    damageNums = {};
 }
 
 function interface.drawImage(image, position, scale, rotation, alpha)
@@ -152,6 +153,7 @@ function interface.gameLoad()
 end
 
 function interface.updateGame(delta)
+    interface.updateDamageNums(delta)
     -- Change rot & scale of weapon image
     interface.wScale = interface.wScale + (1-interface.wScale) / (250 * delta)
     interface.wRot = interface.wRot + (-interface.wRot) / (250 * delta)
@@ -203,10 +205,21 @@ function interface.update(delta)
     end
 end
 
+function interface.updateDamageNums(delta)
+    for i, v in ipairs(interface.damageNums) do
+        v.update(delta, i)
+    end
+end
+
+function interface.drawDamageNums()
+    for _, v in ipairs(interface.damageNums) do
+        v.draw(delta)
+    end
+end
+
 function interface.drawGame()
-    -- FPS text
-    love.graphics.setNewFont("fonts/Minecraftia-Regular.ttf", 16)
-    love.graphics.print(love.timer.getFPS() .. " FPS", 5, 5)
+    -- Damage numbers
+    interface.drawDamageNums()
 
     -- Inventory slots
     for _, v in ipairs(interface.invSlots) do
@@ -297,11 +310,11 @@ end
 
 function interface.draw()
     if GameState == "game" then
-	interface.drawGame()
+       interface.drawGame()
     elseif GameState == "menu" then
-	interface.drawMenu()
+       interface.drawMenu()
     elseif GameState == "settings" then
-	interface.drawSettings()
+       interface.drawSettings()
     end
 
     love.graphics.setColor(1, 1, 1, 1)
