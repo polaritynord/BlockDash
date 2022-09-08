@@ -11,7 +11,7 @@ local weaponData = require("scripts/weaponData")
 EnemyManager = require("scripts/enemyManager")
 
 local fullscreen = false
-local invertShader 
+local invertShader
 CurrentShader = nil
 
 function dropWeapon(weapon, position)
@@ -25,14 +25,15 @@ end
 function love.keypressed(key, unicode)
     -- Pause key
     if key == "escape" and GameState == "game" and not CurrentShader then
-	GamePaused = not GamePaused end
+        GamePaused = not GamePaused end
     -- Fullscreen key
     if key == "f11" then
-	fullscreen = not fullscreen
-	love.window.setFullscreen(fullscreen, "desktop")
-	-- Set window dimensions to default
-	if not fullscreen then
-	    love.window.setMode(960, 540, {resizable=true}) end
+       fullscreen = not fullscreen
+          love.window.setFullscreen(fullscreen, "desktop")
+             -- Set window dimensions to default
+    	if not fullscreen then
+    	    love.window.setMode(960, 540, {resizable=true})
+        end
     end
 end
 
@@ -63,13 +64,13 @@ end
 
 local function updateWeaponDrops(delta)
     for i, v in ipairs(WeaponDrops) do
-	v.update(delta, i)
+	       v.update(delta, i)
     end
 end
 
 local function drawWeaponDrops()
     for _, v in ipairs(WeaponDrops) do
-	v.draw()
+	       v.draw()
     end
 end
 
@@ -84,36 +85,35 @@ function love.update(delta)
     SC_WIDTH, SC_HEIGHT = love.graphics.getDimensions()
     -- Set cursor
     if GameState == "menu" or GameState == "settings" or GamePaused then
-	love.mouse.setCursor(assets.cursorDefault)	
+        love.mouse.setCursor(assets.cursorDefault)
     else
-	if CurrentShader then
-	    love.mouse.setCursor(assets.cursorCombatI) else
-	    love.mouse.setCursor(assets.cursorCombat) end
+		if CurrentShader then
+	    	love.mouse.setCursor(assets.cursorCombatI) else
+	    	love.mouse.setCursor(assets.cursorCombat) end
     end
 
     Interface.update(delta)
     if GameState == "game" then
-	Player.update(delta)
-	Camera.update(delta)
-	updateWeaponDrops(delta, i)
-	EnemyManager.update(delta)
-	ParticleManager.update(delta)
-    else end
+		Player.update(delta)
+		Camera.update(delta)
+		updateWeaponDrops(delta, i)
+		EnemyManager.update(delta)
+		ParticleManager.update(delta)
+    end
 end
 
 function love.draw()
     if CurrentShader then
-	love.graphics.setBackgroundColor(1-0.07, 1-0.07, 1-0.07, 1)
+		love.graphics.setBackgroundColor(0.93, 0.93, 0.93, 1)
     else
-	love.graphics.setBackgroundColor(0.07, 0.07, 0.07, 1)
+		love.graphics.setBackgroundColor(0.07, 0.07, 0.07, 1)
     end
     love.graphics.setShader(CurrentShader)
     if GameState == "game" then
-	drawWeaponDrops()
-	Player.draw()
-	EnemyManager.draw()
-	ParticleManager.draw()
+		drawWeaponDrops()
+		Player.draw()
+		EnemyManager.draw()
+  		ParticleManager.draw()
     end
     Interface.draw()
 end
-

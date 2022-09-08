@@ -6,9 +6,9 @@ local invSlot = {}
 
 function invSlot.new()
     local s = {
-	position = vec2.new();
-	slot = 1;
-	scale = 1;
+        position = vec2.new();
+        slot = 1;
+        scale = 1;
     }
 
     function s.update(delta)
@@ -18,7 +18,7 @@ function invSlot.new()
 	    s.scale = s.scale + (1-s.scale) / (250 * delta) end
     end
 
-    function s.draw()	
+    function s.draw()
 	local w = Player.weapons[s.slot]
 	local width = assets.invSlotImg:getWidth()
 	local height = assets.invSlotImg:getHeight()
