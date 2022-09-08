@@ -217,7 +217,7 @@ function player.new()
 				p.inReloadTimer = p.inReloadTimer + delta
 		    end
     	    local intelliReload = w.magAmmo < w.magSize and Settings.intelligentReload and not CurrentShader
-    	    if (love.keyboard.isDown("r") or w.magAmmo < 1 or (intelliReload and p.inReloadTimer > 0.55 and not love.mouse.isDown(1))) and w.magAmmo < w.magSize then
+    	    if (love.keyboard.isDown("r") or w.magAmmo < 1 or (intelliReload and p.inReloadTimer > 0.75 and not love.mouse.isDown(1))) and w.magAmmo < w.magSize then
     		p.reloading = true
     		p.reloadTimer = 0
     		p.inReloadTimer = 0
@@ -330,7 +330,6 @@ function player.new()
     end
 
     function p.update(delta)
-        VD.log(p.position.x .. p.position.y)
     	if GamePaused then return end
         -- Functions
     	p.switchSlot()
