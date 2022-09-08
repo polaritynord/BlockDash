@@ -175,9 +175,9 @@ function player.new()
     	-- Particle effects
     	for i = 1, 4 do
     	    local particle = ParticleManager.new(
-    		vec2.new(newBullet.position.x, newBullet.position.y),
-    		vec2.new(8, 8),
-    		0.5, {1, 0.36, 0}, p.shootParticleTick
+        		vec2.new(newBullet.position.x, newBullet.position.y),
+        		vec2.new(8, 8),
+        		0.5, {1, 0.36, 0}, p.shootParticleTick
     	    )
     	    particle.realRotation = p.weaponSprite.rotation + uniform(-0.35, 0.35)
     	    particle.speed = 250
@@ -321,7 +321,7 @@ function player.new()
 
     function p.update(delta)
     	if GamePaused then return end
-    	-- Functions
+        -- Functions
     	p.switchSlot()
     	p.shoot(delta)
     	p.movement(delta)

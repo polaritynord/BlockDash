@@ -4,13 +4,13 @@ local particleManager = { particles = {} }
 
 function particleManager.update(delta)
     for i, v in ipairs(particleManager.particles) do
-	v.update(delta, i)
+       v.update(delta, i)
     end
 end
 
 function particleManager.draw()
     for _, v in ipairs(particleManager.particles) do
-	v.draw()
+       v.draw()
     end
 end
 

@@ -1,5 +1,6 @@
 local utils = require("utils")
 local vec2 = require("lib/vec2")
+local collision = require("lib/collision")
 local uniform = require("lib/uniform")
 local assets = require("scripts/assets")
 
@@ -15,11 +16,46 @@ function enemy.new()
     	scale = uniform(0.7, 1.15);
     }
 
+    function e.checkForDash()
+        local pos = Player.position
+        local img = assets.playerImg
+        local w = img:getWidth()
+        local h = img:getHeight()
+        local c = collision(pos.x, pos.y, w, h, e.position.x, e.position.y, w, h)
+        if c and Player.dashVelocity > 0.05 then
+            -- Damage enemy
+            e.health = e.health - 100
+        end
+    end
+
+    function e.deathParticleTick(particle, delta)
+        particle.position.x = particle.position.x + math.cos(particle.rotation) * particle.velocity * MotionSpeed * delta
+        particle.position.y = particle.position.y + math.sin(particle.rotation) * particle.velocity * MotionSpeed * delta
+        -- Decrease velocity
+        particle.velocity = particle.velocity - particle.velocity / (250 * delta)
+    end
+
+    function e.createDeathParticle()
+        for i = 1, math.random(12, 25) do
+            local size = uniform(3, 7)
+            local particle = ParticleManager.new(
+                vec2.new(e.position.x, e.position.y), vec2.new(size, size),
+                uniform(0.8, 1.7), {1, 0, 0, 1}, e.deathParticleTick
+            )
+            particle.velocity = uniform(145, 225)
+            particle.rotation = uniform(0, 360)
+        end
+    end
+
     function e.update(delta, i)
     	-- Check for death
-    	if e.health < 0.1 then
-    	    e.deathAnim = true end
+    	if e.health < 0.1 and not e.deathAnim then
+    	    e.deathAnim = true
+            -- Create death particles
+            e.createDeathParticle()
+        end
 
+        e.checkForDash()
     	if e.deathAnim then
     	    e.scale = e.scale + 2.5 * MotionSpeed * delta
     	    e.alpha = e.alpha - 6 * MotionSpeed * delta
