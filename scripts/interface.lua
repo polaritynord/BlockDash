@@ -12,6 +12,7 @@ local interface = {
     wScale = 1;
     wRot = 0;
     wAlpha = 1;
+    logKeyPress = false;
 }
 
 function interface.drawImage(image, position, scale, rotation, alpha)
@@ -40,16 +41,16 @@ function interface.gameLoad()
     mPlayButton.uppercaseText = false
 
     function mPlayButton.clickEvent()
-	GameLoad()
+       GameLoad()
     end
     -- Main menu - settings button
     local mSetButton = button.new()
     mSetButton.position = vec2.new(480, 310)
     mSetButton.text = "settings"
     mSetButton.uppercaseText = false
-    
+
     function mSetButton.clickEvent()
-	GameState = "settings"
+       GameState = "settings"
     end
 
     -- Main menu - quit button
@@ -59,9 +60,9 @@ function interface.gameLoad()
     mQuitButton.uppercaseText = false
 
     function mQuitButton.clickEvent()
-	love.event.quit()
+       love.event.quit()
     end
-    
+
     -- Pause menu - continue button
     local pContinueButton = button.new()
     pContinueButton.position = vec2.new(480, 270)
@@ -69,9 +70,9 @@ function interface.gameLoad()
     pContinueButton.text = "continue"
     pContinueButton.uppercaseText = false
     pContinueButton.style = 2
-    
+
     function pContinueButton.clickEvent()
-	GamePaused = false
+       GamePaused = false
     end
     -- Pause menu - quit button
     local pQuitButton = button.new()
@@ -79,22 +80,22 @@ function interface.gameLoad()
     pQuitButton.size = vec2.new(175, 65);
     pQuitButton.text = "quit"
     pQuitButton.uppercaseText = false
-    pQuitButton.style = 2 
-    
+    pQuitButton.style = 2
+
     function pQuitButton.clickEvent()
-	GameState = "menu"
-    end 
+       GameState = "menu"
+    end
     -- Settings menu - sound effects button
     local sSoundButton = button.new()
     sSoundButton.position = vec2.new(480, 150)
     local t = "ON"
     if not Settings.sound then t = "OFF" end
-    sSoundButton.text = "sfx: " .. t 
+    sSoundButton.text = "sfx: " .. t
     sSoundButton.uppercaseText = false
     sSoundButton.style = 1
-    
+
     function sSoundButton.clickEvent()
-	Settings.sound = not Settings.sound
+       Settings.sound = not Settings.sound
 	local text = "ON"
 	if not Settings.sound then
 	    text = "OFF" end
@@ -108,56 +109,56 @@ function interface.gameLoad()
     sQuitButton.style = 2
 
     function sQuitButton.clickEvent()
-	GameState = "menu"
+       GameState = "menu"
     end
     -- Settings menu - intelli-reload button
     local sReloadButton = button.new()
     sReloadButton.position = vec2.new(480, 185)
     local t = "ON"
     if not Settings.intelligentReload then t = "OFF" end
-    sReloadButton.text = "intelligent reload: " .. t 
+    sReloadButton.text = "intelligent reload: " .. t
     sReloadButton.uppercaseText = false
     sReloadButton.style = 1
-    
-    function sReloadButton.clickEvent()
-	Settings.intelligentReload = not Settings.intelligentReload
-	local text = "ON"
-	if not Settings.intelligentReload then
-	    text = "OFF" end
-	sReloadButton.text = "intelligent reload: " .. text
-    end
 
-    interface.buttons.mPlayButton = mPlayButton
-    interface.buttons.mSetButton = mSetButton
-    interface.buttons.mQuitButton = mQuitButton
-    interface.buttons.pContinueButton = pContinueButton
-    interface.buttons.pQuitButton = pQuitButton
-    interface.buttons.sSoundButton = sSoundButton
-    interface.buttons.sReloadButton = sReloadButton 
-    interface.buttons.sQuitButton = sQuitButton
-    -- Create inventory slots
-    interface.invSlots = {}
-    local x = 926 ; local y = 510;
-    local j = Player.slotCount
-    for i = 1, Player.slotCount do
-	local s = invSlot.new()
-	s.position.x = x ; s.position.y = y
-	s.slot = j
-	x = x - 60
-	j = j - 1
-	
-	interface.invSlots[#interface.invSlots+1] = s
+    function sReloadButton.clickEvent()
+    	Settings.intelligentReload = not Settings.intelligentReload
+    	local text = "ON"
+    	if not Settings.intelligentReload then
+    	    text = "OFF" end
+    	sReloadButton.text = "intelligent reload: " .. text
+        end
+
+        interface.buttons.mPlayButton = mPlayButton
+        interface.buttons.mSetButton = mSetButton
+        interface.buttons.mQuitButton = mQuitButton
+        interface.buttons.pContinueButton = pContinueButton
+        interface.buttons.pQuitButton = pQuitButton
+        interface.buttons.sSoundButton = sSoundButton
+        interface.buttons.sReloadButton = sReloadButton
+        interface.buttons.sQuitButton = sQuitButton
+        -- Create inventory slots
+        interface.invSlots = {}
+        local x = 926 ; local y = 510;
+        local j = Player.slotCount
+        for i = 1, Player.slotCount do
+    	local s = invSlot.new()
+    	s.position.x = x ; s.position.y = y
+    	s.slot = j
+    	x = x - 60
+    	j = j - 1
+
+    	interface.invSlots[#interface.invSlots+1] = s
     end
 end
 
-function interface.updateGame(delta) 
+function interface.updateGame(delta)
     -- Change rot & scale of weapon image
     interface.wScale = interface.wScale + (1-interface.wScale) / (250 * delta)
     interface.wRot = interface.wRot + (-interface.wRot) / (250 * delta)
     -- Change alpha of pause screen
     local a = interface.pauseScreenAlpha
     if GamePaused then
-	interface.pauseScreenAlpha = a+(0.65-a) / (250 * delta) 
+	interface.pauseScreenAlpha = a+(0.65-a) / (250 * delta)
 	-- Update buttons
 	interface.buttons.pContinueButton.update(delta)
 	interface.buttons.pQuitButton.update(delta)
@@ -180,10 +181,16 @@ function interface.updateMenu(delta)
     interface.buttons.mQuitButton.update(delta)
 end
 
-function interface.updateSettings(delta) 
+function interface.updateSettings(delta)
     interface.buttons.sSoundButton.update(delta)
     interface.buttons.sReloadButton.update(delta)
     interface.buttons.sQuitButton.update(delta)
+    -- Secret key for enabling logging
+    if not interface.logKeyPress and love.keyboard.isDown("q") then
+        Settings.showLogs = not Settings.showLogs
+        if Settings.showLogs then VD.log("Show logs toggled") end
+    end
+    interface.logKeyPress = love.keyboard.isDown("q")
 end
 
 function interface.update(delta)
@@ -200,7 +207,7 @@ function interface.drawGame()
     -- FPS text
     love.graphics.setNewFont("fonts/Minecraftia-Regular.ttf", 16)
     love.graphics.print(love.timer.getFPS() .. " FPS", 5, 5)
-    
+
     -- Inventory slots
     for _, v in ipairs(interface.invSlots) do
 	v.draw()
@@ -210,7 +217,7 @@ function interface.drawGame()
     -- Health text
     love.graphics.setNewFont("fonts/Minecraftia-Regular.ttf", 24)
     love.graphics.printf(tostring(Player.health), -95+(SC_WIDTH-960), 438+(SC_HEIGHT-540), 1000, "right")
-    
+
     -- Dash indicator
     if Player.dashTimer < 2.5 then
 	love.graphics.setColor(1, 1, 1, 0.45)
@@ -283,9 +290,9 @@ function interface.drawSettings()
     love.graphics.setNewFont("fonts/Minecraftia-Regular.ttf", 38)
     love.graphics.printf("Settings", (SC_WIDTH-960)/2, 45+(SC_HEIGHT-540)/2, 1000, "center")
     -- Buttons
-    interface.buttons.sSoundButton.draw() 
-    interface.buttons.sReloadButton.draw() 
-    interface.buttons.sQuitButton.draw() 
+    interface.buttons.sSoundButton.draw()
+    interface.buttons.sReloadButton.draw()
+    interface.buttons.sQuitButton.draw()
 end
 
 function interface.draw()

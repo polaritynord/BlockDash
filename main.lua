@@ -9,6 +9,7 @@ local camera = require("scripts/camera")
 local weaponDrop = require("scripts/weaponDrop")
 local weaponData = require("scripts/weaponData")
 EnemyManager = require("scripts/enemyManager")
+VD = require("lib/vd")
 
 local fullscreen = false
 local invertShader
@@ -116,4 +117,5 @@ function love.draw()
   		ParticleManager.draw()
     end
     Interface.draw()
+    VD.draw()
 end
