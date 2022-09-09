@@ -9,8 +9,9 @@ function weaponSprite.new()
     local w = {
     	position = vec2.new();
     	rotation = 0;
+        realRot = 0;
     	width = 1;
-    	shootRot = 0;
+    	recoil = 0;
         parent;
     }
 
@@ -18,12 +19,12 @@ function weaponSprite.new()
     	local weapon = w.parent.weapons[w.parent.slot]
     	local recoil = weapon.recoil
     	if w.parent.facing == "right" then recoil = -recoil end
-    	w.shootRot = recoil
+    	w.recoil = recoil
     end
 
     function w.update(delta)
     	-- Decrease recoil rotation
-    	w.shootRot = w.shootRot - w.shootRot / (250 * delta) / MotionSpeed
+    	w.recoil = w.recoil - w.recoil / (250 * delta) / MotionSpeed
     	-- Set position
     	if w.parent.facing == "right" then
     	    w.position.x = w.parent.position.x + 12.5
@@ -34,18 +35,19 @@ function weaponSprite.new()
     	end
     	w.position.y = w.parent.position.y + 3
 
+        local target
+        if w.parent == Player then
+            target = utils.getMousePosition()
+        else
+            target = Player.position
+        end
+        
+        w.realRot = math.atan2(target.y - w.position.y, target.x - w.position.x)
     	if w.parent.reloading then
     	    -- Reload animation
     	    w.rotation = w.rotation + 12 * MotionSpeed * delta
     	else
-            -- Point towards target
-            local target
-            if w.parent == Player then
-                target = utils.getMousePosition()
-            else
-                target = Player.position
-            end
-    	    w.rotation = math.atan2(target.y - w.position.y, target.x - w.position.x)
+    	    w.rotation = w.realRot
     	    -- Invert rotation if player is facing left
     	    if w.parent.facing == "left" then
         		w.rotation = w.rotation + 135
@@ -68,7 +70,7 @@ function weaponSprite.new()
     	local y = (w.position.y - Camera.position.y) * Camera.zoom
 
     	love.graphics.draw(
-    	    image, x, y, w.rotation+w.shootRot,
+    	    image, x, y, w.rotation+w.recoil,
     	    Camera.zoom*1.7*w.width, Camera.zoom*1.7, width/2, height/2
     	)
     	love.graphics.setColor(1, 1, 1, 1)

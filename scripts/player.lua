@@ -137,15 +137,16 @@ function player.new()
     function p.shoot(delta)
     	-- Return if player isn't holding a weapon / reloading / out of ammo / slowmo mode
     	local w = p.weapons[p.slot]
-    	if not w or p.reloading or w.magAmmo < 1 or MotionSpeed < 0.9 then return end
+    	if not w or w.magAmmo < 1 or MotionSpeed < 0.9 then return end
     	-- Increment timer
     	p.shootCooldown = p.shootCooldown + delta * MotionSpeed
     	if not love.mouse.isDown(1) or p.shootCooldown < w.shootTime then
     	    return end
+        p.reloading = false
     	-- Instance bullet
     	local newBullet = bullet.new()
     	newBullet.position = vec2.new(p.weaponSprite.position.x, p.weaponSprite.position.y)
-    	newBullet.rotation = p.weaponSprite.rotation
+    	newBullet.rotation = p.weaponSprite.realRot
     	-- Check where the player is facing
     	local t = 1
     	if p.facing == "left" then
@@ -153,8 +154,8 @@ function player.new()
     	    newBullet.rotation = newBullet.rotation + 135
     	end
     	-- Offset the bullet
-    	newBullet.position.x = newBullet.position.x + math.cos(p.weaponSprite.rotation) * w.bulletOffset * t
-    	newBullet.position.y = newBullet.position.y + math.sin(p.weaponSprite.rotation) * w.bulletOffset * t
+    	newBullet.position.x = newBullet.position.x + math.cos(p.weaponSprite.realRot) * w.bulletOffset * t
+    	newBullet.position.y = newBullet.position.y + math.sin(p.weaponSprite.realRot) * w.bulletOffset * t
     	-- Spread bullet
     	newBullet.rotation = newBullet.rotation + uniform(-1, 1) * w.bulletSpread
     	-- Reset timer
@@ -181,7 +182,7 @@ function player.new()
         		vec2.new(8, 8),
         		0.5, {1, 0.36, 0}, p.shootParticleTick
     	    )
-    	    particle.realRotation = p.weaponSprite.rotation + uniform(-0.35, 0.35)
+    	    particle.realRotation = p.weaponSprite.realRot + uniform(-0.35, 0.35)
     	    particle.speed = 250
     	    if p.facing == "left" then particle.speed = -particle.speed end
     	end

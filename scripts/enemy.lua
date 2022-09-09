@@ -13,7 +13,7 @@ function enemy.new()
     local e = {
     	position = vec2.new();
     	rotation = 0;
-    	health = 100;
+    	health = math.random(45, 70);
     	deathAnim = false;
     	alpha = 1;
     	scale = 1;
@@ -25,6 +25,7 @@ function enemy.new()
         moveCooldown = 0;
         shootCooldown = 0;
         reloading = false;
+        reloadTimer = 0;
     }
 
     function e.checkForDash()
@@ -74,9 +75,9 @@ function enemy.new()
     end
 
     function e.shoot(delta)
-    --     local distance = utils.distanceTo(Player.position, e.position)
-    --     if distance > 350 then return end
-        -- Return if player isn't holding a weapon / reloading / out of ammo / slowmo mode
+        local distance = utils.distanceTo(Player.position, e.position)
+        if distance > 450 then return end
+        -- Return if enemy isn't holding a weapon / reloading / out of ammo
     	local w = e.weapons[e.slot]
     	if not w or e.reloading or w.magAmmo < 1 then return end
     	-- Increment timer
@@ -86,7 +87,7 @@ function enemy.new()
     	-- Instance bullet
     	local newBullet = bullet.new()
     	newBullet.position = vec2.new(e.weaponSprite.position.x, e.weaponSprite.position.y)
-    	newBullet.rotation = e.weaponSprite.rotation
+    	newBullet.rotation = e.weaponSprite.realRot
     	-- Check where the enemy is facing
     	local t = 1
     	if e.facing == "left" then
@@ -94,8 +95,8 @@ function enemy.new()
     	    newBullet.rotation = newBullet.rotation + 135
     	end
     	-- Offset the bullet
-    	newBullet.position.x = newBullet.position.x + math.cos(e.weaponSprite.rotation) * w.bulletOffset * t
-    	newBullet.position.y = newBullet.position.y + math.sin(e.weaponSprite.rotation) * w.bulletOffset * t
+    	newBullet.position.x = newBullet.position.x + math.cos(e.weaponSprite.realRot) * w.bulletOffset * t
+    	newBullet.position.y = newBullet.position.y + math.sin(e.weaponSprite.realRot) * w.bulletOffset * t
     	-- Spread bullet
     	newBullet.rotation = newBullet.rotation + uniform(-1, 1) * w.bulletSpread
     	-- Reset timer
@@ -121,7 +122,7 @@ function enemy.new()
         		vec2.new(8, 8),
         		0.5, {1, 0.36, 0}, e.shootParticleTick
     	    )
-    	    particle.realRotation = e.weaponSprite.rotation + uniform(-0.35, 0.35)
+    	    particle.realRotation = e.weaponSprite.realRot + uniform(-0.35, 0.35)
     	    particle.speed = 250
     	    if e.facing == "left" then particle.speed = -particle.speed end
     	end
@@ -145,9 +146,28 @@ function enemy.new()
         end
     end
 
+    function e.reload(delta)
+    	local w = e.weapons[e.slot]
+    	if not w then return end
+    	-- Increment timer
+    	if e.reloading then
+    	    e.reloadTimer = e.reloadTimer + delta * MotionSpeed
+    	    if e.reloadTimer > w.reloadTime then
+        		-- Reload current weapon
+        		e.reloading = false
+        		w.magAmmo = w.magSize
+            end
+    	else
+    	    if w.magAmmo < 1 then
+        		e.reloading = true
+        		e.reloadTimer = 0
+    	    end
+    	end
+    end
+
     function e.load()
         e.weaponSprite.parent = e
-        e.weapons[1].magAmmo = 1000
+        e.weapons[e.slot].magAmmo = e.weapons[e.slot].magSize
     end
 
     function e.update(delta, i)
@@ -171,6 +191,7 @@ function enemy.new()
     	    e.move(delta)
             e.setFacing(delta)
             e.shoot(delta)
+            e.reload(delta)
             e.weaponSprite.update(delta)
     	end
     end
