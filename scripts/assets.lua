@@ -3,7 +3,7 @@ local assets = {}
 function assets.load()
     -- Sounds
     assets.sounds = {}
-    assets.sounds.buttonClick = love.audio.newSource("sounds/button_click.wav", "static") 
+    assets.sounds.buttonClick = love.audio.newSource("sounds/button_click.wav", "static")
 end
 
 function assets.gameLoad()

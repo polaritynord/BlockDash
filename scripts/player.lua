@@ -87,10 +87,10 @@ function player.new()
     	    -- Change width
     	    local sm = 250 * delta
     	    if p.facing == "right" then
-    		p.width = p.width + (1-p.width) / sm * MotionSpeed
+                p.width = p.width + (1-p.width) / sm * MotionSpeed
     	    else
-    		p.width = p.width + (-1-p.width) / sm * MotionSpeed
-       end
+                p.width = p.width + (-1-p.width) / sm * MotionSpeed
+            end
     end
 
     function p.switchSlot()
@@ -118,20 +118,20 @@ function player.new()
         end
 
         function p.drop()
-    	local w = p.weapons[p.slot]
-    	if not w or not love.keyboard.isDown("v") or CurrentShader or p.reloading then return end
-    	-- Instance weaponDrop
-    	local newDrop = weaponDrop.new()
-    	local rot = p.weaponSprite.rotation
-    	if p.facing == "left" then rot = rot-135 end
-    	newDrop.position = vec2.new(
-    	    p.position.x+math.cos(rot) * 45,
-    	    p.position.y+math.sin(rot) * 45
-    	)
-    	newDrop.weapon = w
-    	WeaponDrops[#WeaponDrops+1] = newDrop
-    	-- Clear current slot
-    	p.weapons[p.slot] = nil
+        	local w = p.weapons[p.slot]
+        	if not w or not love.keyboard.isDown("v") or CurrentShader or p.reloading then return end
+        	-- Instance weaponDrop
+        	local newDrop = weaponDrop.new()
+        	local rot = p.weaponSprite.rotation
+        	if p.facing == "left" then rot = rot-135 end
+        	newDrop.position = vec2.new(
+        	    p.position.x+math.cos(rot) * 45,
+        	    p.position.y+math.sin(rot) * 45
+        	)
+        	newDrop.weapon = w
+        	WeaponDrops[#WeaponDrops+1] = newDrop
+        	-- Clear current slot
+        	p.weapons[p.slot] = nil
     end
 
     function p.shoot(delta)
@@ -318,6 +318,7 @@ function player.new()
 
     -- Event functions
     function p.load()
+        p.weaponSprite.parent = p
     	-- Generate weapon slots
     	for i = 1, p.slotCount do
     	    p.weapons[#p.weapons+1] = nil end
@@ -342,7 +343,7 @@ function player.new()
     	p.drop()
     	p.updateTrail(delta)
     	p.updateBullets(delta)
-    	p.weaponSprite.update(delta)
+        p.weaponSprite.update(delta)
     end
 
     function p.draw()

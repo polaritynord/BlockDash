@@ -26,7 +26,7 @@ ar.reloadTime = 1.0675
 ar.magSize = 30
 ar.bulletOffset = 20
 ar.recoil = 0.65
-ar.shootTime = 0.135
+ar.shootTime = 0.1
 
 weaponData["pistol"] = pistol
 weaponData["assaultRifle"] = ar

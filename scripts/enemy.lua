@@ -3,6 +3,8 @@ local vec2 = require("lib/vec2")
 local collision = require("lib/collision")
 local uniform = require("lib/uniform")
 local assets = require("scripts/assets")
+local weaponSprite = require("scripts/weaponSprite")
+local weaponData = require("scripts/weaponData")
 
 local enemy = {}
 
@@ -14,6 +16,11 @@ function enemy.new()
     	deathAnim = false;
     	alpha = 1;
     	scale = uniform(0.7, 1.15);
+        weapons = {weaponData.pistol.new()};
+        weaponSprite = weaponSprite.new();
+        slot = 1;
+        facing = "right";
+        width = 1;
     }
 
     function e.checkForDash()
@@ -47,6 +54,25 @@ function enemy.new()
         end
     end
 
+    function e.setFacing(delta)
+    	-- Set facing value
+    	local m = Player.position
+    	if m.x > e.position.x then
+    	    e.facing = "right" else
+    	    e.facing = "left" end
+	    -- Change width
+	    local sm = 250 * delta
+	    if e.facing == "right" then
+            e.width = e.width + (1-e.width) / sm * MotionSpeed
+	    else
+            e.width = e.width + (-1-e.width) / sm * MotionSpeed
+        end
+    end
+
+    function e.load()
+        e.weaponSprite.parent = e
+    end
+
     function e.update(delta, i)
     	-- Check for death
     	if e.health < 0.1 and not e.deathAnim then
@@ -61,7 +87,7 @@ function enemy.new()
     	    e.alpha = e.alpha - 6 * MotionSpeed * delta
     	    -- Despawn
     	    if e.alpha < 0 then
-    		table.remove(EnemyManager.enemies, i) end
+		          table.remove(EnemyManager.enemies, i) end
     	else
     	    -- Point towards player
     	    local pos = Player.position
@@ -74,6 +100,8 @@ function enemy.new()
         		e.position.x = e.position.x + math.cos(e.rotation) * speed * MotionSpeed * delta
         		e.position.y = e.position.y + math.sin(e.rotation) * speed * MotionSpeed * delta
     	    end
+            e.setFacing(delta)
+            e.weaponSprite.update(delta)
     	end
     end
 
@@ -86,9 +114,10 @@ function enemy.new()
     	love.graphics.setColor(1, 0, 0, e.alpha)
     	love.graphics.draw(
     	    image, x, y, e.rotation,
-    	    e.scale, e.scale, width/2, height/2
+    	    e.scale*e.width, e.scale, width/2, height/2
     	)
     	love.graphics.setColor(1, 1, 1, 1)
+        e.weaponSprite.draw()
     end
 
     return e

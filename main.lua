@@ -31,7 +31,7 @@ function love.keypressed(key, unicode)
     if key == "f11" then
        fullscreen = not fullscreen
           love.window.setFullscreen(fullscreen, "desktop")
-             -- Set window dimensions to default
+        -- Set window dimensions to default
     	if not fullscreen then
     	    love.window.setMode(960, 540, {resizable=true})
         end
@@ -74,10 +74,12 @@ local function drawWeaponDrops()
 end
 
 local function drawWalls()
+    love.graphics.setColor(1, 0, 0, 1)
     love.graphics.rectangle("fill", (-700-Camera.position.x)*Camera.zoom, (-700-Camera.position.y)*Camera.zoom, 12, 1400)
     love.graphics.rectangle("fill", (-700-Camera.position.x)*Camera.zoom, (700-Camera.position.y)*Camera.zoom, 1400, 12)
     love.graphics.rectangle("fill", (700-Camera.position.x)*Camera.zoom, (-700-Camera.position.y)*Camera.zoom, 12, 1400)
     love.graphics.rectangle("fill", (-700-Camera.position.x)*Camera.zoom, (-700-Camera.position.y)*Camera.zoom, 1400, 12)
+    love.graphics.setColor(1, 1, 1, 1)
 end
 
 function love.load()

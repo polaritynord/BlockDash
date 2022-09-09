@@ -10,6 +10,7 @@ local enemyManager = {
 function enemyManager.newEnemy(position)
     local newEnemy = enemy.new()
     newEnemy.position = position
+    newEnemy.load()
     enemyManager.enemies[#enemyManager.enemies+1] = newEnemy
 end
 
