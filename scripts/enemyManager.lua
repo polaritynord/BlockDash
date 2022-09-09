@@ -26,7 +26,6 @@ end
 function enemyManager.load()
     enemyManager.enemies = {}
     enemyManager.spawnTimer = 0
-    -- enemyManager.newEnemy(vec2.new(0, 0))
 end
 
 function enemyManager.update(delta)

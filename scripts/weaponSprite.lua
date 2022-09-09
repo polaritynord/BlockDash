@@ -14,7 +14,7 @@ function weaponSprite.new()
         parent;
     }
 
-    function w.playerShot()
+    function w.parentShot()
     	local weapon = w.parent.weapons[w.parent.slot]
     	local recoil = weapon.recoil
     	if w.parent.facing == "right" then recoil = -recoil end

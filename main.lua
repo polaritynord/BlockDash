@@ -44,6 +44,7 @@ function GameLoad()
     assets.load()
     assets.gameLoad()
     MotionSpeed = 1
+    EnemyBullets = {}
     -- Setup player
     Player = player.new()
     Player.load()
@@ -82,6 +83,18 @@ local function drawWalls()
     love.graphics.setColor(1, 1, 1, 1)
 end
 
+local function updateEBullets(delta)
+    for i, v in ipairs(EnemyBullets) do
+        v.update(delta, i)
+    end
+end
+
+local function drawEBullets(delta)
+    for _, v in ipairs(EnemyBullets) do
+        v.draw()
+    end
+end
+
 function love.load()
     love.graphics.setDefaultFilter("nearest", "nearest")
     -- Set custom cursor
@@ -107,6 +120,7 @@ function love.update(delta)
 		updateWeaponDrops(delta, i)
 		EnemyManager.update(delta)
 		ParticleManager.update(delta)
+        updateEBullets(delta)
     end
 end
 
@@ -121,7 +135,8 @@ function love.draw()
 		drawWeaponDrops()
 		Player.draw()
 		EnemyManager.draw()
-  		ParticleManager.draw()
+        drawEBullets()
+        ParticleManager.draw()
         drawWalls()
     end
     Interface.draw()

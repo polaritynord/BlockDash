@@ -5,6 +5,7 @@ local uniform = require("lib/uniform")
 local assets = require("scripts/assets")
 local weaponSprite = require("scripts/weaponSprite")
 local weaponData = require("scripts/weaponData")
+local bullet = require("scripts/bullet")
 
 local enemy = {}
 
@@ -15,12 +16,15 @@ function enemy.new()
     	health = 100;
     	deathAnim = false;
     	alpha = 1;
-    	scale = uniform(0.7, 1.15);
+    	scale = 1;
         weapons = {weaponData.pistol.new()};
         weaponSprite = weaponSprite.new();
         slot = 1;
         facing = "right";
         width = 1;
+        moveCooldown = 0;
+        shootCooldown = 0;
+        reloading = false;
     }
 
     function e.checkForDash()
@@ -69,8 +73,81 @@ function enemy.new()
         end
     end
 
+    function e.shoot(delta)
+    --     local distance = utils.distanceTo(Player.position, e.position)
+    --     if distance > 350 then return end
+        -- Return if player isn't holding a weapon / reloading / out of ammo / slowmo mode
+    	local w = e.weapons[e.slot]
+    	if not w or e.reloading or w.magAmmo < 1 then return end
+    	-- Increment timer
+    	e.shootCooldown = e.shootCooldown + delta * MotionSpeed
+    	if e.shootCooldown < w.shootTime then
+    	    return end
+    	-- Instance bullet
+    	local newBullet = bullet.new()
+    	newBullet.position = vec2.new(e.weaponSprite.position.x, e.weaponSprite.position.y)
+    	newBullet.rotation = e.weaponSprite.rotation
+    	-- Check where the enemy is facing
+    	local t = 1
+    	if e.facing == "left" then
+    	    t = -1
+    	    newBullet.rotation = newBullet.rotation + 135
+    	end
+    	-- Offset the bullet
+    	newBullet.position.x = newBullet.position.x + math.cos(e.weaponSprite.rotation) * w.bulletOffset * t
+    	newBullet.position.y = newBullet.position.y + math.sin(e.weaponSprite.rotation) * w.bulletOffset * t
+    	-- Spread bullet
+    	newBullet.rotation = newBullet.rotation + uniform(-1, 1) * w.bulletSpread
+    	-- Reset timer
+    	e.shootCooldown = 0
+    	-- Decrease mag ammo
+    	w.magAmmo = w.magAmmo - 1
+    	-- Shoot event for UI & Sprite
+    	e.weaponSprite.parentShot()
+    	-- Play sound
+    	if Settings.sound then
+    	    assets.sounds.shoot:play()
+    	end
+    	-- Special bullet attributes
+    	newBullet.speed = w.bulletSpeed
+        newBullet.damage = w.bulletDamage
+        newBullet.parent = e
+    	-- Add to table
+    	EnemyBullets[#EnemyBullets+1] = newBullet
+    	-- Particle effects
+    	for i = 1, 4 do
+    	    local particle = ParticleManager.new(
+        		vec2.new(newBullet.position.x, newBullet.position.y),
+        		vec2.new(8, 8),
+        		0.5, {1, 0.36, 0}, e.shootParticleTick
+    	    )
+    	    particle.realRotation = e.weaponSprite.rotation + uniform(-0.35, 0.35)
+    	    particle.speed = 250
+    	    if e.facing == "left" then particle.speed = -particle.speed end
+    	end
+    end
+
+    function e.shootParticleTick(particle, delta)
+    	particle.position.x = particle.position.x + math.cos(particle.realRotation) * particle.speed * MotionSpeed * delta
+    	particle.position.y = particle.position.y + math.sin(particle.realRotation) * particle.speed * MotionSpeed * delta
+    	particle.rotation = particle.rotation + (4 * delta) * MotionSpeed
+    	particle.size.x = particle.size.x - (8 * delta) * MotionSpeed
+    	particle.size.y = particle.size.y - (8 * delta) * MotionSpeed
+    	particle.alpha = particle.alpha - (8.5 * delta) * MotionSpeed
+    end
+
+    function e.move(delta)
+        local distance = utils.distanceTo(Player.position, e.position)
+        if distance > 225 then
+            local speed = 245
+            e.position.x = e.position.x + math.cos(e.rotation) * speed * MotionSpeed * delta
+            e.position.y = e.position.y + math.sin(e.rotation) * speed * MotionSpeed * delta
+        end
+    end
+
     function e.load()
         e.weaponSprite.parent = e
+        e.weapons[1].magAmmo = 1000
     end
 
     function e.update(delta, i)
@@ -89,18 +166,11 @@ function enemy.new()
     	    if e.alpha < 0 then
 		          table.remove(EnemyManager.enemies, i) end
     	else
-    	    -- Point towards player
-    	    local pos = Player.position
-    	    e.rotation = math.atan2(pos.y - e.position.y, pos.x - e.position.x)
-    	    -- Move towards payer if far away
+            e.rotation = math.atan2(Player.position.y - e.position.y, Player.position.x - e.position.x)
     	    -- IDEA: Hard difficulty enemies have the ability to dash
-    	    local distance = utils.distanceTo(Player.position, e.position)
-    	    if distance > 225 then
-        		local speed = 245
-        		e.position.x = e.position.x + math.cos(e.rotation) * speed * MotionSpeed * delta
-        		e.position.y = e.position.y + math.sin(e.rotation) * speed * MotionSpeed * delta
-    	    end
+    	    e.move(delta)
             e.setFacing(delta)
+            e.shoot(delta)
             e.weaponSprite.update(delta)
     	end
     end
@@ -113,7 +183,7 @@ function enemy.new()
     	local y = (e.position.y - Camera.position.y) * Camera.zoom
     	love.graphics.setColor(1, 0, 0, e.alpha)
     	love.graphics.draw(
-    	    image, x, y, e.rotation,
+    	    image, x, y, 0,
     	    e.scale*e.width, e.scale, width/2, height/2
     	)
     	love.graphics.setColor(1, 1, 1, 1)

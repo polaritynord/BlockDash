@@ -163,7 +163,7 @@ function player.new()
     	w.magAmmo = w.magAmmo - 1
     	-- Shoot event for UI & Sprite
     	Interface.playerShot()
-    	p.weaponSprite.playerShot()
+    	p.weaponSprite.parentShot()
     	-- Play sound
     	if Settings.sound then
     	    assets.sounds.shoot:play()
@@ -171,6 +171,7 @@ function player.new()
     	-- Special bullet attributes
     	newBullet.speed = w.bulletSpeed
         newBullet.damage = w.bulletDamage
+        newBullet.parent = p
     	-- Add to table
     	p.bullets[#p.bullets+1] = newBullet
     	-- Particle effects
