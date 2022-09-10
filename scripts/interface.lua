@@ -33,7 +33,7 @@ function interface.playerShot()
 end
 
 -- Event functions
-function interface.gameLoad()
+function interface.load()
     interface.buttons = {}
     -- Main menu - play button
     local mPlayButton = button.new()
@@ -42,7 +42,8 @@ function interface.gameLoad()
     mPlayButton.uppercaseText = false
 
     function mPlayButton.clickEvent()
-       GameLoad()
+        GameState = "diffSelect"
+       --GameLoad()
     end
     -- Main menu - settings button
     local mSetButton = button.new()
@@ -121,27 +122,62 @@ function interface.gameLoad()
     sReloadButton.uppercaseText = false
     sReloadButton.style = 1
 
+    -- Diff menu - easy button
+    local dEasyButton = button.new()
+    dEasyButton.position = vec2.new(480, 240)
+    dEasyButton.text = "easy"
+    dEasyButton.uppercaseText = false
+    dEasyButton.style = 2
+
+    function dEasyButton.clickEvent()
+        Difficulty = "easy"
+        GameLoad()
+    end
+
+    -- Diff menu - medium button
+    local dMediumButton = button.new()
+    dMediumButton.position = vec2.new(480, 330)
+    dMediumButton.text = "medium"
+    dMediumButton.uppercaseText = false
+    dMediumButton.style = 2
+
+    function dMediumButton.clickEvent()
+        Difficulty = "medium" end
+
+    -- Diff menu - hard button
+    local dHardButton = button.new()
+    dHardButton.position = vec2.new(480, 420)
+    dHardButton.text = "hard"
+    dHardButton.uppercaseText = false
+    dHardButton.style = 2
+
+    function dHardButton.clickEvent()
+        Difficulty = "hard" end
+
     function sReloadButton.clickEvent()
     	Settings.intelligentReload = not Settings.intelligentReload
     	local text = "ON"
     	if not Settings.intelligentReload then
     	    text = "OFF" end
     	sReloadButton.text = "intelligent reload: " .. text
-        end
+    end
 
-        interface.buttons.mPlayButton = mPlayButton
-        interface.buttons.mSetButton = mSetButton
-        interface.buttons.mQuitButton = mQuitButton
-        interface.buttons.pContinueButton = pContinueButton
-        interface.buttons.pQuitButton = pQuitButton
-        interface.buttons.sSoundButton = sSoundButton
-        interface.buttons.sReloadButton = sReloadButton
-        interface.buttons.sQuitButton = sQuitButton
-        -- Create inventory slots
-        interface.invSlots = {}
-        local x = 926 ; local y = 510;
-        local j = Player.slotCount
-        for i = 1, Player.slotCount do
+    interface.buttons.mPlayButton = mPlayButton
+    interface.buttons.mSetButton = mSetButton
+    interface.buttons.mQuitButton = mQuitButton
+    interface.buttons.pContinueButton = pContinueButton
+    interface.buttons.pQuitButton = pQuitButton
+    interface.buttons.sSoundButton = sSoundButton
+    interface.buttons.sReloadButton = sReloadButton
+    interface.buttons.sQuitButton = sQuitButton
+    interface.buttons.dEasyButton = dEasyButton
+    interface.buttons.dMediumButton = dMediumButton
+    interface.buttons.dHardButton = dHardButton
+    -- Create inventory slots
+    interface.invSlots = {}
+    local x = 926 ; local y = 510;
+    local j = Player.slotCount
+    for i = 1, Player.slotCount do
     	local s = invSlot.new()
     	s.position.x = x ; s.position.y = y
     	s.slot = j
@@ -177,6 +213,12 @@ function interface.updateGame(delta)
     end
 end
 
+function interface.updateDiffSelect(delta)
+    interface.buttons.dEasyButton.update(delta)
+    interface.buttons.dMediumButton.update(delta)
+    interface.buttons.dHardButton.update(delta)
+end
+
 function interface.updateMenu(delta)
     interface.buttons.mPlayButton.update(delta)
     interface.buttons.mSetButton.update(delta)
@@ -197,12 +239,14 @@ end
 
 function interface.update(delta)
     if GameState == "game" then
-	interface.updateGame(delta)
+       interface.updateGame(delta)
     elseif GameState == "menu" then
-	interface.updateMenu(delta)
+       interface.updateMenu(delta)
     elseif GameState == "settings" then
-	interface.updateSettings(delta)
-    end
+       interface.updateSettings(delta)
+   elseif GameState == "diffSelect" then
+       interface.updateDiffSelect(delta)
+   end
 end
 
 function interface.updateDamageNums(delta)
@@ -267,7 +311,7 @@ function interface.drawGame()
 
     -- Dash text
     if CurrentShader then
-	love.graphics.print("RELEASE SPACE TO DASH", 327+(SC_WIDTH-960)/2, 360+(SC_HEIGHT-540)/2)
+       love.graphics.print("RELEASE SPACE TO DASH", 327+(SC_WIDTH-960)/2, 360+(SC_HEIGHT-540)/2)
     end
 
     -- Pause menu
@@ -283,6 +327,16 @@ function interface.drawGame()
 	interface.buttons.pContinueButton.draw()
 	interface.buttons.pQuitButton.draw()
     end
+end
+
+function interface.drawDiffSelect()
+    -- Title
+    love.graphics.setNewFont("fonts/Minecraftia-Regular.ttf", 38)
+    love.graphics.printf("Difficulty Select", (SC_WIDTH-960)/2, 45+(SC_HEIGHT-540)/2, 1000, "center")
+    -- Buttons
+    interface.buttons.dEasyButton.draw()
+    interface.buttons.dMediumButton.draw()
+    interface.buttons.dHardButton.draw()
 end
 
 function interface.drawMenu()
@@ -315,7 +369,9 @@ function interface.draw()
        interface.drawMenu()
     elseif GameState == "settings" then
        interface.drawSettings()
-    end
+   elseif GameState == "diffSelect" then
+       interface.drawDiffSelect()
+   end
 
     love.graphics.setColor(1, 1, 1, 1)
 end

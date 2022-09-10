@@ -55,7 +55,7 @@ function GameLoad()
     -- Enemies
     EnemyManager.load()
     -- Setup interface
-    Interface.gameLoad()
+    Interface.load()
     GamePaused = false
     -- Setup camera
     Camera = camera.new()

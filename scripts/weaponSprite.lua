@@ -41,18 +41,13 @@ function weaponSprite.new()
         else
             target = Player.position
         end
-        
-        w.realRot = math.atan2(target.y - w.position.y, target.x - w.position.x)
+
+        w.realRot = math.atan((target.y - w.position.y)/(target.x - w.position.x))
     	if w.parent.reloading then
     	    -- Reload animation
     	    w.rotation = w.rotation + 12 * MotionSpeed * delta
     	else
     	    w.rotation = w.realRot
-    	    -- Invert rotation if player is facing left
-    	    if w.parent.facing == "left" then
-        		w.rotation = w.rotation + 135
-        		-- This works just fine but I'm not sure its the best way to do this
-    	    end
     	end
     end
 

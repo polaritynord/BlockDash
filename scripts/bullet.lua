@@ -38,8 +38,8 @@ function bullet.new()
         	    local w1 = image:getWidth()
         	    local h1 = image:getHeight()
         	    local eImg = assets.playerImg
-        	    local w2 = eImg:getWidth() * v.scale
-        	    local h2 = eImg:getHeight() * v.scale
+        	    local w2 = eImg:getWidth()
+        	    local h2 = eImg:getHeight()
 
         	    local p = b.position
         	    local p2 = v.position
@@ -53,6 +53,21 @@ function bullet.new()
                     Interface.damageNums[#Interface.damageNums+1] = damageNum
         		    return
                 end
+            end
+        else
+            local image = assets.bulletImg
+            local w1 = image:getWidth()
+            local h1 = image:getHeight()
+            local eImg = assets.playerImg
+            local w2 = eImg:getWidth()
+            local h2 = eImg:getHeight()
+
+            local p = b.position
+            local p2 = Player.position
+            if collision(p.x-w1/2, p.y-h1/2, w1, h1, p2.x-w2/2, p2.y-h2/2, w2, h2) then
+                Player.health = Player.health - b.damage
+                table.remove(EnemyBullets, i)
+                return
             end
         end
     	-- Movement
