@@ -26,7 +26,6 @@ function enemy.new()
         shootCooldown = 0;
         reloading = false;
         reloadTimer = 0;
-        deathTimer = 0;
     }
 
     function e.checkForDash()

@@ -25,7 +25,7 @@ end
 
 function love.keypressed(key, unicode)
     -- Pause key
-    if key == "escape" and GameState == "game" and not CurrentShader then
+    if key == "escape" and GameState == "game" and not CurrentShader and not Player.dead then
         GamePaused = not GamePaused end
     -- Fullscreen key
     if key == "f11" then

@@ -43,6 +43,7 @@ function player.new()
         dead = false;
         scale = 1;
         alpha = 1;
+        deathTimer = 0;
     }
 
     -- Trail related functions
@@ -369,7 +370,11 @@ function player.new()
                     particle.rotation = uniform(0, 360)
                 end
             end
+            -- Variables
             p.dead = true
+            CurrentShader = nil
+            MotionSpeed = 1
+            p.deathTimer = p.deathTimer + delta
             -- Animation
             p.scale = p.scale + 2.5 * MotionSpeed * delta
     	    p.alpha = p.alpha - 6 * MotionSpeed * delta

@@ -8,6 +8,7 @@ local invSlot = require("scripts/invSlot")
 local interface = {
     buttons = {};
     pauseScreenAlpha = 0;
+    deathScreenAlpha = 0;
     invSlots = {};
     wScale = 1;
     wRot = 0;
@@ -43,8 +44,8 @@ function interface.load()
 
     function mPlayButton.clickEvent()
         GameState = "diffSelect"
-       --GameLoad()
     end
+
     -- Main menu - settings button
     local mSetButton = button.new()
     mSetButton.position = vec2.new(480, 310)
@@ -122,6 +123,14 @@ function interface.load()
     sReloadButton.uppercaseText = false
     sReloadButton.style = 1
 
+    function sReloadButton.clickEvent()
+    	Settings.intelligentReload = not Settings.intelligentReload
+    	local text = "ON"
+    	if not Settings.intelligentReload then
+    	    text = "OFF" end
+    	sReloadButton.text = "intelligent reload: " .. text
+    end
+
     -- Diff menu - easy button
     local dEasyButton = button.new()
     dEasyButton.position = vec2.new(480, 240)
@@ -154,12 +163,15 @@ function interface.load()
     function dHardButton.clickEvent()
         Difficulty = "hard" end
 
-    function sReloadButton.clickEvent()
-    	Settings.intelligentReload = not Settings.intelligentReload
-    	local text = "ON"
-    	if not Settings.intelligentReload then
-    	    text = "OFF" end
-    	sReloadButton.text = "intelligent reload: " .. text
+    -- Death menu - return button
+    local deReturnButton = button.new()
+    deReturnButton.position = vec2.new(480, 420)
+    deReturnButton.text = "return"
+    deReturnButton.uppercaseText = false
+    deReturnButton.style = 2
+
+    function deReturnButton.clickEvent()
+        GameState = "menu"
     end
 
     interface.buttons.mPlayButton = mPlayButton
@@ -173,6 +185,7 @@ function interface.load()
     interface.buttons.dEasyButton = dEasyButton
     interface.buttons.dMediumButton = dMediumButton
     interface.buttons.dHardButton = dHardButton
+    interface.buttons.deReturnButton = deReturnButton
     -- Create inventory slots
     interface.invSlots = {}
     local x = 926 ; local y = 510;
@@ -193,15 +206,22 @@ function interface.updateGame(delta)
     -- Change rot & scale of weapon image
     interface.wScale = interface.wScale + (1-interface.wScale) / (250 * delta)
     interface.wRot = interface.wRot + (-interface.wRot) / (250 * delta)
+    -- Change alpha of death screen
+    local a = interface.deathScreenAlpha
+    if Player.dead and Player.deathTimer > 1.5 then
+        interface.deathScreenAlpha = a+(0.65-a) / (450 * delta)
+        -- Update buttons
+        interface.buttons.deReturnButton.update(delta)
+    end
     -- Change alpha of pause screen
-    local a = interface.pauseScreenAlpha
+    a = interface.pauseScreenAlpha
     if GamePaused then
-	interface.pauseScreenAlpha = a+(0.65-a) / (250 * delta)
-	-- Update buttons
-	interface.buttons.pContinueButton.update(delta)
-	interface.buttons.pQuitButton.update(delta)
+    	interface.pauseScreenAlpha = a+(0.65-a) / (250 * delta)
+    	-- Update buttons
+    	interface.buttons.pContinueButton.update(delta)
+    	interface.buttons.pQuitButton.update(delta)
     else
-	interface.pauseScreenAlpha = a+(0-a) / (250 * delta)
+        interface.pauseScreenAlpha = a+(0-a) / (250 * delta)
     end
     -- Update inventory slots
     for _, v in ipairs(interface.invSlots) do
@@ -267,7 +287,7 @@ function interface.drawGame()
 
     -- Inventory slots
     for _, v in ipairs(interface.invSlots) do
-	v.draw()
+       v.draw()
     end
     -- Health icon
     interface.drawImage(assets.healthIconImg, vec2.new(930+(SC_WIDTH-960), 452+(SC_HEIGHT-540)), 4)
@@ -277,36 +297,36 @@ function interface.drawGame()
 
     -- Dash indicator
     if Player.dashTimer < 2.5 then
-	love.graphics.setColor(1, 1, 1, 0.45)
-	love.graphics.printf("CHARGING", -90+(SC_WIDTH-960), 382.5+(SC_HEIGHT-540), 1000, "right")
-	love.graphics.setColor(0.35, 0.35, 0.35, 1)
+    	love.graphics.setColor(1, 1, 1, 0.45)
+    	love.graphics.printf("CHARGING", -90+(SC_WIDTH-960), 382.5+(SC_HEIGHT-540), 1000, "right")
+    	love.graphics.setColor(0.35, 0.35, 0.35, 1)
     else
-	love.graphics.setColor(1, 1, 1, 1)
-	love.graphics.printf("READY", -90+(SC_WIDTH-960), 382.5+(SC_HEIGHT-540), 1000, "right")
+    	love.graphics.setColor(1, 1, 1, 1)
+    	love.graphics.printf("READY", -90+(SC_WIDTH-960), 382.5+(SC_HEIGHT-540), 1000, "right")
     end
     interface.drawImage(assets.dashIconImg, vec2.new(930+(SC_WIDTH-960), 400+(SC_HEIGHT-540)), 1.85)
 
     love.graphics.setColor(1, 1, 1, 1)
     -- Weapon UI
     if Player.weapons[Player.slot] then
-	local w = Player.weapons[Player.slot]
-	-- Image
-	local image = assets.weapons[w.name .. "Img"]
-	interface.drawImage(image, vec2.new(60, 445+(SC_HEIGHT-540)), 3*interface.wScale, interface.wRot)
-	-- Name
-	love.graphics.setNewFont("fonts/Minecraftia-Regular.ttf", 24)
-	love.graphics.print(utils.capitalize(w.name), 25, 470+(SC_HEIGHT-540))
-	-- Mag ammo
-	love.graphics.setNewFont("fonts/Minecraftia-Regular.ttf", 20)
-	local t = w.magAmmo
-	local len = #tostring(t)
-	if Player.reloading then t = ". ." end
-	love.graphics.print(t, 25 - (len-1)*15, 505+(SC_HEIGHT-540))
-	-- Ammo icon
-	local image = assets.ammoIconImg
-	interface.drawImage(image, vec2.new(55, 518.5+(SC_HEIGHT-540)), 1)
-	-- Infinite text
-	love.graphics.print("∞", 71, 503+(SC_HEIGHT-540))
+    	local w = Player.weapons[Player.slot]
+    	-- Image
+    	local image = assets.weapons[w.name .. "Img"]
+    	interface.drawImage(image, vec2.new(60, 445+(SC_HEIGHT-540)), 3*interface.wScale, interface.wRot)
+    	-- Name
+    	love.graphics.setNewFont("fonts/Minecraftia-Regular.ttf", 24)
+    	love.graphics.print(utils.capitalize(w.name), 25, 470+(SC_HEIGHT-540))
+    	-- Mag ammo
+    	love.graphics.setNewFont("fonts/Minecraftia-Regular.ttf", 20)
+    	local t = w.magAmmo
+    	local len = #tostring(t)
+    	if Player.reloading then t = ". ." end
+    	love.graphics.print(t, 25 - (len-1)*15, 505+(SC_HEIGHT-540))
+    	-- Ammo icon
+    	local image = assets.ammoIconImg
+    	interface.drawImage(image, vec2.new(55, 518.5+(SC_HEIGHT-540)), 1)
+    	-- Infinite text
+    	love.graphics.print("∞", 71, 503+(SC_HEIGHT-540))
     end
 
     -- Dash text
@@ -314,18 +334,31 @@ function interface.drawGame()
        love.graphics.print("RELEASE SPACE TO DASH", 327+(SC_WIDTH-960)/2, 360+(SC_HEIGHT-540)/2)
     end
 
+    -- Death screen
+    if Player.dead and Player.deathTimer > 1.5 then
+        -- Background
+    	love.graphics.setColor(0, 0, 0, interface.deathScreenAlpha)
+    	love.graphics.rectangle("fill", 0, 0, SC_WIDTH, SC_HEIGHT)
+    	-- Title
+    	love.graphics.setNewFont("fonts/Minecraftia-Regular.ttf", 32)
+    	love.graphics.setColor(1, 1, 1, interface.deathScreenAlpha+0.35)
+    	love.graphics.print("YOU DIED", 395+(SC_WIDTH-960)/2, 120+(SC_HEIGHT-540)/2)
+        -- Buttons
+        interface.buttons.deReturnButton.draw()
+    end
+
     -- Pause menu
     if GamePaused then
-	-- Background
-	love.graphics.setColor(0, 0, 0, interface.pauseScreenAlpha)
-	love.graphics.rectangle("fill", 0, 0, SC_WIDTH, SC_HEIGHT)
-	-- Title
-	love.graphics.setNewFont("fonts/Minecraftia-Regular.ttf", 32)
-	love.graphics.setColor(1, 1, 1, interface.pauseScreenAlpha+0.35)
-	love.graphics.print("GAME PAUSED", 355+(SC_WIDTH-960)/2, 120+(SC_HEIGHT-540)/2)
-	--- Buttons
-	interface.buttons.pContinueButton.draw()
-	interface.buttons.pQuitButton.draw()
+    	-- Background
+    	love.graphics.setColor(0, 0, 0, interface.pauseScreenAlpha)
+    	love.graphics.rectangle("fill", 0, 0, SC_WIDTH, SC_HEIGHT)
+    	-- Title
+    	love.graphics.setNewFont("fonts/Minecraftia-Regular.ttf", 32)
+    	love.graphics.setColor(1, 1, 1, interface.pauseScreenAlpha+0.35)
+    	love.graphics.print("GAME PAUSED", 355+(SC_WIDTH-960)/2, 120+(SC_HEIGHT-540)/2)
+    	--- Buttons
+    	interface.buttons.pContinueButton.draw()
+    	interface.buttons.pQuitButton.draw()
     end
 end
 
