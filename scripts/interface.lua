@@ -151,7 +151,9 @@ function interface.load()
     dMediumButton.style = 2
 
     function dMediumButton.clickEvent()
-        Difficulty = "medium" end
+        Difficulty = "medium"
+        GameLoad()
+    end
 
     -- Diff menu - hard button
     local dHardButton = button.new()
@@ -161,7 +163,9 @@ function interface.load()
     dHardButton.style = 2
 
     function dHardButton.clickEvent()
-        Difficulty = "hard" end
+        Difficulty = "hard"
+        GameLoad()
+    end
 
     -- Death menu - return button
     local deReturnButton = button.new()
@@ -375,10 +379,7 @@ end
 function interface.drawMenu()
     -- Title
     love.graphics.setNewFont("fonts/Minecraftia-Regular.ttf", 38)
-    love.graphics.printf("Insane Shooter", (SC_WIDTH-960)/2, 45+(SC_HEIGHT-540)/2, 1000, "center")
-    -- Suspicious Stew
-    love.graphics.setNewFont("fonts/Minecraftia-Regular.ttf", 8)
-    love.graphics.printf("or idk i havent decided on the name yet", (SC_WIDTH-960)/2, 94+(SC_HEIGHT-540)/2, 1000, "center")
+    love.graphics.printf("Block Dash", (SC_WIDTH-960)/2, 45+(SC_HEIGHT-540)/2, 1000, "center")
     -- Buttons
     interface.buttons.mPlayButton.draw()
     interface.buttons.mSetButton.draw()
