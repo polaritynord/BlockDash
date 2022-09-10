@@ -26,6 +26,7 @@ function enemy.new()
         shootCooldown = 0;
         reloading = false;
         reloadTimer = 0;
+        deathTimer = 0;
     }
 
     function e.checkForDash()
@@ -81,7 +82,7 @@ function enemy.new()
     	local w = e.weapons[e.slot]
     	if not w or e.reloading or w.magAmmo < 1 then return end
     	-- Increment timer
-    	e.shootCooldown = e.shootCooldown + delta * MotionSpeed
+    	e.shootCooldown = e.shootCooldown + delta * MotionSpeed / 2
     	if e.shootCooldown < w.shootTime then
     	    return end
     	-- Instance bullet
@@ -188,9 +189,11 @@ function enemy.new()
     	else
             e.rotation = math.atan2(Player.position.y - e.position.y, Player.position.x - e.position.x)
     	    -- IDEA: Hard difficulty enemies have the ability to dash
-    	    e.move(delta)
             e.setFacing(delta)
-            e.shoot(delta)
+            if not Player.dead then
+                e.shoot(delta)
+                e.move(delta)
+            end
             e.reload(delta)
             e.weaponSprite.update(delta)
     	end

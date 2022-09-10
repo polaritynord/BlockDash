@@ -43,6 +43,7 @@ function weaponSprite.new()
         end
 
         w.realRot = math.atan((target.y - w.position.y)/(target.x - w.position.x))
+        if w.parent == Player then VD.log(w.realRot) end
     	if w.parent.reloading then
     	    -- Reload animation
     	    w.rotation = w.rotation + 12 * MotionSpeed * delta

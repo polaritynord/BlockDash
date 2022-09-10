@@ -54,7 +54,7 @@ function bullet.new()
         		    return
                 end
             end
-        else
+        elseif Player.dashVelocity < 0.1 then
             local image = assets.bulletImg
             local w1 = image:getWidth()
             local h1 = image:getHeight()

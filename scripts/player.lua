@@ -40,6 +40,9 @@ function player.new()
     	dashRot = 0;
     	dashTimer = 111;
     	inReloadTimer = 0;
+        dead = false;
+        scale = 1;
+        alpha = 1;
     }
 
     -- Trail related functions
@@ -318,6 +321,13 @@ function player.new()
     	end
     end
 
+    function p.deathParticleTick(particle, delta)
+        particle.position.x = particle.position.x + math.cos(particle.rotation) * particle.velocity * MotionSpeed * delta
+        particle.position.y = particle.position.y + math.sin(particle.rotation) * particle.velocity * MotionSpeed * delta
+        -- Decrease velocity
+        particle.velocity = particle.velocity - particle.velocity / (250 * delta)
+    end
+
     -- Event functions
     function p.load()
         p.weaponSprite.parent = p
@@ -334,36 +344,56 @@ function player.new()
 
     function p.update(delta)
     	if GamePaused then return end
-        -- Functions
-    	p.switchSlot()
-    	p.shoot(delta)
-    	p.movement(delta)
-    	p.setFacing(delta)
-    	p.reload(delta)
-    	p.dash(delta)
-    	p.motionControl(delta)
-    	p.drop()
-    	p.updateTrail(delta)
-    	p.updateBullets(delta)
-        p.weaponSprite.update(delta)
+        if p.health > 0 then
+        	p.switchSlot()
+        	p.shoot(delta)
+        	p.movement(delta)
+        	p.setFacing(delta)
+        	p.reload(delta)
+        	p.dash(delta)
+        	p.motionControl(delta)
+        	p.drop()
+        	p.updateTrail(delta)
+        	p.updateBullets(delta)
+            p.weaponSprite.update(delta)
+        else
+            -- Create particles
+            if not p.dead then
+                for i = 1, math.random(12, 25) do
+                    local size = uniform(3, 7)
+                    local particle = ParticleManager.new(
+                        vec2.new(p.position.x, p.position.y), vec2.new(size, size),
+                        uniform(0.8, 1.7), {0.13, 0.34, 0.8, 1}, p.deathParticleTick
+                    )
+                    particle.velocity = uniform(75, 225)
+                    particle.rotation = uniform(0, 360)
+                end
+            end
+            p.dead = true
+            -- Animation
+            p.scale = p.scale + 2.5 * MotionSpeed * delta
+    	    p.alpha = p.alpha - 6 * MotionSpeed * delta
+        end
     end
 
     function p.draw()
     	if CurrentShader then
     	    p.drawDashLine() end
 
-    	p.drawTrail()
+        if not p.dead then
+	       p.drawTrail() end
     	local width = assets.playerImg:getWidth()
     	local height = assets.playerImg:getHeight()
     	local x = (p.position.x - Camera.position.x) * Camera.zoom
     	local y = (p.position.y - Camera.position.y) * Camera.zoom
-    	love.graphics.setColor(0.13, 0.34, 0.8, 1)
+    	love.graphics.setColor(0.13, 0.34, 0.8, p.alpha)
     	love.graphics.draw(
     	    assets.playerImg, x, y, p.rotation,
-    	    Camera.zoom * p.width, Camera.zoom, width/2, height/2
+    	    Camera.zoom * p.width * p.scale, Camera.zoom * p.scale, width/2, height/2
     	)
     	love.graphics.setColor(1, 1, 1, 1)
-    	p.weaponSprite.draw()
+        if not p.dead then
+    	       p.weaponSprite.draw() end
     	p.drawBullets()
     end
 
