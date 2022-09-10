@@ -18,6 +18,7 @@ function assets.gameLoad()
     assets.healthIconImg = love.graphics.newImage("images/health_icon.png")
     assets.ammoIconImg = love.graphics.newImage("images/ammo.png")
     assets.dashIconImg = love.graphics.newImage("images/dash_icon.png")
+    assets.hitmarkerImg = love.graphics.newImage("images/hitmarker.png")
     -- Weapon images
     assets.weapons = {}
     assets.weapons.pistolImg = love.graphics.newImage("images/weapons/pistol.png")

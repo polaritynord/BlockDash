@@ -44,6 +44,7 @@ function player.new()
         scale = 1;
         alpha = 1;
         deathTimer = 0;
+        regenTimer = 0;
     }
 
     -- Trail related functions
@@ -329,6 +330,23 @@ function player.new()
         particle.velocity = particle.velocity - particle.velocity / (250 * delta)
     end
 
+    function p.regenerate(delta)
+        -- Increment timer
+        if p.health < 100 then
+            p.regenTimer = p.regenTimer + MotionSpeed * delta
+            -- Reset timer if player dashed
+            if p.dashVelocity > 0.2 then
+                p.regenTimer = 0 end
+            -- Regenerate
+            if p.regenTimer > 2.5 then
+                p.health = p.health + 20 * MotionSpeed * delta
+                if p.health > 100 then p.health = 100 end
+            end
+        else
+            p.regenTimer = 0
+        end
+    end
+
     -- Event functions
     function p.load()
         p.weaponSprite.parent = p
@@ -356,6 +374,7 @@ function player.new()
         	p.drop()
         	p.updateTrail(delta)
         	p.updateBullets(delta)
+            p.regenerate(delta)
             p.weaponSprite.update(delta)
         else
             -- Create particles

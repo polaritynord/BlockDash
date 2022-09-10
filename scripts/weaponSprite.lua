@@ -42,7 +42,8 @@ function weaponSprite.new()
             target = Player.position
         end
 
-        w.realRot = math.atan((target.y - w.position.y)/(target.x - w.position.x))
+        local rot = math.atan((target.y - w.position.y)/(target.x - w.position.x))
+        w.realRot = w.realRot + (rot-w.realRot) / (200 * delta)
         if w.parent == Player then VD.log(w.realRot) end
     	if w.parent.reloading then
     	    -- Reload animation

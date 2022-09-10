@@ -6,15 +6,15 @@ local button = {}
 
 function button.new()
     local b = {
-	position = vec2.new();
-	size = vec2.new(195, 70);
-	text = "sample";
-	scale = 1;
-	lineWidth = 3;
-	uppercaseText = true;
-	mouseClick = false;
-	style = 1;
-	mouseHover = false; -- only used for style 1
+    	position = vec2.new();
+    	size = vec2.new(195, 70);
+    	text = "sample";
+    	scale = 1;
+    	lineWidth = 3;
+    	uppercaseText = true;
+    	mouseClick = false;
+    	style = 1;
+    	mouseHover = false; -- only used for style 1
     }
 
     function b.update(delta)
@@ -54,18 +54,18 @@ function button.new()
 	    -- Hover animation
 	    local sm = 250 * delta
 	    if x and y then
-		b.scale = b.scale + (1.08-b.scale) / sm
-		-- Click animation
-		if love.mouse.isDown(1) then
-		    b.scale = b.scale + (1.03-b.scale) / sm	
-		    b.mouseClick = true
-		else b.mouseClick = false end
+    		b.scale = b.scale + (1.08-b.scale) / sm
+    		-- Click animation
+    		if love.mouse.isDown(1) then
+    		    b.scale = b.scale + (1.03-b.scale) / sm
+    		    b.mouseClick = true
+    		else b.mouseClick = false end
 	    else
-		b.scale = b.scale + (1-b.scale) / sm
-		b.mouseClick = false
+    		b.scale = b.scale + (1-b.scale) / sm
+    		b.mouseClick = false
 	    end
 	end
-    end
+end
 
     function b.draw()
 	if b.style == 1 then
@@ -73,22 +73,22 @@ function button.new()
 	    love.graphics.setNewFont("fonts/Minecraftia-Regular.ttf", 22)
 	    local t = b.text
 	    if b.uppercaseText then t = string.upper(t) end
-	    
+
 	    local x = b.position.x + (SC_WIDTH-960)/2
 	    local y = b.position.y + (SC_HEIGHT-540)/2
 	    local w = 13 * #t
 	    love.graphics.print(t, x-w/2, y)
-	    
+
 	    -- Arrow (when hovering)
 	    if not b.mouseHover then return end
 	    love.graphics.print(">", x-w/2-22, y)
-	
+
 	elseif b.style == 2 then
 	    love.graphics.setLineWidth(b.lineWidth)
 	    local w = b.size.x * b.scale ; local h = b.size.y * b.scale
 	    local x = b.position.x + (SC_WIDTH-960)/2
 	    local y = b.position.y + (SC_HEIGHT-540)/2
-	    	
+
 	    love.graphics.line(x-w/2, y-h/2, x-w/2, y+h-h/2)
 	    love.graphics.line(x-w/2, y+h-h/2, x+w-w/2, y+h-h/2)
 	    love.graphics.line(x+w-w/2, y+h-h/2, x+w-w/2, y-h/2)

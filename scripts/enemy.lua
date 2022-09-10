@@ -37,6 +37,8 @@ function enemy.new()
         if c and Player.dashVelocity > 0.5 then
             -- Damage enemy
             e.health = e.health - 100
+            Stats.dashKills = Stats.dashKills + 1
+            Stats.kills = Stats.kills + 1
         end
     end
 

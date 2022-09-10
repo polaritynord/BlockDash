@@ -4,6 +4,7 @@ local uniform = require("lib/uniform")
 
 local assets = require("scripts/assets")
 local damageNumber = require("scripts/damageNumber")
+local hitmarker = require("scripts/hitmarker")
 
 local bullet = {}
 
@@ -45,6 +46,10 @@ function bullet.new()
         	    local p2 = v.position
         	    if collision(p.x-w1/2, p.y-h1/2, w1, h1, p2.x-w2/2, p2.y-h2/2, w2, h2) then
                     v.health = v.health - b.damage
+                    -- Increment kill count
+                    if v.health < 1 then
+                        Stats.kills = Stats.kills + 1
+                    end
                     table.remove(Player.bullets, i)
                     -- Create damage number
                     local damageNum = damageNumber.new()
@@ -66,6 +71,16 @@ function bullet.new()
             local p2 = Player.position
             if collision(p.x-w1/2, p.y-h1/2, w1, h1, p2.x-w2/2, p2.y-h2/2, w2, h2) then
                 Player.health = Player.health - b.damage
+                -- Create hitmarker
+                local newMarker = hitmarker.new()
+                newMarker.rotation = b.rotation
+                newMarker.position = vec2.new(
+                    480-math.cos(newMarker.rotation)*70,
+                    270-math.sin(newMarker.rotation)*70
+                )
+                Interface.hitmarkers[#Interface.hitmarkers+1] = newMarker
+                Player.regenTimer = 0
+                -- Remove self
                 table.remove(EnemyBullets, i)
                 return
             end

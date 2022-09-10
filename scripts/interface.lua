@@ -15,6 +15,7 @@ local interface = {
     wAlpha = 1;
     logKeyPress = false;
     damageNums = {};
+    hitmarkers = {};
 }
 
 function interface.drawImage(image, position, scale, rotation, alpha)
@@ -207,6 +208,7 @@ end
 
 function interface.updateGame(delta)
     interface.updateDamageNums(delta)
+    interface.updateHitmarkers(delta)
     -- Change rot & scale of weapon image
     interface.wScale = interface.wScale + (1-interface.wScale) / (250 * delta)
     interface.wRot = interface.wRot + (-interface.wRot) / (250 * delta)
@@ -285,9 +287,21 @@ function interface.drawDamageNums()
     end
 end
 
+function interface.updateHitmarkers(delta)
+    for i, v in ipairs(interface.hitmarkers) do
+        v.update(delta, i)
+    end
+end
+
+function interface.drawHitmarkers()
+    for _, v in ipairs(interface.hitmarkers) do
+        v.draw(delta)
+    end
+end
+
 function interface.drawGame()
-    -- Damage numbers
     interface.drawDamageNums()
+    interface.drawHitmarkers()
 
     -- Inventory slots
     for _, v in ipairs(interface.invSlots) do
@@ -297,7 +311,7 @@ function interface.drawGame()
     interface.drawImage(assets.healthIconImg, vec2.new(930+(SC_WIDTH-960), 452+(SC_HEIGHT-540)), 4)
     -- Health text
     love.graphics.setNewFont("fonts/Minecraftia-Regular.ttf", 24)
-    love.graphics.printf(tostring(Player.health), -95+(SC_WIDTH-960), 438+(SC_HEIGHT-540), 1000, "right")
+    love.graphics.printf(tostring(math.floor(Player.health)), -95+(SC_WIDTH-960), 438+(SC_HEIGHT-540), 1000, "right")
 
     -- Dash indicator
     if Player.dashTimer < 2.5 then
@@ -346,7 +360,24 @@ function interface.drawGame()
     	-- Title
     	love.graphics.setNewFont("fonts/Minecraftia-Regular.ttf", 32)
     	love.graphics.setColor(1, 1, 1, interface.deathScreenAlpha+0.35)
-    	love.graphics.print("YOU DIED", 395+(SC_WIDTH-960)/2, 120+(SC_HEIGHT-540)/2)
+    	love.graphics.print("ELIMINATED", 395+(SC_WIDTH-960)/2, 120+(SC_HEIGHT-540)/2)
+        -- Stats title
+        love.graphics.setNewFont("fonts/Minecraftia-Regular.ttf", 20)
+        love.graphics.print("Stats:", 465+(SC_WIDTH-960)/2, 160+(SC_HEIGHT-540)/2)
+        -- Stat numbers
+        love.graphics.setNewFont("fonts/Minecraftia-Regular.ttf", 40)
+        local x = -640 ; local y = 190
+        for i in pairs(Stats) do
+            love.graphics.printf(tostring(Stats[i]), x+(SC_WIDTH-960)/2, y+(SC_HEIGHT-540)/2, 1000, "right")
+            y = y + 48
+        end
+        -- Stat names
+        love.graphics.setNewFont("fonts/Minecraftia-Regular.ttf", 20)
+        x = 365.5 ; y = 190
+        for i in pairs(StatNames) do
+            love.graphics.print(tostring(StatNames[i]), x+(SC_WIDTH-960)/2, y+(SC_HEIGHT-540)/2)
+            y = y + 52
+        end
         -- Buttons
         interface.buttons.deReturnButton.draw()
     end

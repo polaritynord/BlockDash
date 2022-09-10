@@ -45,6 +45,11 @@ function GameLoad()
     assets.gameLoad()
     MotionSpeed = 1
     EnemyBullets = {}
+    StatNames = {"Kills", "Dash Kills"}
+    Stats = {
+        kills = 0;
+        dashKills = 0;
+    }
     -- Setup player
     Player = player.new()
     Player.load()
