@@ -1,6 +1,7 @@
 local utils = require("utils")
 local vec2 = require("lib/vec2")
 local uniform = require("lib/uniform")
+local collision = require("lib/collision")
 
 local bullet = require("scripts/bullet")
 local assets = require("scripts/assets")
@@ -84,6 +85,25 @@ function player.new()
     end
 
     -- Player related functions
+    function p.checkForDash()
+        for _, v in ipairs(EnemyManager.enemies) do
+            local image = assets.playerImg
+            local w = image:getWidth()
+            local h = image:getHeight()
+
+            local a = p.position
+            local b = v.position
+            if collision(a.x-w/2, a.y-h/2, w, h, b.x-w/2, b.y-h/2, w, h) then
+                -- Check if enemy is dashing
+                if v.dashVelocity < 0.5 then return end
+                p.health = p.health - 50
+                if Settings.sound then
+                    assets.sounds.dashDamage:play()
+                end
+            end
+        end
+    end
+
     function p.setFacing(delta)
     	-- Set facing value
     	local m = utils.getMousePosition()
@@ -391,6 +411,7 @@ function player.new()
         	p.updateTrail(delta)
         	p.updateBullets(delta)
             p.regenerate(delta)
+            p.checkForDash()
             p.weaponSprite.update(delta)
         else
             -- Create particles

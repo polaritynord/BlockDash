@@ -47,13 +47,13 @@ function enemy.new()
 
         -- If far away from player and has a reasonable amount of ammo
         local farAway = distance > 370 and w.magAmmo > w.magSize / 3
-        -- If player is reloading & near
-        local huntTheHunter = distance < 142 and Player.reloading and Difficulty > 2
+        -- If player is reloading & near enemy (this shi sounds hard af)
+        local huntTheHunter = distance < 212 and Player.reloading and Difficulty > 2
         -- If low HP (escape combat)
         local escapeCombat = distance < 200 and e.health < 40
     	if farAway or huntTheHunter or escapeCombat then
     	    e.dashTimer = 0
-    	    e.dashVelocity = 75
+    	    e.dashVelocity = 50 + (Difficulty * 30)
             if not escapeCombat then
                 e.dashRot = e.weaponSprite.rotation
             else
@@ -211,8 +211,8 @@ function enemy.new()
         local distance = utils.distanceTo(Player.position, e.position)
         local oldPos = vec2.new(e.position.x, e.position.y)
         -- Move by dash
-        e.position.x = e.position.x + math.cos(e.dashRot) * e.dashVelocity
-    	e.position.y = e.position.y + math.sin(e.dashRot) * e.dashVelocity
+        e.position.x = e.position.x + math.cos(e.dashRot) * e.dashVelocity * MotionSpeed
+    	e.position.y = e.position.y + math.sin(e.dashRot) * e.dashVelocity * MotionSpeed
         if distance > 225 then
             local speed = 245
             e.position.x = e.position.x + math.cos(e.rotation) * speed * MotionSpeed * delta
@@ -254,7 +254,6 @@ function enemy.new()
         end
 
         e.rotation = math.atan2(Player.position.y - e.position.y, Player.position.x - e.position.x)
-        e.checkForDash()
     	if e.deathAnim then
     	    e.scale = e.scale + 2.5 * MotionSpeed * delta
     	    e.alpha = e.alpha - 6 * MotionSpeed * delta
@@ -270,6 +269,7 @@ function enemy.new()
                 e.shoot(delta)
                 e.move(delta)
                 e.dash(delta)
+                e.checkForDash()
                 e.updateTrail(delta)
             end
             e.reload(delta)
