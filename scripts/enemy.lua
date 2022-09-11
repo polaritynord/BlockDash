@@ -26,6 +26,7 @@ function enemy.new()
         shootCooldown = 0;
         reloading = false;
         reloadTimer = 0;
+        r = uniform(0.45, 1);
     }
 
     function e.checkForDash()
@@ -54,7 +55,7 @@ function enemy.new()
             local size = uniform(3, 7)
             local particle = ParticleManager.new(
                 vec2.new(e.position.x, e.position.y), vec2.new(size, size),
-                uniform(0.8, 1.7), {1, 0, 0, 1}, e.deathParticleTick
+                uniform(0.8, 1.7), {e.r, 0, 0, 1}, e.deathParticleTick
             )
             particle.velocity = uniform(75, 225)
             particle.rotation = uniform(0, 360)
@@ -206,7 +207,7 @@ function enemy.new()
     	local height = image:getHeight()
     	local x = (e.position.x - Camera.position.x) * Camera.zoom
     	local y = (e.position.y - Camera.position.y) * Camera.zoom
-    	love.graphics.setColor(1, 0, 0, e.alpha)
+    	love.graphics.setColor(e.r, 0, 0, e.alpha)
     	love.graphics.draw(
     	    image, x, y, 0,
     	    e.scale*e.width, e.scale, width/2, height/2

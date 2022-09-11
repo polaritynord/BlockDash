@@ -57,6 +57,7 @@ function GameLoad()
     WeaponDrops = {}
     dropWeapon(weaponData.pistol, vec2.new(600, 450))
     dropWeapon(weaponData.assaultRifle, vec2.new(650, 450))
+    dropWeapon(weaponData.shotgun, vec2.new(600, 500))
     -- Enemies
     EnemyManager.load()
     -- Setup interface

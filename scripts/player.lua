@@ -148,49 +148,55 @@ function player.new()
     	if not love.mouse.isDown(1) or p.shootCooldown < w.shootTime then
     	    return end
         p.reloading = false
-    	-- Instance bullet
-    	local newBullet = bullet.new()
-    	newBullet.position = vec2.new(p.weaponSprite.position.x, p.weaponSprite.position.y)
-    	newBullet.rotation = p.weaponSprite.realRot
-    	-- Check where the player is facing
-    	local t = 1
-    	if p.facing == "left" then
-    	    t = -1
-    	    newBullet.rotation = newBullet.rotation + 135
-    	end
-    	-- Offset the bullet
-    	newBullet.position.x = newBullet.position.x + math.cos(p.weaponSprite.realRot) * w.bulletOffset * t
-    	newBullet.position.y = newBullet.position.y + math.sin(p.weaponSprite.realRot) * w.bulletOffset * t
-    	-- Spread bullet
-    	newBullet.rotation = newBullet.rotation + uniform(-1, 1) * w.bulletSpread
-    	-- Reset timer
-    	p.shootCooldown = 0
-    	-- Decrease mag ammo
-    	w.magAmmo = w.magAmmo - 1
-    	-- Shoot event for UI & Sprite
-    	Interface.playerShot()
-    	p.weaponSprite.parentShot()
-    	-- Play sound
-    	if Settings.sound then
-    	    assets.sounds.shoot:play()
-    	end
-    	-- Special bullet attributes
-    	newBullet.speed = w.bulletSpeed
-        newBullet.damage = w.bulletDamage
-        newBullet.parent = p
-    	-- Add to table
-    	p.bullets[#p.bullets+1] = newBullet
-    	-- Particle effects
-    	for i = 1, 4 do
-    	    local particle = ParticleManager.new(
-        		vec2.new(newBullet.position.x, newBullet.position.y),
-        		vec2.new(8, 8),
-        		0.5, {1, 0.36, 0}, p.shootParticleTick
-    	    )
-    	    particle.realRotation = p.weaponSprite.realRot + uniform(-0.35, 0.35)
-    	    particle.speed = 250
-    	    if p.facing == "left" then particle.speed = -particle.speed end
-    	end
+        for i = 1, w.bulletPerShot do
+        	-- Instance bullet
+        	local newBullet = bullet.new()
+        	newBullet.position = vec2.new(p.weaponSprite.position.x, p.weaponSprite.position.y)
+        	newBullet.rotation = p.weaponSprite.realRot
+        	-- Check where the player is facing
+        	local t = 1
+        	if p.facing == "left" then
+        	    t = -1
+        	    newBullet.rotation = newBullet.rotation + 135
+        	end
+        	-- Offset the bullet
+        	newBullet.position.x = newBullet.position.x + math.cos(p.weaponSprite.realRot) * w.bulletOffset * t
+        	newBullet.position.y = newBullet.position.y + math.sin(p.weaponSprite.realRot) * w.bulletOffset * t
+        	-- Spread bullet
+        	newBullet.rotation = newBullet.rotation + uniform(-1, 1) * w.bulletSpread
+        	-- Reset timer
+        	p.shootCooldown = 0
+        	-- Decrease mag ammo
+            if w.weaponType == "shotgun" then
+                w.magAmmo = w.magAmmo - (1/w.bulletPerShot)
+            else
+                w.magAmmo = w.magAmmo - 1
+            end
+        	-- Shoot event for UI & Sprite
+        	Interface.playerShot()
+        	p.weaponSprite.parentShot()
+        	-- Play sound
+        	if Settings.sound then
+        	    assets.sounds.shoot:play()
+        	end
+        	-- Special bullet attributes
+        	newBullet.speed = w.bulletSpeed
+            newBullet.damage = w.bulletDamage
+            newBullet.parent = p
+        	-- Add to table
+        	p.bullets[#p.bullets+1] = newBullet
+        	-- Particle effects
+        	for i = 1, 4 do
+        	    local particle = ParticleManager.new(
+            		vec2.new(newBullet.position.x, newBullet.position.y),
+            		vec2.new(8, 8),
+            		0.5, {1, 0.36, 0}, p.shootParticleTick
+        	    )
+        	    particle.realRotation = p.weaponSprite.realRot + uniform(-0.35, 0.35)
+        	    particle.speed = 250
+        	    if p.facing == "left" then particle.speed = -particle.speed end
+        	end
+        end
     end
 
     function p.shootParticleTick(particle, delta)
@@ -339,7 +345,7 @@ function player.new()
                 p.regenTimer = 0 end
             -- Regenerate
             if p.regenTimer > 2.5 then
-                p.health = p.health + 20 * MotionSpeed * delta
+                p.health = p.health + 8 * MotionSpeed * delta
                 if p.health > 100 then p.health = 100 end
             end
         else
