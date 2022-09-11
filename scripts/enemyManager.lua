@@ -15,6 +15,7 @@ function enemyManager.newEnemy(position)
 end
 
 function enemyManager.spawnEnemies(delta)
+    if Player.dead then return end
     -- Increment timer
     enemyManager.spawnTimer = enemyManager.spawnTimer + MotionSpeed * delta
     if enemyManager.spawnTimer < enemyManager.spawnTime then return end

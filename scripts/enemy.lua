@@ -31,7 +31,42 @@ function enemy.new()
         trails = {};
         trailCooldown = 0;
         moving = false;
+        dashVelocity = 0;
+        dashTimer = 0;
+        dashRot = 0;
     }
+
+    function e.dash(delta)
+        -- Return if easy mode
+        if Difficulty < 2 then return end
+        -- Increment timer
+    	e.dashTimer = e.dashTimer + delta
+    	if e.dashTimer < 2.5 then return end
+        local distance = utils.distanceTo(Player.position, e.position)
+        local w = e.weapons[e.slot]
+
+        -- If far away from player and has a reasonable amount of ammo
+        local farAway = distance > 370 and w.magAmmo > w.magSize / 3
+        -- If player is reloading & near
+        local huntTheHunter = distance < 142 and Player.reloading
+        -- If low HP (escape combat)
+        local escapeCombat = distance < 200 and e.health < 40
+    	if farAway or huntTheHunter or escapeCombat then
+    	    e.dashTimer = 0
+    	    e.dashVelocity = 75
+            if not escapeCombat then
+                e.dashRot = e.weaponSprite.rotation
+            else
+                e.dashRot = Player.weaponSprite.rotation
+            end
+            e.reloading = false
+    	    if e.facing == "left" then
+	    		e.dashRot = e.dashRot - 135 end
+    	    if Settings.sound then
+    			assets.sounds.dash:play()
+    	    end
+    	end
+    end
 
     -- Trail related functions
     function e.updateTrail(delta)
@@ -173,6 +208,9 @@ function enemy.new()
     function e.move(delta)
         local distance = utils.distanceTo(Player.position, e.position)
         local oldPos = vec2.new(e.position.x, e.position.y)
+        -- Move by dash
+        e.position.x = e.position.x + math.cos(e.dashRot) * e.dashVelocity
+    	e.position.y = e.position.y + math.sin(e.dashRot) * e.dashVelocity
         if distance > 225 then
             local speed = 245
             e.position.x = e.position.x + math.cos(e.rotation) * speed * MotionSpeed * delta
@@ -213,6 +251,7 @@ function enemy.new()
             e.createDeathParticle()
         end
 
+        e.rotation = math.atan2(Player.position.y - e.position.y, Player.position.x - e.position.x)
         e.checkForDash()
     	if e.deathAnim then
     	    e.scale = e.scale + 2.5 * MotionSpeed * delta
@@ -221,12 +260,14 @@ function enemy.new()
     	    if e.alpha < 0 then
 		          table.remove(EnemyManager.enemies, i) end
     	else
-            e.rotation = math.atan2(Player.position.y - e.position.y, Player.position.x - e.position.x)
+            -- Decrease dash velocity
+        	e.dashVelocity = e.dashVelocity - e.dashVelocity / (225 * delta)
     	    -- IDEA: Hard difficulty enemies have the ability to dash
             e.setFacing(delta)
             if not Player.dead then
                 e.shoot(delta)
                 e.move(delta)
+                e.dash(delta)
                 e.updateTrail(delta)
             end
             e.reload(delta)
