@@ -140,7 +140,7 @@ function interface.load()
     dEasyButton.style = 2
 
     function dEasyButton.clickEvent()
-        Difficulty = "easy"
+        Difficulty = 1
         GameLoad()
     end
 
@@ -152,7 +152,7 @@ function interface.load()
     dMediumButton.style = 2
 
     function dMediumButton.clickEvent()
-        Difficulty = "medium"
+        Difficulty = 2
         GameLoad()
     end
 
@@ -164,7 +164,7 @@ function interface.load()
     dHardButton.style = 2
 
     function dHardButton.clickEvent()
-        Difficulty = "hard"
+        Difficulty = 3
         GameLoad()
     end
 

@@ -4,7 +4,7 @@ local uniform = require("lib/uniform")
 
 local bullet = require("scripts/bullet")
 local assets = require("scripts/assets")
-local playerTrail = require("scripts/playerTrail")
+local trail = require("scripts/trail")
 local weaponData = require("scripts/weaponData")
 local weaponSprite = require("scripts/weaponSprite")
 local weaponDrop = require("scripts/weaponDrop")
@@ -57,8 +57,9 @@ function player.new()
     	p.trailCooldown = p.trailCooldown + delta
     	if p.trailCooldown < 0.1 or (not p.moving and CurrentShader) then return end
     	-- Instance trail
-    	local newTrail = playerTrail.new()
+    	local newTrail = trail.new()
     	newTrail.position = vec2.new(p.position.x, p.position.y)
+        newTrail.parent = p
     	-- Add instance to table
     	p.trails[#p.trails+1] = newTrail
     end

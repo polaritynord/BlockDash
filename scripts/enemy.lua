@@ -6,6 +6,7 @@ local assets = require("scripts/assets")
 local weaponSprite = require("scripts/weaponSprite")
 local weaponData = require("scripts/weaponData")
 local bullet = require("scripts/bullet")
+local trail = require("scripts/trail")
 
 local enemy = {}
 
@@ -27,8 +28,36 @@ function enemy.new()
         reloading = false;
         reloadTimer = 0;
         r = uniform(0.45, 1);
+        trails = {};
+        trailCooldown = 0;
+        moving = false;
     }
 
+    -- Trail related functions
+    function e.updateTrail(delta)
+    	-- Draw existing trails
+    	for i, v in ipairs(e.trails) do
+    	    v.update(delta, i)
+    	end
+    	-- Add new trails
+    	e.trailCooldown = e.trailCooldown + delta
+    	if e.trailCooldown < 0.1 or not e.moving then return end
+    	-- Instance trail
+    	local newTrail = trail.new()
+    	newTrail.position = vec2.new(e.position.x, e.position.y)
+        newTrail.parent = e
+        newTrail.r = 1 ; newTrail.g = 0.12 ; newTrail.b = 0.12
+    	-- Add instance to table
+    	e.trails[#e.trails+1] = newTrail
+    end
+
+    function e.drawTrail()
+    	for _, v in ipairs(e.trails) do
+    	    v.draw()
+    	end
+    end
+
+    -- Enemy related functions
     function e.checkForDash()
         local pos = Player.position
         local img = assets.playerImg
@@ -84,7 +113,8 @@ function enemy.new()
     	local w = e.weapons[e.slot]
     	if not w or e.reloading or w.magAmmo < 1 then return end
     	-- Increment timer
-    	e.shootCooldown = e.shootCooldown + delta * MotionSpeed / 2
+        local speed = 2 / Difficulty
+    	e.shootCooldown = e.shootCooldown + delta * MotionSpeed / speed
     	if e.shootCooldown < w.shootTime then
     	    return end
     	-- Instance bullet
@@ -142,11 +172,13 @@ function enemy.new()
 
     function e.move(delta)
         local distance = utils.distanceTo(Player.position, e.position)
+        local oldPos = vec2.new(e.position.x, e.position.y)
         if distance > 225 then
             local speed = 245
             e.position.x = e.position.x + math.cos(e.rotation) * speed * MotionSpeed * delta
             e.position.y = e.position.y + math.sin(e.rotation) * speed * MotionSpeed * delta
         end
+        e.moving = oldPos.x ~= e.position.x and oldPos.y ~= e.position.y
     end
 
     function e.reload(delta)
@@ -195,6 +227,7 @@ function enemy.new()
             if not Player.dead then
                 e.shoot(delta)
                 e.move(delta)
+                e.updateTrail(delta)
             end
             e.reload(delta)
             e.weaponSprite.update(delta)
@@ -207,6 +240,7 @@ function enemy.new()
     	local height = image:getHeight()
     	local x = (e.position.x - Camera.position.x) * Camera.zoom
     	local y = (e.position.y - Camera.position.y) * Camera.zoom
+        e.drawTrail()
     	love.graphics.setColor(e.r, 0, 0, e.alpha)
     	love.graphics.draw(
     	    image, x, y, 0,
