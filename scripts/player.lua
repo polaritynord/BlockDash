@@ -306,7 +306,7 @@ function player.new()
     function p.dash(delta)
     	p.dashTimer = p.dashTimer + delta
     	if p.dashTimer < 2.5 then return end
-    	if CurrentShader and not love.keyboard.isDown("space") then
+    	if CurrentShader and not love.mouse.isDown(2) then
     	    p.dashTimer = 0
     	    p.dashVelocity = 50
     	    p.dashRot = p.weaponSprite.rotation
@@ -320,7 +320,7 @@ function player.new()
 
     function p.motionControl(delta)
     	if GamePaused then return end
-    	if love.keyboard.isDown("space") and p.dashTimer > 2.5 then
+    	if love.mouse.isDown(2) and p.dashTimer > 2.5 then
     	    p.reloading = false
     	    MotionSpeed = MotionSpeed + (0.25-MotionSpeed) / (200*delta)
     	    CurrentShader = p.invertShader

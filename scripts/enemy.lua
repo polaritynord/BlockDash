@@ -57,7 +57,7 @@ function enemy.new()
             if not escapeCombat then
                 e.dashRot = e.weaponSprite.rotation
             else
-                e.dashRot = Player.weaponSprite.rotation
+                e.dashRot = e.weaponSprite.rotation + math.pi
             end
             e.reloading = false
     	    if e.facing == "left" then
@@ -104,6 +104,8 @@ function enemy.new()
             e.health = e.health - 100
             Stats.dashKills = Stats.dashKills + 1
             Stats.kills = Stats.kills + 1
+            Interface.dashKillAlpha = 1
+            Interface.dashKillScale = 1.8
         end
     end
 

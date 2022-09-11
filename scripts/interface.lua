@@ -16,6 +16,8 @@ local interface = {
     logKeyPress = false;
     damageNums = {};
     hitmarkers = {};
+    dashKillAlpha = 0;
+    dashKillScale = 1;
 }
 
 function interface.drawImage(image, position, scale, rotation, alpha)
@@ -24,8 +26,8 @@ function interface.drawImage(image, position, scale, rotation, alpha)
     local width = image:getWidth()
     local height = image:getHeight()
     love.graphics.draw(
-	image, position.x, position.y, rotation,
-	scale, scale, width/2, height/2
+    	image, position.x, position.y, rotation,
+    	scale, scale, width/2, height/2
     )
 end
 
@@ -212,6 +214,9 @@ function interface.updateGame(delta)
     -- Change rot & scale of weapon image
     interface.wScale = interface.wScale + (1-interface.wScale) / (250 * delta)
     interface.wRot = interface.wRot + (-interface.wRot) / (250 * delta)
+    -- Change scale & alpha of dash kill text
+    interface.dashKillAlpha = interface.dashKillAlpha - 1 * delta
+    interface.dashKillScale = interface.dashKillScale + (1-interface.dashKillScale) / (230 * delta)
     -- Change alpha of death screen
     local a = interface.deathScreenAlpha
     if Player.dead and Player.deathTimer > 1.5 then
@@ -349,7 +354,15 @@ function interface.drawGame()
 
     -- Dash text
     if CurrentShader then
-       love.graphics.print("RELEASE SPACE TO DASH", 327+(SC_WIDTH-960)/2, 360+(SC_HEIGHT-540)/2)
+       love.graphics.print("RELEASE RMB TO DASH", 327+(SC_WIDTH-960)/2, 360+(SC_HEIGHT-540)/2)
+    end
+
+    -- DashKill text
+    if not CurrentShader then
+        love.graphics.setColor(1, 1, 1, interface.dashKillAlpha)
+        love.graphics.setNewFont("fonts/Minecraftia-Regular.ttf", 30*interface.dashKillScale)
+        love.graphics.print("DASH KILL!", 396+(SC_WIDTH-960)/2, 400+(SC_HEIGHT-540)/2)
+        love.graphics.setColor(1, 1, 1, 1)
     end
 
     -- Death screen
