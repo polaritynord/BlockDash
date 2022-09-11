@@ -31,16 +31,15 @@ end
 
 function enemyManager.update(delta)
     if GamePaused then return end
-    enemyManager.spawnEnemies(delta)
     -- Update enemies
     for i, v in ipairs(enemyManager.enemies) do
-	v.update(delta, i)
+       v.update(delta, i)
     end
 end
 
 function enemyManager.draw()
     for _, v in ipairs(enemyManager.enemies) do
-	v.draw()
+        v.draw()
     end
 end
 

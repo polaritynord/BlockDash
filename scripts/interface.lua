@@ -328,6 +328,7 @@ function interface.drawGame()
     	love.graphics.printf("READY", -90+(SC_WIDTH-960), 382.5+(SC_HEIGHT-540), 1000, "right")
     end
     interface.drawImage(assets.dashIconImg, vec2.new(930+(SC_WIDTH-960), 400+(SC_HEIGHT-540)), 1.85)
+    interface.drawImage(assets.rmbImg, vec2.new(800+(SC_WIDTH-960), 400+(SC_HEIGHT-540)), 2)
 
     love.graphics.setColor(1, 1, 1, 1)
     -- Weapon UI

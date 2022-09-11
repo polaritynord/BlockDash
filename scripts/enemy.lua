@@ -48,7 +48,7 @@ function enemy.new()
         -- If far away from player and has a reasonable amount of ammo
         local farAway = distance > 370 and w.magAmmo > w.magSize / 3
         -- If player is reloading & near
-        local huntTheHunter = distance < 142 and Player.reloading
+        local huntTheHunter = distance < 142 and Player.reloading and Difficulty > 2
         -- If low HP (escape combat)
         local escapeCombat = distance < 200 and e.health < 40
     	if farAway or huntTheHunter or escapeCombat then
@@ -150,7 +150,7 @@ function enemy.new()
     	local w = e.weapons[e.slot]
     	if not w or e.reloading or w.magAmmo < 1 then return end
     	-- Increment timer
-        local speed = 2 / Difficulty
+        local speed = 2 / (Difficulty - 0.1)
     	e.shootCooldown = e.shootCooldown + delta * MotionSpeed / speed
     	if e.shootCooldown < w.shootTime then
     	    return end

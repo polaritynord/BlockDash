@@ -9,6 +9,7 @@ local camera = require("scripts/camera")
 local weaponDrop = require("scripts/weaponDrop")
 local weaponData = require("scripts/weaponData")
 EnemyManager = require("scripts/enemyManager")
+WaveManager = require("scripts/waveManager")
 VD = require("lib/vd")
 
 local fullscreen = false
@@ -60,6 +61,7 @@ function GameLoad()
     dropWeapon(weaponData.shotgun, vec2.new(100, 150))
     -- Enemies
     EnemyManager.load()
+    WaveManager.load()
     -- Setup interface
     Interface.load()
     GamePaused = false
@@ -125,6 +127,7 @@ function love.update(delta)
 		Camera.update(delta)
 		updateWeaponDrops(delta, i)
 		EnemyManager.update(delta)
+        WaveManager.update(delta)
 		ParticleManager.update(delta)
         updateEBullets(delta)
     end

@@ -149,6 +149,10 @@ function player.new()
     	if not love.mouse.isDown(1) or p.shootCooldown < w.shootTime then
     	    return end
         p.reloading = false
+        local spread = 0
+        if w.weaponType == "shotgun" then
+            local spread = -w.bulletSpread
+        end
         for i = 1, w.bulletPerShot do
         	-- Instance bullet
         	local newBullet = bullet.new()
@@ -164,7 +168,12 @@ function player.new()
         	newBullet.position.x = newBullet.position.x + math.cos(p.weaponSprite.realRot) * w.bulletOffset * t
         	newBullet.position.y = newBullet.position.y + math.sin(p.weaponSprite.realRot) * w.bulletOffset * t
         	-- Spread bullet
-        	newBullet.rotation = newBullet.rotation + uniform(-1, 1) * w.bulletSpread
+            if w.weaponType == "auto" then
+    	        newBullet.rotation = newBullet.rotation + uniform(-1, 1) * w.bulletSpread
+            else
+                newBullet.rotation = newBullet.rotation + spread
+                spread = spread + w.bulletSpread
+            end
         	-- Reset timer
         	p.shootCooldown = 0
         	-- Decrease mag ammo
