@@ -48,7 +48,7 @@ function enemy.new()
         -- If far away from player and has a reasonable amount of ammo
         local farAway = distance > 370 and w.magAmmo > w.magSize / 3
         -- If player is reloading & near enemy (this shi sounds hard af)
-        local huntTheHunter = distance < 212 and Player.reloading and Difficulty > 2
+        local huntTheHunter = distance < 212 and Player.reloading and Difficulty > 2 and uniform(0, 1) < 0.5
         -- If low HP (escape combat)
         local escapeCombat = distance < 200 and e.health < 40
     	if farAway or huntTheHunter or escapeCombat then

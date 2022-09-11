@@ -18,6 +18,7 @@ local interface = {
     hitmarkers = {};
     dashKillAlpha = 0;
     dashKillScale = 1;
+    diffDesc = nil;
 }
 
 function interface.drawImage(image, position, scale, rotation, alpha)
@@ -142,8 +143,11 @@ function interface.load()
     dEasyButton.style = 2
 
     function dEasyButton.clickEvent()
-        Difficulty = 1
-        GameLoad()
+        if interface.diffDesc == "easy" then
+            Difficulty = 1
+            GameLoad()
+        end
+        interface.diffDesc = "easy"
     end
 
     -- Diff menu - medium button
@@ -154,8 +158,11 @@ function interface.load()
     dMediumButton.style = 2
 
     function dMediumButton.clickEvent()
-        Difficulty = 2
-        GameLoad()
+        if interface.diffDesc == "medium" then
+            Difficulty = 2
+            GameLoad()
+        end
+        interface.diffDesc = "medium"
     end
 
     -- Diff menu - hard button
@@ -166,8 +173,11 @@ function interface.load()
     dHardButton.style = 2
 
     function dHardButton.clickEvent()
-        Difficulty = 3
-        GameLoad()
+        if interface.diffDesc == "hard" then
+            Difficulty = 3
+            GameLoad()
+        end
+        interface.diffDesc = "hard"
     end
 
     -- Death menu - return button
@@ -236,11 +246,11 @@ function interface.updateGame(delta)
     end
     -- Update inventory slots
     for _, v in ipairs(interface.invSlots) do
-	v.update(delta)
+       v.update(delta)
     end
     -- Update inventory slots
     for _, v in ipairs(interface.invSlots) do
-	v.update(delta)
+       v.update(delta)
     end
 end
 
@@ -419,6 +429,20 @@ function interface.drawDiffSelect()
     interface.buttons.dEasyButton.draw()
     interface.buttons.dMediumButton.draw()
     interface.buttons.dHardButton.draw()
+    -- Description
+    if not interface.diffDesc then return end
+    love.graphics.setNewFont("fonts/Minecraftia-Regular.ttf", 17)
+    local t
+    if interface.diffDesc == "easy" then
+        t = "Enemies can't dash and shoots slower. Completely removes the fast-paced gameplay."
+    elseif interface.diffDesc == "medium" then
+        t = "Enemies can dash, while shooting slightly faster than the player."
+    elseif interface.diffDesc == "hard" then
+        t = "Enemies will probably tear you apart with dashing to you & shooting like it's a bullet hell."
+    end
+    love.graphics.printf(t, (SC_WIDTH-960)/2, 485+(SC_HEIGHT-540)/2, 1000, "center")
+    love.graphics.setNewFont("fonts/Minecraftia-Regular.ttf", 14)
+    love.graphics.printf("Click again to continue.", (SC_WIDTH-960)/2, 512+(SC_HEIGHT-540)/2, 1000, "center")
 end
 
 function interface.drawMenu()
