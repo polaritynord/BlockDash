@@ -37,8 +37,6 @@ function enemy.new()
     }
 
     function e.dash(delta)
-        -- Return if easy mode
-        if Difficulty < 2 then return end
         -- Increment timer
     	e.dashTimer = e.dashTimer + delta
     	if e.dashTimer < 2.5 then return end
@@ -46,11 +44,11 @@ function enemy.new()
         local w = e.weapons[e.slot]
 
         -- If far away from player and has a reasonable amount of ammo
-        local farAway = distance > 370 and w.magAmmo > w.magSize / 3
-        -- If player is reloading & near enemy (this shi sounds hard af)
+        local farAway = distance > 370 and w.magAmmo > w.magSize / 3 and Difficulty > 1
+        -- If player is reloading & near enemy (this shi sounds cool af)
         local huntTheHunter = distance < 212 and Player.reloading and Difficulty > 2 and uniform(0, 1) < 0.5
         -- If low HP (escape combat)
-        local escapeCombat = distance < 200 and e.health < 40
+        local escapeCombat = distance < 200 and e.health < e.firstHealth / 2
     	if farAway or huntTheHunter or escapeCombat then
     	    e.dashTimer = 0
     	    e.dashVelocity = 50 + (Difficulty * 30)
@@ -242,6 +240,7 @@ function enemy.new()
 
     function e.load()
         e.weaponSprite.parent = e
+        e.firstHealth = e.health
         e.weapons[e.slot].magAmmo = e.weapons[e.slot].magSize
     end
 

@@ -35,6 +35,7 @@ function weaponSprite.new()
     	end
     	w.position.y = w.parent.position.y + 3
 
+        -- Point towards target
         local target
         if w.parent == Player then
             target = utils.getMousePosition()
@@ -42,8 +43,13 @@ function weaponSprite.new()
             target = Player.position
         end
 
-        local rot = math.atan((target.y - w.position.y)/(target.x - w.position.x))
-        w.realRot = w.realRot + (rot-w.realRot) / (200 * delta)
+        local dx = target.x-w.position.x ; local dy = target.y-w.position.y
+        local rot = math.atan2(dy, dx)
+        if w.parent.facing == "left" then
+            rot = rot + math.pi
+        end
+        local temp = rot - w.realRot
+        w.realRot = rot--w.realRot + (rot-w.realRot) / (200 * delta)
     	if w.parent.reloading then
     	    -- Reload animation
     	    w.rotation = w.rotation + 12 * MotionSpeed * delta

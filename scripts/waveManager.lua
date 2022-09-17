@@ -22,7 +22,7 @@ function waveManager.load()
 end
 
 function waveManager.update(delta)
-    if Player.dead then return end
+    if Player.dead or GamePaused then return end
     if waveManager.preparation then
         -- Preparation phase
         waveManager.waveTimer = waveManager.waveTimer + MotionSpeed * delta
