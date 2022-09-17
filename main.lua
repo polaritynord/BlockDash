@@ -1,4 +1,5 @@
 local vec2 = require("lib/vec2")
+local gradient = require("lib/gradient")
 
 local assets = require("scripts/assets")
 local player = require("scripts/player")
@@ -147,6 +148,12 @@ function love.draw()
         drawEBullets()
         ParticleManager.draw()
         drawWalls()
+    else
+        local a = function() end
+        love.gradient.draw(
+            a, "radial", 0, 0, SC_WIDTH, SC_HEIGHT, {0, 0, 0, 1},
+            {1, 1, 1, 1}, 0, 1, 1
+        )
     end
     Interface.draw()
     VD.draw()

@@ -46,7 +46,7 @@ function enemy.new()
         -- If far away from player and has a reasonable amount of ammo
         local farAway = distance > 370 and w.magAmmo > w.magSize / 3 and Difficulty > 1
         -- If player is reloading & near enemy (this shi sounds cool af)
-        local huntTheHunter = distance < 212 and Player.reloading and Difficulty > 2 and uniform(0, 1) < 0.5
+        local huntTheHunter = distance < 212 and Player.reloading and Difficulty > 2 and uniform(0, 1) < 0.7
         -- If low HP (escape combat)
         local escapeCombat = distance < 200 and e.health < e.firstHealth / 2
     	if farAway or huntTheHunter or escapeCombat then
@@ -240,6 +240,7 @@ function enemy.new()
 
     function e.load()
         e.weaponSprite.parent = e
+        e.weaponSprite.position = vec2.new(e.position.x, e.position.y)
         e.firstHealth = e.health
         e.weapons[e.slot].magAmmo = e.weapons[e.slot].magSize
     end
