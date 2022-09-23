@@ -102,12 +102,18 @@ local function drawEBullets(delta)
     end
 end
 
+Temp = 1
+
 function love.load()
     love.graphics.setDefaultFilter("nearest", "nearest")
     -- Set custom cursor
     assets.load()
     assets.gameLoad()
     GameLoad()
+    -- Setup UI (test)
+    local canvas = zerpgui:newCanvas()
+    canvas:newTextLabel("text", vec2.new(400, 12), "Sample", 2)
+
     GameState = "menu"
 end
 
