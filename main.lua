@@ -1,5 +1,6 @@
 local vec2 = require("lib/vec2")
 local gradient = require("lib/gradient")
+local zerpgui = require("lib/zerpgui")
 
 local assets = require("scripts/assets")
 local player = require("scripts/player")
@@ -14,10 +15,9 @@ WaveManager = require("scripts/waveManager")
 VD = require("lib/vd")
 
 local fullscreen = false
-local invertShader
 CurrentShader = nil
 
-function dropWeapon(weapon, position)
+local function dropWeapon(weapon, position)
     local newWeapon = weapon.new()
     local drop = weaponDrop.new()
     drop.weapon = newWeapon
@@ -43,8 +43,6 @@ end
 function GameLoad()
     GameState = "game"
     -- Globals
-    assets.load()
-    assets.gameLoad()
     MotionSpeed = 1
     EnemyBullets = {}
     StatNames = {"Kills", "Dash Kills"}
@@ -107,6 +105,8 @@ end
 function love.load()
     love.graphics.setDefaultFilter("nearest", "nearest")
     -- Set custom cursor
+    assets.load()
+    assets.gameLoad()
     GameLoad()
     GameState = "menu"
 end
@@ -122,11 +122,12 @@ function love.update(delta)
 	    	love.mouse.setCursor(assets.cursorCombat) end
     end
 
-    Interface.update(delta)
+    --Interface.update(delta)
+    zerpgui:update(delta)
     if GameState == "game" then
 		Player.update(delta)
 		Camera.update(delta)
-		updateWeaponDrops(delta, i)
+		updateWeaponDrops(delta)
 		EnemyManager.update(delta)
         WaveManager.update(delta)
 		ParticleManager.update(delta)
@@ -148,13 +149,8 @@ function love.draw()
         drawEBullets()
         ParticleManager.draw()
         drawWalls()
-    else
-        local a = function() end
-        love.gradient.draw(
-            a, "radial", 0, 0, SC_WIDTH, SC_HEIGHT, {0, 0, 0, 1},
-            {1, 1, 1, 1}, 0, 1, 1
-        )
     end
-    Interface.draw()
+    --Interface.draw()
+    zerpgui:draw()
     VD.draw()
 end

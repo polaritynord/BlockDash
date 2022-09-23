@@ -35,7 +35,6 @@ function player.new()
     	oldSlot = nil;
     	sprinting = false;
     	sprintCooldown = 3131;
-    	dashTimer = 0;
     	invertShader = love.graphics.newShader[[ vec4 effect(vec4 color, Image texture, vec2 texture_coords, vec2 pixel_coords) { vec4 col = texture2D( texture, texture_coords ); return vec4(1-col.r, 1-col.g, 1-col.b, col.a); } ]];
     	dashVelocity = 0;
     	dashRot = 0;
@@ -316,7 +315,7 @@ function player.new()
     	local rot = p.weaponSprite.rotation
     	if p.facing == "left" then rot = rot - 135 end
     	-- Disable shader
-    	love.graphics.setShader(nil)
+    	love.graphics.setShader()
     	-- Draw
     	love.graphics.setColor(1, 0, 0, 1)
     	repeat

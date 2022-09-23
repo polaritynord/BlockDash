@@ -298,7 +298,7 @@ end
 
 function interface.drawDamageNums()
     for _, v in ipairs(interface.damageNums) do
-        v.draw(delta)
+        v.draw()
     end
 end
 
@@ -310,7 +310,7 @@ end
 
 function interface.drawHitmarkers()
     for _, v in ipairs(interface.hitmarkers) do
-        v.draw(delta)
+        v.draw()
     end
 end
 
