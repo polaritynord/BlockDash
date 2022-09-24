@@ -1,6 +1,19 @@
 local vec2 = require("lib/vec2")
 local assets = require("scripts/assets")
 
+-- Thanks to @pgimeno at https://love2d.org/forums/viewtopic.php?f=4&t=93768&p=250899#p250899
+local function setFont(fontname, size)
+    local key = fontname .. "\0" .. size
+    local font = assets.fonts[key]
+    if font then
+      love.graphics.setFont(font)
+    else
+      font = love.graphics.setNewFont(fontname, size)
+      assets.fonts[key] = font
+    end
+    return font
+end
+
 local zerpgui = {
     canvases = {};
 }
@@ -21,12 +34,11 @@ function zerpgui:newCanvas(pos)
             scale = scale or 1;
             align = align or "--"; -- "- -" means it will get aligned in bottom left of screen
             begin = begin or "left";
-            font = font or assets.font;
+            font = font or "Minecraftia";
         }
 
         function textLabel:draw()
-            love.graphics.scale(self.scale)
-            love.graphics.setFont(self.font)
+            setFont("fonts/" .. self.font .. ".ttf", scale)
 
             local x = self.position.x
             local y = self.position.y
@@ -38,24 +50,23 @@ function zerpgui:newCanvas(pos)
             elseif self.align:sub(1, 1) == "+" then
                 -- Right align
                 x = x + (SC_WIDTH-960)
-            else
+            elseif self.align:sub(1, 1) == "0" then
                 -- Center align
                 x = x + (SC_WIDTH-960)/2
             end
             -- Y Aligning
             if self.align:sub(2, 2) == "-" then
-                -- Down align
-                y = y + (SC_HEIGHT-540)
-            elseif self.align:sub(2, 2) == "+" then
                 -- Up align
                 y = y - (SC_HEIGHT-540)
-            else
+            elseif self.align:sub(2, 2) == "+" then
+                -- Down align
+                y = y + (SC_HEIGHT-540)
+            elseif self.align:sub(1, 1) == "0" then
                 -- Center align
                 y = y + (SC_HEIGHT-540)/2
             end
 
-            love.graphics.printf(self.text, x/self.scale, y/self.scale, 1000, self.begin)
-            love.graphics.scale(1)
+            love.graphics.printf(self.text, x, y, 1000, self.begin)
         end
 
         self.elements[#self.elements+1] = textLabel

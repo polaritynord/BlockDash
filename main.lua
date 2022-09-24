@@ -1,6 +1,4 @@
 local vec2 = require("lib/vec2")
-local gradient = require("lib/gradient")
-local zerpgui = require("lib/zerpgui")
 
 local assets = require("scripts/assets")
 local player = require("scripts/player")
@@ -62,7 +60,7 @@ function GameLoad()
     EnemyManager.load()
     WaveManager.load()
     -- Setup interface
-    Interface.load()
+    Interface:load()
     GamePaused = false
     -- Setup camera
     Camera = camera.new()
@@ -110,12 +108,6 @@ function love.load()
     assets.load()
     assets.gameLoad()
     GameLoad()
-    -- Setup UI (test)
-    local canvas = zerpgui:newCanvas()
-    canvas:newTextLabel(
-        "text", vec2.new(0, 270), "Sample", 1, "00", "center"
-    )
-
     GameState = "menu"
 end
 
@@ -130,8 +122,7 @@ function love.update(delta)
 	    	love.mouse.setCursor(assets.cursorCombat) end
     end
 
-    --Interface.update(delta)
-    zerpgui:update(delta)
+    Interface:update(delta)
     if GameState == "game" then
 		Player.update(delta)
 		Camera.update(delta)
@@ -158,7 +149,6 @@ function love.draw()
         ParticleManager.draw()
         drawWalls()
     end
-    --Interface.draw()
-    zerpgui:draw()
+    Interface:draw()
     VD.draw()
 end

@@ -5,7 +5,8 @@ function assets.load()
     assets.sounds = {}
     assets.sounds.buttonClick = love.audio.newSource("sounds/button_click.wav", "static")
     -- Fonts
-    assets.font = love.graphics.newFont("fonts/Minecraftia-Regular.ttf", 24)
+    assets.fonts = {}
+    --assets.font = love.graphics.newFont("fonts/Minecraftia-Regular.ttf", 24)
 end
 
 function assets.gameLoad()
