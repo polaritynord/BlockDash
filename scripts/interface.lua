@@ -7,7 +7,7 @@ function interface:load()
     -- Main menu
     local menu = zerpgui:newCanvas("menu")
     menu:newTextLabel(
-        "title", vec2.new(0, 120), "Block Dash", 24, "00", "center"
+        "title", vec2.new(0, 120), "Block Dash", 48, "00", "center"
     )
 end
 
