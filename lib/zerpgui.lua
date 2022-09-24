@@ -27,7 +27,34 @@ function zerpgui:newCanvas(pos)
         function textLabel:draw()
             love.graphics.scale(self.scale)
             love.graphics.setFont(self.font)
-            love.graphics.printf(self.text, self.position.x, self.position.y, 1000, self.begin)
+
+            local x = self.position.x
+            local y = self.position.y
+            -- Find x position
+            -- X Aligning
+            if self.align:sub(1, 1) == "-" then
+                -- Left align
+                x = x - (SC_WIDTH-960)
+            elseif self.align:sub(1, 1) == "+" then
+                -- Right align
+                x = x + (SC_WIDTH-960)
+            else
+                -- Center align
+                x = x + (SC_WIDTH-960)/2
+            end
+            -- Y Aligning
+            if self.align:sub(2, 2) == "-" then
+                -- Down align
+                y = y + (SC_HEIGHT-540)
+            elseif self.align:sub(2, 2) == "+" then
+                -- Up align
+                y = y - (SC_HEIGHT-540)
+            else
+                -- Center align
+                y = y + (SC_HEIGHT-540)/2
+            end
+
+            love.graphics.printf(self.text, x/self.scale, y/self.scale, 1000, self.begin)
             love.graphics.scale(1)
         end
 

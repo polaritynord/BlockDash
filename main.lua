@@ -112,7 +112,9 @@ function love.load()
     GameLoad()
     -- Setup UI (test)
     local canvas = zerpgui:newCanvas()
-    canvas:newTextLabel("text", vec2.new(400, 12), "Sample", 2)
+    canvas:newTextLabel(
+        "text", vec2.new(0, 270), "Sample", 1, "00", "center"
+    )
 
     GameState = "menu"
 end
