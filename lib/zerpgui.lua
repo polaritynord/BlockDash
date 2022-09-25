@@ -1,4 +1,5 @@
 local vec2 = require("lib/vec2")
+local collision = require("lib/collision")
 local assets = require("scripts/assets")
 
 -- Thanks to @pgimeno at https://love2d.org/forums/viewtopic.php?f=4&t=93768&p=250899#p250899
@@ -53,6 +54,7 @@ function zerpgui:newCanvas(pos)
     local canvas = {
         position = pos or vec2.new();
         elements = {};
+        enabled = true;
     }
 
     -- Elements
@@ -78,7 +80,7 @@ function zerpgui:newCanvas(pos)
         self.elements[#self.elements+1] = textLabel
     end
 
-    function canvas:newButton(name, position, size, style, text, textSize, align)
+    function canvas:newButton(name, position, size, style, text, textSize, hoverEvent, clickEvent, align)
         local button = {
             position = position or vec2.new();
             style = style or 1;
@@ -88,9 +90,27 @@ function zerpgui:newCanvas(pos)
             mouseHover = false;
             size = size or vec2.new(45, 150);
             textSize = textSize or 24;
+            hoverEvent = hoverEvent;
+            clickEvent = clickEvent;
+            mouseClick = false;
         }
 
         function button:update(delta)
+            local p = calculateAlign(self.position, self.align)
+            local my = love.mouse.getY()
+            -- Click event
+            if not love.mouse.isDown(1) and self.mouseHover and self.mouseClick and self.clickEvent then
+                if Settings.sound then assets.sounds.buttonClick:play() end
+                self.clickEvent()
+            end
+            -- Check for hover
+            if my > p.y and my < p.y + self.textSize then
+                self.mouseHover = true
+                self.mouseClick = love.mouse.isDown(1)
+            else
+                self.mouseHover = false
+                self.mouseClick = false
+            end
         end
 
         function button:draw()
@@ -104,7 +124,7 @@ function zerpgui:newCanvas(pos)
                 
                 setFont("fonts/" .. self.font .. ".ttf", self.textSize)
                 local p = calculateAlign(self.position, self.align)
-                love.graphics.printf(self.text, p.x, p.y, 1000, "left")
+                love.graphics.printf(t, p.x, p.y, 1000, "left")
             else
 
             end
@@ -116,9 +136,9 @@ function zerpgui:newCanvas(pos)
 
     -- Canvas events
     function canvas:update(delta)
-       -- Update elements
+        -- Update elements
         for _, v in ipairs(self.elements) do
-            --if v.update then v:update(delta) end
+            if v.update then v:update(delta) end
         end
     end
 
@@ -138,14 +158,14 @@ end
 function zerpgui:update(delta)
     -- Update canvases
     for _, v in ipairs(self.canvases) do
-        v:update(delta)
+        if v.enabled then v:update(delta) end
     end
 end
 
 function zerpgui:draw()
     -- Draw canvases
     for _, v in ipairs(self.canvases) do
-        v:draw()
+        if v.enabled then v:draw() end
     end
 end
 
