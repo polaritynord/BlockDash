@@ -5,9 +5,12 @@ local interface = {}
 
 function interface:load()
     -- Main menu
-    local menu = zerpgui:newCanvas("menu")
-    menu:newTextLabel(
+    self.menu = zerpgui:newCanvas("menu")
+    self.menu:newTextLabel(
         "title", vec2.new(0, 120), "Block Dash", 48, "00", "center"
+    )
+    self.menu:newButton(
+        "play", vec2.new(465, 260), nil, 1, "Play", 24, "00"
     )
 end
 

@@ -15,7 +15,6 @@ local function setFont(fontname, size)
 end
 
 local function calculateAlign(position, align)
-    print(1)
     local x = position.x
     local y = position.y
     -- Find x position
@@ -70,13 +69,12 @@ function zerpgui:newCanvas(pos)
         function textLabel:draw()
             setFont("fonts/" .. self.font .. ".ttf", self.size)
 
-            local pos = calculateAlign(self.position, self.align)
-            print("hello")
+            local p = calculateAlign(self.position, self.align)
             
-            love.graphics.printf(self.text, pos.x, pos.y, 1000, self.begin)
+            love.graphics.printf(self.text, p.x, p.y, 1000, self.begin)
         end
 
-        self.elements[name] = textLabel
+        self[name] = textLabel
         self.elements[#self.elements+1] = textLabel
     end
 
@@ -105,7 +103,8 @@ function zerpgui:newCanvas(pos)
                 t = t .. self.text
                 
                 setFont("fonts/" .. self.font .. ".ttf", self.textSize)
-                --love.graphics.printf(self.text)
+                local p = calculateAlign(self.position, self.align)
+                love.graphics.printf(self.text, p.x, p.y, 1000, "left")
             else
 
             end
