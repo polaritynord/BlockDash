@@ -93,27 +93,42 @@ function zerpgui:newCanvas(pos)
             hoverEvent = hoverEvent;
             clickEvent = clickEvent;
             mouseClick = false;
+            lineWidth = 3;
         }
 
         function button:update(delta)
-            local p = calculateAlign(self.position, self.align)
-            local my = love.mouse.getY()
             -- Click event
             if not love.mouse.isDown(1) and self.mouseHover and self.mouseClick and self.clickEvent then
                 if Settings.sound then assets.sounds.buttonClick:play() end
                 self.clickEvent()
             end
-            -- Check for hover
-            if my > p.y and my < p.y + self.textSize then
-                self.mouseHover = true
-                self.mouseClick = love.mouse.isDown(1)
+            local p = calculateAlign(self.position, self.align)
+            local mx = love.mouse.getX()
+            local my = love.mouse.getY()
+            if self.style == 1 then
+                -- Check for hover
+                if my > p.y and my < p.y + self.textSize then
+                    self.mouseHover = true
+                    self.mouseClick = love.mouse.isDown(1)
+                else
+                    self.mouseHover = false
+                    self.mouseClick = false
+                end
             else
-                self.mouseHover = false
-                self.mouseClick = false
+                if mx > p.x and mx < p.x + self.size.x and my > p.y and my< p.y + self.size.y then
+                    self.lineWidth = self.lineWidth + (8-self.lineWidth) / (250 * delta)
+                    self.mouseHover = true
+                    self.mouseClick = love.mouse.isDown(1)
+                else
+                    self.lineWidth = self.lineWidth + (3-self.lineWidth) / (250 * delta)
+                    self.mouseHover = false
+                    self.mouseClick = false
+                end
             end
         end
 
         function button:draw()
+            local p = calculateAlign(self.position, self.align)
             if self.style == 1 then
                 -- Draw text
                 local t = ""
@@ -123,10 +138,15 @@ function zerpgui:newCanvas(pos)
                 t = t .. self.text
                 
                 setFont("fonts/" .. self.font .. ".ttf", self.textSize)
-                local p = calculateAlign(self.position, self.align)
                 love.graphics.printf(t, p.x, p.y, 1000, "left")
             else
+                -- Draw base
+                love.graphics.setLineWidth(self.lineWidth)
+                love.graphics.rectangle("line", p.x, p.y, self.size.x, self.size.y)
 
+                -- Draw text
+                setFont("fonts/" .. self.font .. ".ttf", self.textSize)
+                love.graphics.printf(self.text, p.x + #self.text*self.textSize/2 + 16, p.y+self.size.y/4, 1000, "left")
             end
         end
 
