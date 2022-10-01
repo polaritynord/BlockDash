@@ -2,19 +2,6 @@ local vec2 = require("lib/vec2")
 local collision = require("lib/collision")
 local assets = require("scripts/assets")
 
--- Thanks to @pgimeno at https://love2d.org/forums/viewtopic.php?f=4&t=93768&p=250899#p250899
-local function setFont(fontname, size)
-    local key = fontname .. "\0" .. size
-    local font = assets.fonts[key]
-    if font then
-      love.graphics.setFont(font)
-    else
-      font = love.graphics.setNewFont(fontname, size)
-      assets.fonts[key] = font
-    end
-    return font
-end
-
 local function calculateAlign(position, align)
     local x = position.x
     local y = position.y
@@ -49,6 +36,19 @@ local zerpgui = {
     canvases = {};
 }
 
+-- Thanks to @pgimeno at https://love2d.org/forums/viewtopic.php?f=4&t=93768&p=250899#p250899
+function SetFont(fontname, size)
+    local key = fontname .. "\0" .. size
+    local font = assets.fonts[key]
+    if font then
+      love.graphics.setFont(font)
+    else
+      font = love.graphics.setNewFont(fontname, size)
+      assets.fonts[key] = font
+    end
+    return font
+end
+
 -- Zerpgui functions
 function zerpgui:newCanvas(pos)
     local canvas = {
@@ -69,7 +69,7 @@ function zerpgui:newCanvas(pos)
         }
 
         function textLabel:draw()
-            setFont("fonts/" .. self.font .. ".ttf", self.size)
+            SetFont("fonts/" .. self.font .. ".ttf", self.size)
 
             local p = calculateAlign(self.position, self.align)
             
@@ -100,7 +100,7 @@ function zerpgui:newCanvas(pos)
             -- Click event
             if not love.mouse.isDown(1) and self.mouseHover and self.mouseClick and self.clickEvent then
                 if Settings.sound then assets.sounds.buttonClick:play() end
-                self.clickEvent()
+                self.clickEvent(self)
             end
             local p = calculateAlign(self.position, self.align)
             local mx = love.mouse.getX()
@@ -137,7 +137,7 @@ function zerpgui:newCanvas(pos)
                 end
                 t = t .. self.text
                 
-                setFont("fonts/" .. self.font .. ".ttf", self.textSize)
+                SetFont("fonts/" .. self.font .. ".ttf", self.textSize)
                 love.graphics.printf(t, p.x, p.y, 1000, "left")
             else
                 -- Draw base
@@ -145,8 +145,8 @@ function zerpgui:newCanvas(pos)
                 love.graphics.rectangle("line", p.x, p.y, self.size.x, self.size.y)
 
                 -- Draw text
-                setFont("fonts/" .. self.font .. ".ttf", self.textSize)
-                love.graphics.printf(self.text, p.x + #self.text*self.textSize/2 + 16, p.y+self.size.y/4, 1000, "left")
+                SetFont("fonts/" .. self.font .. ".ttf", self.textSize)
+                love.graphics.printf(self.text, p.x + #self.text*self.textSize/2, p.y+self.size.y/4, 1000, "left")
             end
         end
 
