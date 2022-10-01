@@ -80,6 +80,30 @@ function zerpgui:newCanvas(pos)
         self.elements[#self.elements+1] = textLabel
     end
 
+    function canvas:newImage(name, position, rotation, source, scale, align)
+        local image = {
+            position = position or vec2.new();
+            rotation = rotation or 0;
+            source = source or nil;
+            scale = scale or 1;
+            align = align or "--";
+        }
+
+        function image:draw()
+            if not self.source then return end
+            local p = calculateAlign(self.position, self.align)
+            local width = self.source:getWidth()
+            local height = self.source:getHeight()
+            love.graphics.draw(
+                self.source, p.x, p.y, self.rotation,
+                self.scale, self.scale, width/2, height/2
+            )
+        end
+
+        self[name] = image
+        self.elements[#self.elements+1] = image
+    end
+
     function canvas:newButton(name, position, size, style, text, textSize, hoverEvent, clickEvent, align)
         local button = {
             position = position or vec2.new();
@@ -100,7 +124,7 @@ function zerpgui:newCanvas(pos)
             -- Click event
             if not love.mouse.isDown(1) and self.mouseHover and self.mouseClick and self.clickEvent then
                 if Settings.sound then assets.sounds.buttonClick:play() end
-                self.clickEvent(self)
+                self.clickEvent()
             end
             local p = calculateAlign(self.position, self.align)
             local mx = love.mouse.getX()
@@ -150,7 +174,7 @@ function zerpgui:newCanvas(pos)
             end
         end
 
-        self.elements[name] = button
+        self[name] = button
         self.elements[#self.elements+1] = button
     end
 

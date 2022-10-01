@@ -202,7 +202,7 @@ function player.new()
                 w.magAmmo = w.magAmmo - 1
             end
         	-- Shoot event for UI & Sprite
-        	Interface.playerShot()
+        	Interface:playerShot()
         	p.weaponSprite.parentShot()
         	-- Play sound
         	if Settings.sound then
