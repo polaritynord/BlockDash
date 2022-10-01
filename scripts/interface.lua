@@ -85,10 +85,25 @@ function interface:load()
     self.game:newImage(
         "weaponImg", vec2.new(60, 445), 0, nil, 3, "x+"
     )
+    -- ***WEAPON UI***
     -- Weapon text
     self.game:newTextLabel(
         "weaponText", vec2.new(25, 470), "", 24, "x+", "left"
     )
+    -- Magazine ammo
+    self.game:newTextLabel(
+        "magAmmo", vec2.new(25, 505), 0, 20, "x+", "left"
+    )
+    -- Ammo icon
+    self.game:newImage(
+        "ammoIcon", vec2.new(55, 518.5), 0, nil, 1, "x+"
+    )
+    -- "Infinite" symbol
+    self.game:newTextLabel(
+        "infAmmo", vec2.new(71, 503), "∞", 20, "x+", "left"
+    )
+    -- ***HEALTH AND INV UI***
+    
 end
 
 function interface:update(delta)
@@ -110,11 +125,24 @@ function interface:update(delta)
         -- Weapon UI
         local w = Player.weapons[Player.slot]
         if w then
+            -- Weapon Image
             self.game.weaponImg.source = assets.weapons[w.name .. "Img"]
+            -- Weapon name
             self.game.weaponText.text = utils.capitalize(w.name)
+            -- Mag ammo
+            local len = #tostring(w.magAmmo)
+            local t = w.magAmmo
+            if Player.reloading then t = ". ." end
+            self.game.magAmmo.text = t
+            self.game.magAmmo.position.x = 25 - (len-1)*15
+            self.game.ammoIcon.source = assets.ammoIconImg
+            self.game.infAmmo.text = "∞"
         else
             self.game.weaponImg.source = nil
             self.game.weaponText.text = ""
+            self.game.magAmmo.text = ""
+            self.game.ammoIcon.source = nil
+            self.game.infAmmo.text = ""
         end
     end
     -- Zerpgui updating
