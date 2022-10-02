@@ -102,6 +102,16 @@ function interface:updateGame()
             element.source = nil
         end
     end
+    -- Health text
+    self.game.healthText.text = math.floor(Player.health)
+    -- Dash indicator text
+    if Player.dashTimer < 2.5 then
+        self.game.dashText.text = "CHARGING"
+        self.game.dashIcon.position.x = 735
+    else
+        self.game.dashText.text = "READY"
+        self.game.dashIcon.position.x = 785
+    end
 end
 
 function interface:updateDiffSelect()
@@ -114,6 +124,7 @@ function interface:updateDiffSelect()
 end
 
 function interface:updateDebug()
+    if not self.debug.enabled then return end
     self.debug.fps.text = "FPS: " .. love.timer.getFPS() .. " / " .. math.floor(1/love.timer.getAverageDelta())
     self.debug.enemyCount.text = "Enemy Count: " .. #EnemyManager.enemies
     self.debug.particleCount.text = "Particle Count: " .. #ParticleManager.particles
@@ -182,13 +193,22 @@ function interface:load()
         j = j - 1
     end
     -- Slot weapons
-    x = 900+25 ; y = 480+25
+    x = 925 ; y = 505
     j = 4
     for _ = 1, Player.slotCount do
         self.game:newImage("slotW"..j, vec2.new(x, y), 0, nil, 1.5, "++")
         j = j - 1
         x = x - 64
     end
+    -- Health icon & text
+    self.game:newImage("healthIcon", vec2.new(925, 450), 0, assets.healthIconImg, 4, "++")
+    self.game:newTextLabel("healthText", vec2.new(-100, 435), "100", 24, "++", "right")
+    -- Dash right click icon
+    self.game:newImage("rmb", vec2.new(925, 415), 0, assets.rmbImg, 2, "++")
+    -- Dash indicator text
+    self.game:newTextLabel("dashText", vec2.new(-100, 400), "READY", 24, "++", "right")
+    -- Dash indicator icon
+    self.game:newImage("dashIcon", vec2.new(785, 415), 0, assets.dashIconImg, 1.3, "++")
     
     -- Debug menu (game) ---------------------------------------------------------------------------------------
     self.debug = zerpgui:newCanvas()
