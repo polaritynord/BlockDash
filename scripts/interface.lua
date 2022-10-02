@@ -46,11 +46,61 @@ function interface.hardButtonClick()
     end
 end
 
--- Other calls
+-- Call events
 function interface:playerShot()
 
 end
 
+-- Other functions
+function interface:setCanvasVisible()
+    self.menu.enabled = GameState == "menu"
+    self.diffSelect.enabled = GameState == "diffSelect"
+    self.game.enabled = GameState == "game"
+    self.debug.enabled = GameState == "game"
+end
+
+function interface:updateGame()
+    -- Weapon UI
+    local w = Player.weapons[Player.slot]
+    if w then
+        -- Weapon Image
+        self.game.weaponImg.source = assets.weapons[w.name .. "Img"]
+        -- Weapon name
+        self.game.weaponText.text = utils.capitalize(w.name)
+        -- Mag ammo
+        local len = #tostring(w.magAmmo)
+        local t = w.magAmmo
+        if Player.reloading then t = ". ." end
+        self.game.magAmmo.text = t
+        self.game.magAmmo.position.x = 25 - (len-1)*15
+        self.game.ammoIcon.source = assets.ammoIconImg
+        self.game.infAmmo.text = "∞"
+    else
+        self.game.weaponImg.source = nil
+        self.game.weaponText.text = ""
+        self.game.magAmmo.text = ""
+        self.game.ammoIcon.source = nil
+        self.game.infAmmo.text = ""
+    end
+end
+
+function interface:updateDiffSelect()
+    if self.diffPreview then
+        local t = "\nClick again to continue."
+        self.diffSelect.preview.text = self.diffPreviewTexts[self.diffPreview] .. t
+    else
+        self.diffSelect.preview.text = ""
+    end
+end
+
+function interface:updateDebug()
+    self.debug.fps.text = "FPS: " .. love.timer.getFPS() .. " / " .. math.floor(1/love.timer.getAverageDelta())
+    self.debug.enemyCount.text = "Enemy Count: " .. #EnemyManager.enemies
+    self.debug.particleCount.text = "Particle Count: " .. #ParticleManager.particles
+    self.debug.bulletCount.text = "Bullet Count: " .. #EnemyBullets + #Player.bullets
+end
+
+-- Event functions
 function interface:load()
     -- Main menu -------------------------------------------------------------------------------------------------
     self.menu = zerpgui:newCanvas()
@@ -104,46 +154,25 @@ function interface:load()
     )
     -- ***HEALTH AND INV UI***
     
+    -- Debug menu (game) ---------------------------------------------------------------------------------------
+    self.debug = zerpgui:newCanvas()
+    self.debug:newTextLabel("fps", vec2.new(), "", 14, "xx", "left", "JetBrainsMono")
+    self.debug:newTextLabel("enemyCount", vec2.new(0, 15), "", 14, "xx", "left", "JetBrainsMono")
+    self.debug:newTextLabel("particleCount", vec2.new(0, 30), "", 14, "xx", "left", "JetBrainsMono")
+    self.debug:newTextLabel("bulletCount", vec2.new(0, 45), "", 14, "xx", "left", "JetBrainsMono")
 end
 
 function interface:update(delta)
     -- Change canvas based on GameState
-    self.menu.enabled = GameState == "menu"
-    self.diffSelect.enabled = GameState == "diffSelect"
-    self.game.enabled = GameState == "game"
+    self:setCanvasVisible()
     -- Difficulty selection menu
     if GameState == "diffSelect" then
-        if self.diffPreview then
-            local t = "\nClick again to continue."
-            self.diffSelect.preview.text = self.diffPreviewTexts[self.diffPreview] .. t
-        else
-            self.diffSelect.preview.text = ""
-        end
+        self:updateDiffSelect()
     end
     -- Game
     if GameState == "game" then
-        -- Weapon UI
-        local w = Player.weapons[Player.slot]
-        if w then
-            -- Weapon Image
-            self.game.weaponImg.source = assets.weapons[w.name .. "Img"]
-            -- Weapon name
-            self.game.weaponText.text = utils.capitalize(w.name)
-            -- Mag ammo
-            local len = #tostring(w.magAmmo)
-            local t = w.magAmmo
-            if Player.reloading then t = ". ." end
-            self.game.magAmmo.text = t
-            self.game.magAmmo.position.x = 25 - (len-1)*15
-            self.game.ammoIcon.source = assets.ammoIconImg
-            self.game.infAmmo.text = "∞"
-        else
-            self.game.weaponImg.source = nil
-            self.game.weaponText.text = ""
-            self.game.magAmmo.text = ""
-            self.game.ammoIcon.source = nil
-            self.game.infAmmo.text = ""
-        end
+        self:updateGame()
+        self:updateDebug()
     end
     -- Zerpgui updating
     zerpgui:update(delta)
