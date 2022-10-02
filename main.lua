@@ -36,6 +36,10 @@ function love.keypressed(key, unicode)
     	    love.window.setMode(960, 540, {resizable=true})
         end
     end
+    -- Toggle debug menu
+    if key == "f1" and GameState == "game" then
+        Interface.debug.enabled = not Interface.debug.enabled
+    end
 end
 
 function GameLoad()

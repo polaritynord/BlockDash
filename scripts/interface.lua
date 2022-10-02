@@ -56,10 +56,10 @@ function interface:setCanvasVisible()
     self.menu.enabled = GameState == "menu"
     self.diffSelect.enabled = GameState == "diffSelect"
     self.game.enabled = GameState == "game"
-    self.debug.enabled = GameState == "game"
 end
 
 function interface:updateGame()
+    local delta = love.timer.getDelta()
     -- Weapon UI
     local w = Player.weapons[Player.slot]
     if w then
@@ -81,6 +81,26 @@ function interface:updateGame()
         self.game.magAmmo.text = ""
         self.game.ammoIcon.source = nil
         self.game.infAmmo.text = ""
+    end
+    -- Inventory slots (rectangle)
+    for i = 1, Player.slotCount do
+        local element = self.game["slot"..i]
+        local l = element.lineWidth
+        if i == Player.slot then
+            element.lineWidth = l + (6-l) / (250 * delta)
+        else
+            element.lineWidth = l + (3-l) / (250 * delta)
+        end
+    end
+    -- Inventory slots (image)
+    for i = 1, Player.slotCount do
+        local element = self.game["slotW"..i]
+        local w = Player.weapons[i]
+        if w then
+            element.source = assets.weapons[w.name .. "Img"]
+        else
+            element.source = nil
+        end
     end
 end
 
@@ -153,6 +173,22 @@ function interface:load()
         "infAmmo", vec2.new(71, 503), "∞", 20, "x+", "left"
     )
     -- ***HEALTH AND INV UI***
+    -- Slots
+    local x = 900 ; local y = 480
+    local j = 4
+    for _ = 1, Player.slotCount do
+        self.game:newRectangle("slot"..j, vec2.new(x, y), vec2.new(50, 50), "line", {1,1,1,1}, 3, "++")
+        x = x - 64
+        j = j - 1
+    end
+    -- Slot weapons
+    x = 900+25 ; y = 480+25
+    j = 4
+    for _ = 1, Player.slotCount do
+        self.game:newImage("slotW"..j, vec2.new(x, y), 0, nil, 1.5, "++")
+        j = j - 1
+        x = x - 64
+    end
     
     -- Debug menu (game) ---------------------------------------------------------------------------------------
     self.debug = zerpgui:newCanvas()

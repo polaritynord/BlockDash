@@ -178,6 +178,28 @@ function zerpgui:newCanvas(pos)
         self.elements[#self.elements+1] = button
     end
 
+    function canvas:newRectangle(name, position, size, type, color, lineWidth, align)
+        local rectangle = {
+            position = position or vec2.new();
+            size = size or vec2.new(50, 50);
+            type = type or "fill";
+            color = color or {1, 1, 1, 1};
+            lineWidth = lineWidth or 1;
+            align = align or "--";
+        }
+
+        function rectangle:draw()
+            local p = calculateAlign(self.position, self.align)
+            love.graphics.setColor(self.color[1], self.color[2], self.color[3], self.color[4])
+            love.graphics.setLineWidth(self.lineWidth)
+            love.graphics.rectangle(self.type, p.x, p.y, self.size.x, self.size.y)
+            love.graphics.setColor(1, 1, 1, 1)
+        end
+
+        self[name] = rectangle
+        self.elements[#self.elements+1] = rectangle
+    end
+
     -- Canvas events
     function canvas:update(delta)
         -- Update elements
