@@ -61,6 +61,7 @@ function zerpgui:newCanvas(pos)
     -- Elements
     function canvas:newTextLabel(name, position, text, size, align, begin, font)
         local textLabel = {
+            parent = nil;
             position = position or vec2.new();
             text = text or "Sample";
             size = size or 24;
@@ -77,12 +78,14 @@ function zerpgui:newCanvas(pos)
             love.graphics.printf(self.text, p.x, p.y, 1000, self.begin)
         end
 
+        textLabel.parent = self
         self[name] = textLabel
         self.elements[#self.elements+1] = textLabel
     end
 
     function canvas:newImage(name, position, rotation, source, scale, align)
         local image = {
+            parent = nil;
             position = position or vec2.new();
             rotation = rotation or 0;
             source = source or nil;
@@ -101,16 +104,18 @@ function zerpgui:newCanvas(pos)
             )
         end
 
+        image.parent = self
         self[name] = image
         self.elements[#self.elements+1] = image
     end
 
     function canvas:newButton(name, position, size, style, text, textSize, hoverEvent, clickEvent, align)
         local button = {
+            parent = nil;
             position = position or vec2.new();
             style = style or 1;
             text = text or "Button";
-            font = font or "Minecraftia";
+            font = "Minecraftia";
             align = align or "--";
             mouseHover = false;
             size = size or vec2.new(45, 150);
@@ -176,12 +181,14 @@ function zerpgui:newCanvas(pos)
             end
         end
 
+        button.parent = self
         self[name] = button
         self.elements[#self.elements+1] = button
     end
 
     function canvas:newRectangle(name, position, size, type, color, lineWidth, align)
         local rectangle = {
+            parent = nil;
             position = position or vec2.new();
             size = size or vec2.new(50, 50);
             type = type or "fill";
@@ -195,9 +202,10 @@ function zerpgui:newCanvas(pos)
             love.graphics.setColor(self.color[1], self.color[2], self.color[3], self.color[4])
             love.graphics.setLineWidth(self.lineWidth)
             love.graphics.rectangle(self.type, p.x, p.y, self.size.x, self.size.y)
-            love.graphics.setColor(1, 1, 1, 1)
+            love.graphics.setColor(1, 1, 1, self.parent.alpha)
         end
 
+        rectangle.parent = self
         self[name] = rectangle
         self.elements[#self.elements+1] = rectangle
     end

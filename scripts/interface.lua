@@ -46,6 +46,24 @@ function interface.hardButtonClick()
     end
 end
 
+function interface.quitButtonClick()
+    if interface.menu.quit.sure then
+        love.event.quit()
+    else
+        interface.menu.quit.sure = true
+    end
+end
+
+function interface.continueButtonClick()
+    GamePaused = false
+end
+
+function interface.titleButtonClick()
+    interface.pauseMenu.alpha = 0
+    GamePaused = false
+    GameState = "menu"
+end
+
 -- Call events
 function interface:playerShot()
 
@@ -56,6 +74,7 @@ function interface:setCanvasVisible()
     self.menu.enabled = GameState == "menu"
     self.diffSelect.enabled = GameState == "diffSelect"
     self.game.enabled = GameState == "game"
+    self.pauseMenu.enabled = GameState == "game"
 end
 
 function interface:updateGame()
@@ -131,6 +150,14 @@ function interface:updateDebug()
     self.debug.bulletCount.text = "Bullet Count: " .. #EnemyBullets + #Player.bullets
 end
 
+function interface:updateMenu()
+    if self.menu.quit.sure then
+        self.menu.sureText.text = "You sure?"
+    else
+        self.menu.sureText.text = ""
+    end
+end
+
 -- Event functions
 function interface:load()
     -- Main menu -------------------------------------------------------------------------------------------------
@@ -139,7 +166,17 @@ function interface:load()
         "title", vec2.new(0, 120), "Block Dash", 48, "00", "center"
     )
     self.menu:newButton(
-        "play", vec2.new(350, 260), nil, 1, "Play", 24, nil, self.playButtonClick, "00"
+        "play", vec2.new(380, 260), vec2.new(200, 70), 2, "play", 24, nil, self.playButtonClick, "00"
+    )
+    self.menu:newButton(
+        "settings", vec2.new(380, 340), vec2.new(200, 70), 2, "settings", 24, nil, nil, "00"
+    )
+    self.menu:newButton(
+        "quit", vec2.new(380, 420), vec2.new(200, 70), 2, "quit", 24, nil, self.quitButtonClick, "00"
+    )
+    self.menu.quit.sure = false
+    self.menu:newTextLabel(
+        "sureText", vec2.new(-20, 500), "", 14, "00", "center"
     )
     -- Difficulty selection ------------------------------------------------------------------------------------
     self.diffSelect = zerpgui:newCanvas()
@@ -219,8 +256,17 @@ function interface:load()
 
     -- Pause menu (game) ---------------------------------------------------------------------------------------
     self.pauseMenu = zerpgui:newCanvas()
+    self.pauseMenu:newRectangle(
+        "background", vec2.new(), vec2.new(SC_WIDTH, SC_HEIGHT), "fill", {0, 0, 0, 1}, 0, "00"
+    )
     self.pauseMenu:newTextLabel(
         "title", vec2.new(0, 120), "Game Paused", 48, "00", "center"
+    )
+    self.pauseMenu:newButton(
+        "continue", vec2.new(380, 260), vec2.new(200, 70), 2, "continue", 24, nil, self.continueButtonClick, "00"
+    )
+    self.pauseMenu:newButton(
+        "quit", vec2.new(380, 340), vec2.new(200, 70), 2, "title menu", 24, nil, self.titleButtonClick, "00"
     )
     self.pauseMenu.alpha = 0
 end
@@ -229,10 +275,11 @@ function interface:updatePauseMenu()
     local delta = love.timer.getDelta()
     local a = self.pauseMenu.alpha
     if GamePaused then
-    	self.pauseMenu.alpha = a+(0.65-a) / (250 * delta)
+    	self.pauseMenu.alpha = a+(1-a) / (250 * delta)
     else
         self.pauseMenu.alpha = a+(0-a) / (250 * delta)
     end
+    self.pauseMenu.background.color[4] = self.pauseMenu.alpha-0.35
 end
 
 function interface:update(delta)
@@ -247,6 +294,10 @@ function interface:update(delta)
         self:updateGame()
         self:updateDebug()
         self:updatePauseMenu()
+    end
+    -- Menu
+    if GameState == "menu" then
+        self:updateMenu()
     end
     -- Zerpgui updating
     zerpgui:update(delta)
