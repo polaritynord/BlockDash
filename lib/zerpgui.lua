@@ -55,6 +55,7 @@ function zerpgui:newCanvas(pos)
         position = pos or vec2.new();
         elements = {};
         enabled = true;
+        alpha = 1;
     }
 
     -- Elements
@@ -170,7 +171,8 @@ function zerpgui:newCanvas(pos)
 
                 -- Draw text
                 SetFont("fonts/" .. self.font .. ".ttf", self.textSize)
-                love.graphics.printf(self.text, p.x + #self.text*self.textSize/2, p.y+self.size.y/4, 1000, "left")
+                local w = #self.text*self.textSize
+                love.graphics.print(self.text, p.x + 32, p.y+self.size.y/4)
             end
         end
 
@@ -209,10 +211,12 @@ function zerpgui:newCanvas(pos)
     end
 
     function canvas:draw()
+        love.graphics.setColor(1, 1, 1, self.alpha)
         -- Draw elements
         for _, v in ipairs(self.elements) do
             v:draw()
         end
+        love.graphics.setColor(1, 1, 1, 1)
     end
 
     -- Add to table

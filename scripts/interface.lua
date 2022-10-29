@@ -11,7 +11,7 @@ local interface = {
         easy = "Enemies can't dash and shoots slower. Completely removes the fast-paced gameplay.";
         medium = "Enemies can dash, while shooting slightly faster than the player.";
         hard = "Enemies will probably tear you apart with dashing to you & shooting like it's a bullet hell.";
-    }
+    };
 }
 
 -- Button events
@@ -216,6 +216,23 @@ function interface:load()
     self.debug:newTextLabel("enemyCount", vec2.new(0, 15), "", 14, "xx", "left", "JetBrainsMono")
     self.debug:newTextLabel("particleCount", vec2.new(0, 30), "", 14, "xx", "left", "JetBrainsMono")
     self.debug:newTextLabel("bulletCount", vec2.new(0, 45), "", 14, "xx", "left", "JetBrainsMono")
+
+    -- Pause menu (game) ---------------------------------------------------------------------------------------
+    self.pauseMenu = zerpgui:newCanvas()
+    self.pauseMenu:newTextLabel(
+        "title", vec2.new(0, 120), "Game Paused", 48, "00", "center"
+    )
+    self.pauseMenu.alpha = 0
+end
+
+function interface:updatePauseMenu()
+    local delta = love.timer.getDelta()
+    local a = self.pauseMenu.alpha
+    if GamePaused then
+    	self.pauseMenu.alpha = a+(0.65-a) / (250 * delta)
+    else
+        self.pauseMenu.alpha = a+(0-a) / (250 * delta)
+    end
 end
 
 function interface:update(delta)
@@ -229,6 +246,7 @@ function interface:update(delta)
     if GameState == "game" then
         self:updateGame()
         self:updateDebug()
+        self:updatePauseMenu()
     end
     -- Zerpgui updating
     zerpgui:update(delta)
