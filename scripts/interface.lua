@@ -64,6 +64,7 @@ function interface.titleButtonClick()
     interface.pauseMenu.alpha = 0
     GamePaused = false
     GameState = "menu"
+    interface.menu.quit.sure = false
 end
 
 -- Call events
@@ -185,8 +186,8 @@ function interface:updateDeathMenu()
     self.deathMenu.background.color[4] = self.deathMenu.alpha-0.35
     self.deathMenu.background.size = vec2.new(SC_WIDTH, SC_HEIGHT)
     -- Update statistics
-    for i, v in ipairs(self.statElements) do
-        
+    for _, v in ipairs(self.statElements) do
+        v.text = Stats[v.statName]
     end
 end
 
@@ -324,6 +325,14 @@ function interface:load()
         self.deathMenu["stat"..i].statName = i
         self.statElements[#self.statElements+1] = self.deathMenu["stat"..i]
         pos.y = pos.y + 48
+    end
+    -- Stat names
+    pos = vec2.new(365.5, 240)
+    for i in pairs(StatNames) do
+        self.deathMenu:newTextLabel(
+            "statN"..i, vec2.new(pos.x, pos.y), StatNames[i], 20, "00", "left"
+        )
+        pos.y = pos.y + 52
     end
     self.deathMenu.alpha = 0
 end

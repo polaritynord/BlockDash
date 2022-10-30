@@ -67,6 +67,7 @@ function GameLoad()
     -- Setup camera
     Camera = camera.new()
     Camera.lockedTarget = Player
+    Player.health = 0
 end
 
 local function updateWeaponDrops(delta)
