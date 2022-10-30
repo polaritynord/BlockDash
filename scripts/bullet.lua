@@ -17,7 +17,7 @@ function bullet.new()
     	trails = {};
     	trailCooldown = 0;
     	damage = 10;
-        parent;
+        parent = nil;
     }
 
     -- Event functions

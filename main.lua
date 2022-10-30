@@ -64,8 +64,6 @@ function GameLoad()
     EnemyManager.load()
     WaveManager.load()
     -- Setup interface
-    Interface:load()
-    GamePaused = false
     -- Setup camera
     Camera = camera.new()
     Camera.lockedTarget = Player
@@ -113,6 +111,8 @@ function love.load()
     assets.gameLoad()
     GameLoad()
     GameState = "menu"
+    Interface:load()
+    GamePaused = false
 end
 
 function love.update(delta)

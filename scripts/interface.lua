@@ -12,17 +12,19 @@ local interface = {
         medium = "Enemies can dash, while shooting slightly faster than the player.";
         hard = "Enemies will probably tear you apart with dashing to you & shooting like it's a bullet hell.";
     };
+    statElements = {}
 }
 
 -- Button events
 function interface.playButtonClick()
     GameState = "diffSelect"
+    interface.diffPreview = nil
 end
 
 function interface:easyButtonClick()
     if interface.diffPreview == "easy" then
         Difficulty = 1
-        GameState = "game"
+        GameLoad()
     else
         interface.diffPreview = "easy"
     end
@@ -31,7 +33,7 @@ end
 function interface.mediumButtonClick()
     if interface.diffPreview == "medium" then
         Difficulty = 2
-        GameState = "game"
+        GameLoad()
     else
         interface.diffPreview = "medium"
     end
@@ -40,7 +42,7 @@ end
 function interface.hardButtonClick()
     if interface.diffPreview == "hard" then
         Difficulty = 3
-        GameState = "game"
+        GameLoad()
     else
         interface.diffPreview = "hard"
     end
@@ -69,12 +71,14 @@ function interface:playerShot()
 
 end
 
--- Other functions
+-- Canvas functions
 function interface:setCanvasVisible()
     self.menu.enabled = GameState == "menu"
     self.diffSelect.enabled = GameState == "diffSelect"
     self.game.enabled = GameState == "game"
-    self.pauseMenu.enabled = GameState == "game"
+    self.pauseMenu.enabled = GameState == "game" and not CurrentShader and self.pauseMenu.alpha > 0.3
+    self.deathMenu.enabled = GameState == "game" and self.deathMenu.alpha > 0.3
+    self.debug.enabled = GameState == "game"
 end
 
 function interface:updateGame()
@@ -155,6 +159,34 @@ function interface:updateMenu()
         self.menu.sureText.text = "You sure?"
     else
         self.menu.sureText.text = ""
+    end
+end
+
+function interface:updatePauseMenu()
+    local delta = love.timer.getDelta()
+    local a = self.pauseMenu.alpha
+    if GamePaused then
+    	self.pauseMenu.alpha = a+(1-a) / (250 * delta)
+    else
+        self.pauseMenu.alpha = a+(0-a) / (250 * delta)
+    end
+    self.pauseMenu.background.color[4] = self.pauseMenu.alpha-0.35
+    self.pauseMenu.background.size = vec2.new(SC_WIDTH, SC_HEIGHT)
+end
+
+function interface:updateDeathMenu()
+    local a = self.deathMenu.alpha
+    local delta = love.timer.getDelta()
+    if Player.dead and Player.deathTimer > 1.5 then
+    	self.deathMenu.alpha = a+(1-a) / (250 * delta)
+    else
+        self.deathMenu.alpha = a+(0-a) / (250 * delta)
+    end
+    self.deathMenu.background.color[4] = self.deathMenu.alpha-0.35
+    self.deathMenu.background.size = vec2.new(SC_WIDTH, SC_HEIGHT)
+    -- Update statistics
+    for i, v in ipairs(self.statElements) do
+        
     end
 end
 
@@ -257,7 +289,7 @@ function interface:load()
     -- Pause menu (game) ---------------------------------------------------------------------------------------
     self.pauseMenu = zerpgui:newCanvas()
     self.pauseMenu:newRectangle(
-        "background", vec2.new(), vec2.new(SC_WIDTH, SC_HEIGHT), "fill", {0, 0, 0, 1}, 0, "00"
+        "background", vec2.new(), vec2.new(SC_WIDTH, SC_HEIGHT), "fill", {0, 0, 0, 1}, 0, "xx"
     )
     self.pauseMenu:newTextLabel(
         "title", vec2.new(0, 120), "Game Paused", 48, "00", "center"
@@ -269,17 +301,31 @@ function interface:load()
         "quit", vec2.new(380, 340), vec2.new(200, 70), 2, "title menu", 24, nil, self.titleButtonClick, "00"
     )
     self.pauseMenu.alpha = 0
-end
-
-function interface:updatePauseMenu()
-    local delta = love.timer.getDelta()
-    local a = self.pauseMenu.alpha
-    if GamePaused then
-    	self.pauseMenu.alpha = a+(1-a) / (250 * delta)
-    else
-        self.pauseMenu.alpha = a+(0-a) / (250 * delta)
+    -- Death menu (game) ---------------------------------------------------------------------------------------
+    self.deathMenu = zerpgui:newCanvas()
+    self.deathMenu:newRectangle(
+        "background", vec2.new(), vec2.new(SC_WIDTH, SC_HEIGHT), "fill", {0, 0, 0, 1}, 0, "xx"
+    )
+    self.deathMenu:newTextLabel(
+        "title", vec2.new(0, 120), "Eliminated", 48, "00", "center"
+    )
+    self.deathMenu:newButton(
+        "return", vec2.new(380, 420), vec2.new(200, 70), 2, "title menu", 24, nil, self.titleButtonClick, "00"
+    )
+    self.deathMenu:newTextLabel(
+        "statsTitle", vec2.new(0, 200), "Statistics:", 20, "00", "center"
+    )
+    -- Stat numbers
+    local pos = vec2.new(-640, 230)
+    for i in pairs(Stats) do
+        self.deathMenu:newTextLabel(
+            "stat"..i, vec2.new(pos.x, pos.y), "0", 40, "00", "right"
+        )
+        self.deathMenu["stat"..i].statName = i
+        self.statElements[#self.statElements+1] = self.deathMenu["stat"..i]
+        pos.y = pos.y + 48
     end
-    self.pauseMenu.background.color[4] = self.pauseMenu.alpha-0.35
+    self.deathMenu.alpha = 0
 end
 
 function interface:update(delta)
@@ -294,6 +340,7 @@ function interface:update(delta)
         self:updateGame()
         self:updateDebug()
         self:updatePauseMenu()
+        self:updateDeathMenu()
     end
     -- Menu
     if GameState == "menu" then

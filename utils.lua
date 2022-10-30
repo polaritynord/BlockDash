@@ -20,6 +20,16 @@ function utils.distanceTo(vec1, vec2)
     return math.sqrt(x*x + y*y)
 end
 
+-- Taken from https://stackoverflow.com/questions/38282234/returning-the-index-of-a-value-in-a-lua-table
+function utils.indexOf(array, value)
+    for i, v in ipairs(array) do
+        if v == value then
+            return i
+        end
+    end
+    return nil
+end
+
 -- Thanks to https://stackoverflow.com/questions/2421695/first-character-uppercase-lua
 function utils.capitalize(str)
     return (str:gsub("^%l", string.upper))
