@@ -67,7 +67,6 @@ function GameLoad()
     -- Setup camera
     Camera = camera.new()
     Camera.lockedTarget = Player
-    Player.health = 0
 end
 
 local function updateWeaponDrops(delta)
@@ -136,6 +135,10 @@ function love.update(delta)
         WaveManager.update(delta)
 		ParticleManager.update(delta)
         updateEBullets(delta)
+    end
+    -- Hide debug menu if no in-game
+    if GameState ~= "game" then
+        Interface.debug.enabled = false
     end
 end
 

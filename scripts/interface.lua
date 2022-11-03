@@ -79,7 +79,6 @@ function interface:setCanvasVisible()
     self.game.enabled = GameState == "game"
     self.pauseMenu.enabled = GameState == "game" and not CurrentShader and self.pauseMenu.alpha > 0.3
     self.deathMenu.enabled = GameState == "game" and self.deathMenu.alpha > 0.3
-    self.debug.enabled = GameState == "game"
 end
 
 function interface:updateGame()
@@ -149,17 +148,20 @@ end
 
 function interface:updateDebug()
     if not self.debug.enabled then return end
+    -- TODO add actual game versioning
+    self.debug.versionData.text = "BlockDash v1.0 (ZerpGUI 1.0, LÖVE " .. love.getVersion() .. ")"
     self.debug.fps.text = "FPS: " .. love.timer.getFPS() .. " / " .. math.floor(1/love.timer.getAverageDelta())
     self.debug.enemyCount.text = "Enemy Count: " .. #EnemyManager.enemies
     self.debug.particleCount.text = "Particle Count: " .. #ParticleManager.particles
     self.debug.bulletCount.text = "Bullet Count: " .. #EnemyBullets + #Player.bullets
+    self.debug.wave.text = "Wave: " .. WaveManager.wave
 end
 
 function interface:updateMenu()
     if self.menu.quit.sure then
-        self.menu.sureText.text = "You sure?"
+        self.menu.quit.text = "you sure?"
     else
-        self.menu.sureText.text = ""
+        self.menu.quit.text = "quit"
     end
 end
 
@@ -208,9 +210,6 @@ function interface:load()
         "quit", vec2.new(380, 420), vec2.new(200, 70), 2, "quit", 24, nil, self.quitButtonClick, "00"
     )
     self.menu.quit.sure = false
-    self.menu:newTextLabel(
-        "sureText", vec2.new(-20, 500), "", 14, "00", "center"
-    )
     -- Difficulty selection ------------------------------------------------------------------------------------
     self.diffSelect = zerpgui:newCanvas()
     self.diffSelect:newTextLabel(
@@ -282,10 +281,12 @@ function interface:load()
     
     -- Debug menu (game) ---------------------------------------------------------------------------------------
     self.debug = zerpgui:newCanvas()
-    self.debug:newTextLabel("fps", vec2.new(), "", 14, "xx", "left", "JetBrainsMono")
-    self.debug:newTextLabel("enemyCount", vec2.new(0, 15), "", 14, "xx", "left", "JetBrainsMono")
-    self.debug:newTextLabel("particleCount", vec2.new(0, 30), "", 14, "xx", "left", "JetBrainsMono")
-    self.debug:newTextLabel("bulletCount", vec2.new(0, 45), "", 14, "xx", "left", "JetBrainsMono")
+    self.debug:newTextLabel("versionData", vec2.new(), "", 14, "xx", "left", "JetBrainsMono")
+    self.debug:newTextLabel("fps", vec2.new(0, 15), "", 14, "xx", "left", "JetBrainsMono")
+    self.debug:newTextLabel("enemyCount", vec2.new(0, 30), "", 14, "xx", "left", "JetBrainsMono")
+    self.debug:newTextLabel("particleCount", vec2.new(0, 45), "", 14, "xx", "left", "JetBrainsMono")
+    self.debug:newTextLabel("bulletCount", vec2.new(0, 60), "", 14, "xx", "left", "JetBrainsMono")
+    self.debug:newTextLabel("wave", vec2.new(0, 75), "", 14, "xx", "left", "JetBrainsMono")
 
     -- Pause menu (game) ---------------------------------------------------------------------------------------
     self.pauseMenu = zerpgui:newCanvas()
