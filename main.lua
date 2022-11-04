@@ -1,4 +1,5 @@
 local vec2 = require("lib/vec2")
+local uniform = require("lib/uniform")
 
 local assets = require("scripts/assets")
 local player = require("scripts/player")
@@ -42,15 +43,34 @@ function love.keypressed(key, unicode)
     end
 end
 
+local function drawWalls()
+    --[[
+    love.graphics.setColor(1, 0, 0, 1)
+    love.graphics.rectangle("fill", (-700-Camera.position.x)*Camera.zoom, (-700-Camera.position.y)*Camera.zoom, 12, 1400)
+    love.graphics.rectangle("fill", (-700-Camera.position.x)*Camera.zoom, (700-Camera.position.y)*Camera.zoom, 1400, 12)
+    love.graphics.rectangle("fill", (700-Camera.position.x)*Camera.zoom, (-700-Camera.position.y)*Camera.zoom, 12, 1400)
+    love.graphics.rectangle("fill", (-700-Camera.position.x)*Camera.zoom, (-700-Camera.position.y)*Camera.zoom, 1400, 12)
+    love.graphics.setColor(1, 1, 1, 1)
+    ]]--
+    local size = uniform(1.7, 3.45)
+    for i = 1, 4 do
+        local particle = ParticleManager.new(
+            vec2.new(Player.position.x+uniform(-1920, 1920), Player.position.y+uniform(-1080, 1080)),
+            vec2.new(size, size), math.random(2.5, 3.4), {1, 1, 1, 1}, nil
+        )
+    end
+end
+
 function GameLoad()
     GameState = "game"
     -- Globals
     MotionSpeed = 1
     EnemyBullets = {}
-    StatNames = {"Kills", "Dash Kills"}
+    StatNames = {"Kills", "Dash Kills", "Waves"}
     Stats = {
         kills = 0;
         dashKills = 0;
+        waves = 0;
     }
     -- Setup player
     Player = player.new()
@@ -67,6 +87,7 @@ function GameLoad()
     -- Setup camera
     Camera = camera.new()
     Camera.lockedTarget = Player
+    drawWalls()
 end
 
 local function updateWeaponDrops(delta)
@@ -79,15 +100,6 @@ local function drawWeaponDrops()
     for _, v in ipairs(WeaponDrops) do
 	       v.draw()
     end
-end
-
-local function drawWalls()
-    love.graphics.setColor(1, 0, 0, 1)
-    love.graphics.rectangle("fill", (-700-Camera.position.x)*Camera.zoom, (-700-Camera.position.y)*Camera.zoom, 12, 1400)
-    love.graphics.rectangle("fill", (-700-Camera.position.x)*Camera.zoom, (700-Camera.position.y)*Camera.zoom, 1400, 12)
-    love.graphics.rectangle("fill", (700-Camera.position.x)*Camera.zoom, (-700-Camera.position.y)*Camera.zoom, 12, 1400)
-    love.graphics.rectangle("fill", (-700-Camera.position.x)*Camera.zoom, (-700-Camera.position.y)*Camera.zoom, 1400, 12)
-    love.graphics.setColor(1, 1, 1, 1)
 end
 
 local function updateEBullets(delta)
@@ -127,6 +139,7 @@ function love.update(delta)
     end
 
     Interface:update(delta)
+    drawWalls()
     if GameState == "game" then
 		Player.update(delta)
 		Camera.update(delta)
@@ -155,7 +168,6 @@ function love.draw()
 		EnemyManager.draw()
         drawEBullets()
         ParticleManager.draw()
-        drawWalls()
     end
     Interface:draw()
     VD.draw()

@@ -68,8 +68,16 @@ function interface.titleButtonClick()
 end
 
 -- Call events
-function interface:playerShot()
+function interface:updateHitmarkers(delta)
+    for i, v in ipairs(self.hitmarkers) do
+        v.update(delta, i)
+    end
+end
 
+function interface:drawHitmarkers()
+    for _, v in ipairs(self.hitmarkers) do
+        v.draw()
+    end
 end
 
 -- Canvas functions
@@ -351,6 +359,7 @@ function interface:update(delta)
         self:updateDebug()
         self:updatePauseMenu()
         self:updateDeathMenu()
+        self:updateHitmarkers(delta)
     end
     -- Menu
     if GameState == "menu" then
@@ -362,6 +371,7 @@ end
 
 function interface:draw()
     zerpgui:draw()
+    self:drawHitmarkers()
 end
 
 return interface

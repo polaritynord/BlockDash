@@ -23,6 +23,7 @@ end
 
 function waveManager.update(delta)
     if Player.dead or GamePaused then return end
+    Stats.waves = waveManager.wave
     if waveManager.preparation then
         -- Preparation phase
         waveManager.waveTimer = waveManager.waveTimer + MotionSpeed * delta
@@ -54,6 +55,7 @@ function waveManager.update(delta)
             if #EnemyManager.enemies < 1 then
                 waveManager.preparation = true
                 waveManager.waveTimer = 0
+                waveManager.wave = waveManager.wave + 1
             end
         end
     end

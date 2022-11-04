@@ -19,7 +19,7 @@ function bullet.new()
     	damage = 10;
         parent = nil;
     }
-
+    
     -- Event functions
     function b.update(delta, i)
     	if GamePaused then return end
