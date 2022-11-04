@@ -80,6 +80,18 @@ function interface:drawHitmarkers()
     end
 end
 
+function interface:updateDamageNums(delta)
+    for i, v in ipairs(self.damageNums) do
+        v.update(delta, i)
+    end
+end
+
+function interface:drawDamageNums()
+    for _, v in ipairs(self.damageNums) do
+        v.draw()
+    end
+end
+
 -- Canvas functions
 function interface:setCanvasVisible()
     self.menu.enabled = GameState == "menu"
@@ -360,6 +372,7 @@ function interface:update(delta)
         self:updatePauseMenu()
         self:updateDeathMenu()
         self:updateHitmarkers(delta)
+        self:updateDamageNums(delta)
     end
     -- Menu
     if GameState == "menu" then
@@ -372,6 +385,7 @@ end
 function interface:draw()
     zerpgui:draw()
     self:drawHitmarkers()
+    self:drawDamageNums()
 end
 
 return interface

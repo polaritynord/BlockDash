@@ -44,6 +44,7 @@ function love.keypressed(key, unicode)
 end
 
 local function drawWalls()
+    if GamePaused then return end
     --[[
     love.graphics.setColor(1, 0, 0, 1)
     love.graphics.rectangle("fill", (-700-Camera.position.x)*Camera.zoom, (-700-Camera.position.y)*Camera.zoom, 12, 1400)
@@ -113,8 +114,6 @@ local function drawEBullets(delta)
         v.draw()
     end
 end
-
-Temp = 1
 
 function love.load()
     love.graphics.setDefaultFilter("nearest", "nearest")
