@@ -60,9 +60,8 @@ function enemy.new()
             e.reloading = false
     	    if e.facing == "left" then
 	    		e.dashRot = e.dashRot - 135 end
-    	    if Settings.sound then
-    			assets.sounds.dash:play()
-    	    end
+            
+    		assets.sounds.dash:play()
     	end
     end
 
@@ -174,9 +173,7 @@ function enemy.new()
     	-- Shoot event for UI & Sprite
     	e.weaponSprite.parentShot()
     	-- Play sound
-    	if Settings.sound then
-    	    assets.sounds.shoot:play()
-    	end
+    	assets.sounds.shoot:play()
     	-- Special bullet attributes
     	newBullet.speed = w.bulletSpeed
         newBullet.damage = w.bulletDamage

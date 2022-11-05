@@ -21,6 +21,10 @@ function interface.playButtonClick()
     interface.diffPreview = nil
 end
 
+function interface.aboutButtonClick()
+    print(1)
+end
+
 function interface:easyButtonClick()
     if interface.diffPreview == "easy" then
         Difficulty = 1
@@ -224,12 +228,15 @@ function interface:load()
         "play", vec2.new(380, 260), vec2.new(200, 70), 2, "play", 24, nil, self.playButtonClick, "00"
     )
     self.menu:newButton(
-        "settings", vec2.new(380, 340), vec2.new(200, 70), 2, "settings", 24, nil, nil, "00"
+        "about", vec2.new(380, 340), vec2.new(200, 70), 2, "about", 24, nil, self.aboutButtonClick, "00"
     )
     self.menu:newButton(
         "quit", vec2.new(380, 420), vec2.new(200, 70), 2, "quit", 24, nil, self.quitButtonClick, "00"
     )
     self.menu.quit.sure = false
+    self.menu:newTextLabel(
+        "versionInfo", vec2.new(5, 516), "v" .. Version .. " - Made by Zerpnord", 14, "x+", "left"
+    )
     -- Difficulty selection ------------------------------------------------------------------------------------
     self.diffSelect = zerpgui:newCanvas()
     self.diffSelect:newTextLabel(

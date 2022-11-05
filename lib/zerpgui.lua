@@ -129,7 +129,7 @@ function zerpgui:newCanvas(pos)
         function button:update(delta)
             -- Click event
             if not love.mouse.isDown(1) and self.mouseHover and self.mouseClick and self.clickEvent then
-                if Settings.sound then assets.sounds.buttonClick:play() end
+                assets.sounds.buttonClick:play()
                 self.clickEvent()
             end
             local p = calculateAlign(self.position, self.align)

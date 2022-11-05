@@ -35,28 +35,30 @@ function bullet.new()
     	-- Check for collision
         if b.parent == Player then
             for _, v in ipairs(EnemyManager.enemies) do
-        	    local image = assets.bulletImg
-        	    local w1 = image:getWidth()
-        	    local h1 = image:getHeight()
-        	    local eImg = assets.playerImg
-        	    local w2 = eImg:getWidth()
-        	    local h2 = eImg:getHeight()
+                if not v.deathAnim then
+                    local image = assets.bulletImg
+                    local w1 = image:getWidth()
+                    local h1 = image:getHeight()
+                    local eImg = assets.playerImg
+                    local w2 = eImg:getWidth()
+                    local h2 = eImg:getHeight()
 
-        	    local p = b.position
-        	    local p2 = v.position
-        	    if collision(p.x-w1/2, p.y-h1/2, w1, h1, p2.x-w2/2, p2.y-h2/2, w2, h2) then
-                    v.health = v.health - b.damage
-                    -- Increment kill count
-                    if v.health < 1 then
-                        Stats.kills = Stats.kills + 1
+                    local p = b.position
+                    local p2 = v.position
+                    if collision(p.x-w1/2, p.y-h1/2, w1, h1, p2.x-w2/2, p2.y-h2/2, w2, h2) then
+                        v.health = v.health - b.damage
+                        -- Increment kill count
+                        if v.health < 1 then
+                            Stats.kills = Stats.kills + 1
+                        end
+                        table.remove(Player.bullets, i)
+                        -- Create damage number
+                        local damageNum = damageNumber.new()
+                        damageNum.position = vec2.new(v.position.x+uniform(-10, 10), v.position.y+uniform(-10, 10))
+                        damageNum.number = b.damage + math.random(-2, 2)
+                        Interface.damageNums[#Interface.damageNums+1] = damageNum
+                        return
                     end
-                    table.remove(Player.bullets, i)
-                    -- Create damage number
-                    local damageNum = damageNumber.new()
-                    damageNum.position = vec2.new(v.position.x+uniform(-10, 10), v.position.y+uniform(-10, 10))
-                    damageNum.number = b.damage + math.random(-2, 2)
-                    Interface.damageNums[#Interface.damageNums+1] = damageNum
-        		    return
                 end
             end
         elseif Player.dashVelocity < 0.1 then
@@ -81,9 +83,7 @@ function bullet.new()
                 Interface.hitmarkers[#Interface.hitmarkers+1] = newMarker
                 Player.regenTimer = 0
                 -- Play sound
-                if Settings.sound then
-                    assets.sounds.damage:play()
-                end
+                assets.sounds.damage:play()
                 -- Remove self
                 table.remove(EnemyBullets, i)
                 return

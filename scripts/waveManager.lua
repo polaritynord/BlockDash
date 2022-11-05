@@ -23,7 +23,6 @@ end
 
 function waveManager.update(delta)
     if Player.dead or GamePaused then return end
-    Stats.waves = waveManager.wave
     if waveManager.preparation then
         -- Preparation phase
         waveManager.waveTimer = waveManager.waveTimer + MotionSpeed * delta

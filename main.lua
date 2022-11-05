@@ -5,13 +5,11 @@ local assets = require("scripts/assets")
 local player = require("scripts/player")
 Interface = require("scripts/interface")
 ParticleManager = require("scripts/particleManager")
-Settings = require("scripts/settings")
 local camera = require("scripts/camera")
 local weaponDrop = require("scripts/weaponDrop")
 local weaponData = require("scripts/weaponData")
 EnemyManager = require("scripts/enemyManager")
 WaveManager = require("scripts/waveManager")
-VD = require("lib/vd")
 
 local fullscreen = false
 CurrentShader = nil
@@ -121,6 +119,7 @@ function love.load()
 end
 
 function love.update(delta)
+    Stats.waves = WaveManager.wave - 1
     SC_WIDTH, SC_HEIGHT = love.graphics.getDimensions()
     -- Set cursor
     if GameState ~= "game" or GamePaused then
@@ -163,5 +162,4 @@ function love.draw()
         ParticleManager.draw()
     end
     Interface:draw()
-    VD.draw()
 end

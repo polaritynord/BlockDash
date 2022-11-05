@@ -96,9 +96,7 @@ function player.new()
                 -- Check if enemy is dashing
                 if v.dashVelocity < 0.5 then return end
                 p.health = p.health - 50
-                if Settings.sound then
-                    assets.sounds.dashDamage:play()
-                end
+                assets.sounds.dashDamage:play()
             end
         end
     end
@@ -204,9 +202,7 @@ function player.new()
         	-- Shoot event for UI & Sprite
         	p.weaponSprite.parentShot()
         	-- Play sound
-        	if Settings.sound then
-        	    assets.sounds.shoot:play()
-        	end
+        	assets.sounds.shoot:play()
         	-- Special bullet attributes
         	newBullet.speed = w.bulletSpeed
             newBullet.damage = w.bulletDamage
@@ -248,16 +244,14 @@ function player.new()
         		p.reloading = false
         		w.magAmmo = w.magSize
         		-- Play reload sound
-        		if Settings.sound then
-        		    assets.sounds.reload:play()
-        		end
+        		assets.sounds.reload:play()
             end
     	else
     	    -- Get input
-    	    if Settings.intelligentReload and not love.mouse.isDown(1) and not CurrentShader and w.magAmmo < w.magSize then
+    	    if not love.mouse.isDown(1) and not CurrentShader and w.magAmmo < w.magSize then
 				p.inReloadTimer = p.inReloadTimer + delta
 		    end
-    	    local intelliReload = w.magAmmo < w.magSize and Settings.intelligentReload and not CurrentShader
+    	    local intelliReload = w.magAmmo < w.magSize and not CurrentShader
     	    if (love.keyboard.isDown("r") or w.magAmmo < 1 or (intelliReload and p.inReloadTimer > 0.75 and not love.mouse.isDown(1))) and w.magAmmo < w.magSize then
     		p.reloading = true
     		p.reloadTimer = 0
@@ -330,9 +324,8 @@ function player.new()
     	    p.dashRot = p.weaponSprite.rotation
     	    if p.facing == "left" then
 	    		p.dashRot = p.dashRot - 135 end
-    	    if Settings.sound then
-    			assets.sounds.dash:play()
-    	    end
+			
+    		assets.sounds.dash:play()
     	end
     end
 
