@@ -19,7 +19,7 @@ function bullet.new()
     	damage = 10;
         parent = nil;
     }
-    
+
     -- Event functions
     function b.update(delta, i)
     	if GamePaused then return end
@@ -54,7 +54,7 @@ function bullet.new()
                     -- Create damage number
                     local damageNum = damageNumber.new()
                     damageNum.position = vec2.new(v.position.x+uniform(-10, 10), v.position.y+uniform(-10, 10))
-                    damageNum.number = b.damage
+                    damageNum.number = b.damage + math.random(-2, 2)
                     Interface.damageNums[#Interface.damageNums+1] = damageNum
         		    return
                 end

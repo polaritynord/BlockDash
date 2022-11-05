@@ -15,6 +15,7 @@ VD = require("lib/vd")
 
 local fullscreen = false
 CurrentShader = nil
+local starPositions = {}
 
 local function dropWeapon(weapon, position)
     local newWeapon = weapon.new()
@@ -43,22 +44,10 @@ function love.keypressed(key, unicode)
     end
 end
 
-local function drawWalls()
+local function drawStars()
     if GamePaused then return end
-    --[[
-    love.graphics.setColor(1, 0, 0, 1)
-    love.graphics.rectangle("fill", (-700-Camera.position.x)*Camera.zoom, (-700-Camera.position.y)*Camera.zoom, 12, 1400)
-    love.graphics.rectangle("fill", (-700-Camera.position.x)*Camera.zoom, (700-Camera.position.y)*Camera.zoom, 1400, 12)
-    love.graphics.rectangle("fill", (700-Camera.position.x)*Camera.zoom, (-700-Camera.position.y)*Camera.zoom, 12, 1400)
-    love.graphics.rectangle("fill", (-700-Camera.position.x)*Camera.zoom, (-700-Camera.position.y)*Camera.zoom, 1400, 12)
-    love.graphics.setColor(1, 1, 1, 1)
-    ]]--
-    local size = uniform(1.7, 3.45)
-    for i = 1, 4 do
-        local particle = ParticleManager.new(
-            vec2.new(Player.position.x+uniform(-1920, 1920), Player.position.y+uniform(-1080, 1080)),
-            vec2.new(size, size), math.random(2.5, 3.4), {1, 1, 1, 1}, nil
-        )
+    for i in pairs(starPositions) do
+        love.graphics.rectangle("fill", starPositions[i][1]-Camera.position.x, starPositions[i][2]-Camera.position.y, starPositions[i][3], starPositions[i][4])
     end
 end
 
@@ -88,7 +77,7 @@ function GameLoad()
     -- Setup camera
     Camera = camera.new()
     Camera.lockedTarget = Player
-    drawWalls()
+    drawStars()
 end
 
 local function updateWeaponDrops(delta)
@@ -124,6 +113,11 @@ function love.load()
     GameState = "menu"
     Interface:load()
     GamePaused = false
+    -- Create star positions
+    for _ = 1, 700 do
+        local size = uniform(1.7, 3.45)
+        starPositions[#starPositions+1] = {uniform(-1920, 1920), uniform(-1080, 1080), size, size}
+    end
 end
 
 function love.update(delta)
@@ -138,7 +132,6 @@ function love.update(delta)
     end
 
     Interface:update(delta)
-    drawWalls()
     if GameState == "game" then
 		Player.update(delta)
 		Camera.update(delta)
@@ -162,6 +155,7 @@ function love.draw()
     end
     love.graphics.setShader(CurrentShader)
     if GameState == "game" then
+        drawStars()
 		drawWeaponDrops()
 		Player.draw()
 		EnemyManager.draw()
