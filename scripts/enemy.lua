@@ -55,7 +55,7 @@ function enemy.new()
             if not escapeCombat then
                 e.dashRot = e.weaponSprite.rotation
             else
-                e.dashRot = e.weaponSprite.rotation + math.pi
+                e.dashRot = e.weaponSprite.rotation + math.pi + uniform(-math.pi/9, math.pi/9)
             end
             e.reloading = false
     	    if e.facing == "left" then

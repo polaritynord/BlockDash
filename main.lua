@@ -54,11 +54,11 @@ function GameLoad()
     -- Globals
     MotionSpeed = 1
     EnemyBullets = {}
-    StatNames = {"Kills", "Dash Kills", "Waves"}
+    StatNames = {"Waves", "Kills", "Dash Kills"}
     Stats = {
+        waves = 0;
         kills = 0;
         dashKills = 0;
-        waves = 0;
     }
     -- Setup player
     Player = player.new()

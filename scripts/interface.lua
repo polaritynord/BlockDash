@@ -109,6 +109,12 @@ end
 
 function interface:updateGame()
     local delta = love.timer.getDelta()
+    -- Wave text
+    if WaveManager.preparation then
+        self.game.wave.text = "PREPARE FOR WAVE " .. WaveManager.wave
+    else
+        self.game.wave.text = "WAVE " .. WaveManager.wave .. " - " .. #EnemyManager.enemies .. " ENEMIES LEFT"
+    end
     -- Weapon UI
     local w = Player.weapons[Player.slot]
     if w then
@@ -214,6 +220,7 @@ function interface:updateDeathMenu()
     self.deathMenu.background.color[4] = self.deathMenu.alpha-0.35
     self.deathMenu.background.size = vec2.new(SC_WIDTH, SC_HEIGHT)
     -- Update statistics
+    print(Stats.kills, Stats.dashKills, Stats.waves)
     for _, v in ipairs(self.statElements) do
         v.text = Stats[v.statName]
     end
@@ -271,6 +278,10 @@ function interface:load()
     )
     -- Game ---------------------------------------------------------------------------------------------------
     self.game = zerpgui:newCanvas()
+    -- Wave text
+    self.game:newTextLabel(
+        "wave", vec2.new(0, 20), "WAVE 1", 24, "0x", "center"
+    )
     -- Weapon image
     self.game:newImage(
         "weaponImg", vec2.new(60, 445), 0, nil, 3, "x+"
