@@ -12,7 +12,8 @@ local interface = {
         medium = "Enemies can dash, while shooting slightly faster than the player.";
         hard = "Enemies will probably tear you apart with dashing to you & shooting like it's a bullet hell.";
     };
-    statElements = {}
+    statElements = {};
+    text = love.filesystem.read("string", "howtoplay.txt");
 }
 
 -- Button events
@@ -22,7 +23,7 @@ function interface.playButtonClick()
 end
 
 function interface.aboutButtonClick()
-    print(1)
+    GameState = "about"
 end
 
 function interface:easyButtonClick()
@@ -103,6 +104,7 @@ function interface:setCanvasVisible()
     self.game.enabled = GameState == "game"
     self.pauseMenu.enabled = GameState == "game" and not CurrentShader and self.pauseMenu.alpha > 0.3
     self.deathMenu.enabled = GameState == "game" and self.deathMenu.alpha > 0.3
+    self.about.enabled = GameState == "about"
 end
 
 function interface:updateGame()
@@ -228,7 +230,7 @@ function interface:load()
         "play", vec2.new(380, 260), vec2.new(200, 70), 2, "play", 24, nil, self.playButtonClick, "00"
     )
     self.menu:newButton(
-        "about", vec2.new(380, 340), vec2.new(200, 70), 2, "about", 24, nil, self.aboutButtonClick, "00"
+        "about", vec2.new(380, 340), vec2.new(200, 70), 2, "help", 24, nil, self.aboutButtonClick, "00"
     )
     self.menu:newButton(
         "quit", vec2.new(380, 420), vec2.new(200, 70), 2, "quit", 24, nil, self.quitButtonClick, "00"
@@ -236,6 +238,17 @@ function interface:load()
     self.menu.quit.sure = false
     self.menu:newTextLabel(
         "versionInfo", vec2.new(5, 516), "v" .. Version .. " - Made by Zerpnord", 14, "x+", "left"
+    )
+    -- About menu ----------------------------------------------------------------------------------------------
+    self.about = zerpgui:newCanvas()
+    self.about:newTextLabel(
+        "title", vec2.new(0, 120), "How to Play", 48, "00", "center"
+    )
+    self.about:newTextLabel(
+        "keyControls", vec2.new(180, 220), self.text, 16, "00", "left"
+    )
+    self.about:newButton(
+        "return", vec2.new(380, 420), vec2.new(200, 70), 2, "return", 24, nil, self.titleButtonClick, "00"
     )
     -- Difficulty selection ------------------------------------------------------------------------------------
     self.diffSelect = zerpgui:newCanvas()

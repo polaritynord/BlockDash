@@ -1,0 +1,7 @@
+WASD                    - Move
+E                       - Pick up Weapon
+1,2,3,4                 - Switch slot
+Q                       - Quick Slot Switch
+Hold and Release RMB    - Dash
+ESC                     - Pause Game
+F1                      - Open Debug Menu

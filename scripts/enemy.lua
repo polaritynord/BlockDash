@@ -18,7 +18,7 @@ function enemy.new()
     	deathAnim = false;
     	alpha = 1;
     	scale = 1;
-        weapons = {weaponData.pistol.new()};
+        weapons = {};
         weaponSprite = weaponSprite.new();
         slot = 1;
         facing = "right";
@@ -151,46 +151,57 @@ function enemy.new()
     	e.shootCooldown = e.shootCooldown + delta * MotionSpeed / speed
     	if e.shootCooldown < w.shootTime then
     	    return end
-    	-- Instance bullet
-    	local newBullet = bullet.new()
-    	newBullet.position = vec2.new(e.weaponSprite.position.x, e.weaponSprite.position.y)
-    	newBullet.rotation = e.weaponSprite.realRot
-    	-- Check where the enemy is facing
-    	local t = 1
-    	if e.facing == "left" then
-    	    t = -1
-    	    newBullet.rotation = newBullet.rotation + 135
-    	end
-    	-- Offset the bullet
-    	newBullet.position.x = newBullet.position.x + math.cos(e.weaponSprite.realRot) * w.bulletOffset * t
-    	newBullet.position.y = newBullet.position.y + math.sin(e.weaponSprite.realRot) * w.bulletOffset * t
-    	-- Spread bullet
-    	newBullet.rotation = newBullet.rotation + uniform(-1, 1) * w.bulletSpread
-    	-- Reset timer
-    	e.shootCooldown = 0
-    	-- Decrease mag ammo
-    	w.magAmmo = w.magAmmo - 1
-    	-- Shoot event for UI & Sprite
-    	e.weaponSprite.parentShot()
-    	-- Play sound
-    	assets.sounds.shoot:play()
-    	-- Special bullet attributes
-    	newBullet.speed = w.bulletSpeed
-        newBullet.damage = w.bulletDamage
-        newBullet.parent = e
-    	-- Add to table
-    	EnemyBullets[#EnemyBullets+1] = newBullet
-    	-- Particle effects
-    	for i = 1, 4 do
-    	    local particle = ParticleManager.new(
-        		vec2.new(newBullet.position.x, newBullet.position.y),
-        		vec2.new(8, 8),
-        		0.5, {1, 0.36, 0}, e.shootParticleTick
-    	    )
-    	    particle.realRotation = e.weaponSprite.realRot + uniform(-0.35, 0.35)
-    	    particle.speed = 250
-    	    if e.facing == "left" then particle.speed = -particle.speed end
-    	end
+
+        local spread = 0
+        if w.weaponType == "shotgun" then
+            local spread = -w.bulletSpread
+        end
+        for i = 1, w.bulletPerShot do
+            -- Instance bullet
+            local newBullet = bullet.new()
+            newBullet.position = vec2.new(e.weaponSprite.position.x, e.weaponSprite.position.y)
+            newBullet.rotation = e.weaponSprite.realRot
+            -- Check where the enemy is facing
+            local t = 1
+            if e.facing == "left" then
+                t = -1
+                newBullet.rotation = newBullet.rotation + 135
+            end
+            -- Offset the bullet
+            newBullet.position.x = newBullet.position.x + math.cos(e.weaponSprite.realRot) * w.bulletOffset * t
+            newBullet.position.y = newBullet.position.y + math.sin(e.weaponSprite.realRot) * w.bulletOffset * t
+            -- Spread bullet
+            newBullet.rotation = newBullet.rotation + uniform(-1, 1) * w.bulletSpread
+            -- Reset timer
+            e.shootCooldown = 0
+            -- Decrease mag ammo
+            if w.weaponType == "shotgun" then
+                w.magAmmo = w.magAmmo - (1/w.bulletPerShot)
+            else
+                w.magAmmo = w.magAmmo - 1
+            end
+            -- Shoot event for UI & Sprite
+            e.weaponSprite.parentShot()
+            -- Play sound
+            assets.sounds.shoot:play()
+            -- Special bullet attributes
+            newBullet.speed = w.bulletSpeed
+            newBullet.damage = w.bulletDamage
+            newBullet.parent = e
+            -- Add to table
+            EnemyBullets[#EnemyBullets+1] = newBullet
+            -- Particle effects
+            for i = 1, 4 do
+                local particle = ParticleManager.new(
+                    vec2.new(newBullet.position.x, newBullet.position.y),
+                    vec2.new(8, 8),
+                    0.5, {1, 0.36, 0}, e.shootParticleTick
+                )
+                particle.realRotation = e.weaponSprite.realRot + uniform(-0.35, 0.35)
+                particle.speed = 250
+                if e.facing == "left" then particle.speed = -particle.speed end
+            end
+        end
     end
 
     function e.shootParticleTick(particle, delta)
@@ -239,6 +250,30 @@ function enemy.new()
         e.weaponSprite.parent = e
         e.weaponSprite.position = vec2.new(e.position.x, e.position.y)
         e.firstHealth = e.health
+        -- Define weapon
+        local shotgunWave = math.floor(9 / Difficulty)
+        local ARWave = math.floor(15 / Difficulty)
+        local w
+        if WaveManager.wave > ARWave then
+            local c = math.random()
+            if c < 0.25 then
+                w = weaponData.shotgun.new()
+            elseif c < 0.55 then
+                w = weaponData.assaultRifle.new()
+            else
+                w = weaponData.pistol.new()
+            end
+        elseif WaveManager.wave > shotgunWave then
+            local c = math.random()
+            if c < 0.25 then
+                w = weaponData.shotgun.new()
+            else
+                w = weaponData.pistol.new()
+            end
+        else
+            w = weaponData.pistol.new()
+        end
+        e.weapons[e.slot] = w
         e.weapons[e.slot].magAmmo = e.weapons[e.slot].magSize
     end
 
