@@ -28,7 +28,9 @@ function bullet.new()
     	if b.lifetime > 3.5 then
             local t = EnemyBullets
             if b.parent == Player then
-                t = Player.bullets end
+                t = Player.bullets
+                Player.missedBullets = Player.missedBullets + 1
+            end
     	    table.remove(t, i)
     	    return
     	end
@@ -57,6 +59,7 @@ function bullet.new()
                         damageNum.position = vec2.new(v.position.x+uniform(-10, 10), v.position.y+uniform(-10, 10))
                         damageNum.number = b.damage + math.random(-2, 2)
                         Interface.damageNums[#Interface.damageNums+1] = damageNum
+                        Player.hitBullets = Player.hitBullets + 1
                         return
                     end
                 end

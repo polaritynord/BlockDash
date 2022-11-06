@@ -54,9 +54,10 @@ function GameLoad()
     -- Globals
     MotionSpeed = 1
     EnemyBullets = {}
-    StatNames = {"Waves", "Kills", "Dash Kills"}
+    StatNames = {"Waves", "Accuracy", "Kills", "Dash Kills"}
     Stats = {
         waves = 0;
+        accuracy = 0;
         kills = 0;
         dashKills = 0;
     }
@@ -119,7 +120,14 @@ function love.load()
 end
 
 function love.update(delta)
+    -- Update stats
     Stats.waves = WaveManager.wave - 1
+    local num = math.floor((Player.hitBullets / (Player.hitBullets + Player.missedBullets))*100)
+    if tostring(num) == "nan" then
+        num = 0
+    end
+    Stats.accuracy = "%" .. num
+
     SC_WIDTH, SC_HEIGHT = love.graphics.getDimensions()
     -- Set cursor
     if GameState ~= "game" or GamePaused then

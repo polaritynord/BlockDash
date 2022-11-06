@@ -1,6 +1,15 @@
+--[[
+    ZerpGUI 1.0.0
+    Made by Zerpnord
+--]]
+
 local vec2 = require("lib/vec2")
-local collision = require("lib/collision")
 local assets = require("scripts/assets")
+
+local zerpgui = {
+    canvases = {};
+    version = "1.0.0";
+}
 
 local function calculateAlign(position, align)
     local x = position.x
@@ -31,10 +40,6 @@ local function calculateAlign(position, align)
 
     return vec2.new(x, y)
 end
-
-local zerpgui = {
-    canvases = {};
-}
 
 -- Thanks to @pgimeno at https://love2d.org/forums/viewtopic.php?f=4&t=93768&p=250899#p250899
 function SetFont(fontname, size)

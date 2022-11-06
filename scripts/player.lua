@@ -45,6 +45,8 @@ function player.new()
         alpha = 1;
         deathTimer = 0;
         regenTimer = 0;
+		hitBullets = 0;
+		missedBullets = 0;
     }
 
     -- Trail related functions

@@ -181,7 +181,7 @@ end
 function interface:updateDebug()
     if not self.debug.enabled then return end
     -- TODO add actual game versioning
-    self.debug.versionData.text = "BlockDash v1.0 (ZerpGUI 1.0, LÖVE " .. love.getVersion() .. ")"
+    self.debug.versionData.text = "BlockDash v1.0 (ZerpGUI " .. zerpgui.version .. ", LÖVE " .. love.getVersion() .. ")"
     self.debug.fps.text = "FPS: " .. love.timer.getFPS() .. " / " .. math.floor(1/love.timer.getAverageDelta())
     self.debug.enemyCount.text = "Enemy Count: " .. #EnemyManager.enemies
     self.debug.particleCount.text = "Particle Count: " .. #ParticleManager.particles
@@ -220,7 +220,6 @@ function interface:updateDeathMenu()
     self.deathMenu.background.color[4] = self.deathMenu.alpha-0.35
     self.deathMenu.background.size = vec2.new(SC_WIDTH, SC_HEIGHT)
     -- Update statistics
-    print(Stats.kills, Stats.dashKills, Stats.waves)
     for _, v in ipairs(self.statElements) do
         v.text = Stats[v.statName]
     end
@@ -369,22 +368,36 @@ function interface:load()
         "statsTitle", vec2.new(0, 200), "Statistics:", 20, "00", "center"
     )
     -- Stat numbers
-    local pos = vec2.new(-640, 230)
+    local r = 3
+    local pos = vec2.new(-700, 230)
     for i in pairs(Stats) do
+        if r < 1 then
+            r = 3
+            pos.x = pos.x + 270
+            pos.y = 230
+        end
         self.deathMenu:newTextLabel(
             "stat"..i, vec2.new(pos.x, pos.y), "0", 40, "00", "right"
         )
         self.deathMenu["stat"..i].statName = i
         self.statElements[#self.statElements+1] = self.deathMenu["stat"..i]
         pos.y = pos.y + 48
+        r = r - 1
     end
     -- Stat names
-    pos = vec2.new(365.5, 240)
+    r = 3
+    pos = vec2.new(305.5, 240)
     for i in pairs(StatNames) do
+        if r < 1 then
+            r = 3
+            pos.x = pos.x + 270
+            pos.y = 240
+        end
         self.deathMenu:newTextLabel(
             "statN"..i, vec2.new(pos.x, pos.y), StatNames[i], 20, "00", "left"
         )
         pos.y = pos.y + 52
+        r = r - 1
     end
     self.deathMenu.alpha = 0
 end
