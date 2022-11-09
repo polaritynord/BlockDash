@@ -1,4 +1,19 @@
 # BlockDash - A Fast-Paced Shooter Game
-Still a work in progress, but I'm planning to make a 2d shooter game that has very simple graphics with a gameplay filled with action.
 
-> School is beginning soon, so sadly I won't be make any progress during the weekdays
+[![Available on itch.io](http://jessemillar.github.io/available-on-itchio-badge/badge-bw.png)](https://zerpnord.itch.io/blockdash)
+
+BlockDash is a simple-graphics 2D game filled with action. Run, shoot, run, dash. just make sure you don't reload near those enemies. They can dash at you as well.
+
+![](https://imagizer.imageshack.com/img922/7289/ICVfeL.gif)
+
+Movements are already explained inside the game, but here, I wrote it anyways to make the page look more formal.
+
+Key(s)  | Action Name
+------------- | -------------
+W, A, S, D  | Move
+Content Cell  | Content Cell
+E | Pick up Weapon
+1, 2, 3, 4 | Switch Slots
+Q | Quick Slot Switch (really useful in medium/hard)
+ESC | Pause & Continue Game
+F1 | Open Debug Menu
