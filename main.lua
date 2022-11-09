@@ -1,5 +1,6 @@
 local vec2 = require("lib/vec2")
 local uniform = require("lib/uniform")
+local utils   = require("utils")
 
 local assets = require("scripts/assets")
 local player = require("scripts/player")
@@ -54,13 +55,8 @@ function GameLoad()
     -- Globals
     MotionSpeed = 1
     EnemyBullets = {}
-    StatNames = {"Waves", "Accuracy", "Kills", "Dash Kills"}
-    Stats = {
-        waves = 0;
-        accuracy = 0;
-        kills = 0;
-        dashKills = 0;
-    }
+    StatNames = {"Time", "Waves", "Accuracy", "Kills", "Dash Kills"}
+    Stats = {0, 0, 0, 0, 0}
     -- Setup player
     Player = player.new()
     Player.load()
@@ -77,6 +73,7 @@ function GameLoad()
     Camera = camera.new()
     Camera.lockedTarget = Player
     drawStars()
+    --Player.health = 0
 end
 
 local function updateWeaponDrops(delta)
@@ -121,12 +118,12 @@ end
 
 function love.update(delta)
     -- Update stats
-    Stats.waves = WaveManager.wave - 1
+    Stats[utils.indexOf(StatNames, "Waves")] = WaveManager.wave - 1
     local num = math.floor((Player.hitBullets / (Player.hitBullets + Player.missedBullets))*100)
     if tostring(num) == "nan" then
         num = 0
     end
-    Stats.accuracy = "%" .. num
+    Stats[utils.indexOf(StatNames, "Accuracy")] = "%" .. num
 
     SC_WIDTH, SC_HEIGHT = love.graphics.getDimensions()
     -- Set cursor

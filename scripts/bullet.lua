@@ -1,6 +1,7 @@
 local vec2 = require("lib/vec2")
 local collision = require("lib/collision")
 local uniform = require("lib/uniform")
+local utils   = require("utils")
 
 local assets = require("scripts/assets")
 local damageNumber = require("scripts/damageNumber")
@@ -51,7 +52,8 @@ function bullet.new()
                         v.health = v.health - b.damage
                         -- Increment kill count
                         if v.health < 1 then
-                            Stats.kills = Stats.kills + 1
+                            local index = utils.indexOf(StatNames, "Kills")
+                            Stats[index] = Stats[index] + 1
                         end
                         table.remove(Player.bullets, i)
                         -- Create damage number

@@ -98,9 +98,11 @@ function enemy.new()
         local c = collision(pos.x-(w*e.scale)/2, pos.y-(h*e.scale)/2, w, h, e.position.x-w/2, e.position.y-h/2, w, h)
         if c and Player.dashVelocity > 0.5 then
             -- Damage enemy
+            local index = utils.indexOf(StatNames, "Dash Kills")
             e.health = e.health - 100
-            Stats.dashKills = Stats.dashKills + 1
-            Stats.kills = Stats.kills + 1
+            Stats[index] = Stats[index] + 1
+            index = utils.indexOf(StatNames, "Kills")
+            Stats[index] = Stats[index] + 1
             Interface.dashKillAlpha = 1
             Interface.dashKillScale = 1.8
         end
