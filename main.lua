@@ -54,6 +54,7 @@ function GameLoad()
     GameState = "game"
     -- Globals
     MotionSpeed = 1
+    Time = 0
     EnemyBullets = {}
     StatNames = {"Time", "Waves", "Accuracy", "Kills", "Dash Kills"}
     Stats = {0, 0, 0, 0, 0}
@@ -100,6 +101,22 @@ local function drawEBullets(delta)
     end
 end
 
+local function setStats(delta)
+    -- Waves
+    Stats[utils.indexOf(StatNames, "Waves")] = WaveManager.wave - 1
+    -- Accuracy
+    local num = math.floor((Player.hitBullets / (Player.hitBullets + Player.missedBullets))*100)
+    if tostring(num) == "nan" then
+        num = 0
+    end
+    Stats[utils.indexOf(StatNames, "Accuracy")] = "%" .. num
+    -- Time
+    local min = math.floor(Time / 60)
+    local sec = math.floor(Time - min*60)
+    local index = utils.indexOf(StatNames, "Time")
+    Stats[index] = min .. "m" .. sec .. "s"
+end
+
 function love.load()
     love.graphics.setDefaultFilter("nearest", "nearest")
     -- Set custom cursor
@@ -117,14 +134,7 @@ function love.load()
 end
 
 function love.update(delta)
-    -- Update stats
-    Stats[utils.indexOf(StatNames, "Waves")] = WaveManager.wave - 1
-    local num = math.floor((Player.hitBullets / (Player.hitBullets + Player.missedBullets))*100)
-    if tostring(num) == "nan" then
-        num = 0
-    end
-    Stats[utils.indexOf(StatNames, "Accuracy")] = "%" .. num
-
+    setStats(delta)
     SC_WIDTH, SC_HEIGHT = love.graphics.getDimensions()
     -- Set cursor
     if GameState ~= "game" or GamePaused then

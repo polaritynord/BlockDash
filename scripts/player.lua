@@ -376,12 +376,12 @@ function player.new()
 		love.graphics.setColor(1, 1, 1, 0.1 + (p.aimLineWidth/3)-1)
 		love.graphics.setLineStyle("smooth")
 		love.graphics.setLineWidth(p.aimLineWidth)
-		if utils.distanceTo(pos, vec2.new(x, y)) > 300 then
+		if utils.distanceTo(pos, vec2.new(x, y)) > 120 then
 			local rot = p.weaponSprite.realRot
 			if p.facing == "left" then
 				rot = rot + math.pi
 			end
-			love.graphics.line({pos.x, pos.y, pos.x+math.cos(rot)*300, pos.y+math.sin(rot)*300})
+			love.graphics.line({pos.x, pos.y, pos.x+math.cos(rot)*120, pos.y+math.sin(rot)*120})
 		else
 			love.graphics.line({pos.x, pos.y, x, y})
 		end
@@ -403,6 +403,7 @@ function player.new()
     function p.update(delta)
     	if GamePaused then return end
         if p.health > 0 then
+			Time = Time + delta
 			p.aimLineWidth = p.aimLineWidth + (3-p.aimLineWidth) / (250 * delta)
         	p.switchSlot()
         	p.shoot(delta)
