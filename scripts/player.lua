@@ -47,6 +47,7 @@ function player.new()
         regenTimer = 0;
 		hitBullets = 0;
 		missedBullets = 0;
+		aimLineWidth = 3;
     }
 
     -- Trail related functions
@@ -211,6 +212,8 @@ function player.new()
             newBullet.parent = p
         	-- Add to table
         	p.bullets[#p.bullets+1] = newBullet
+			-- Set line width
+			p.aimLineWidth = 5 
         	-- Particle effects
         	for i = 1, 4 do
         	    local particle = ParticleManager.new(
@@ -367,6 +370,22 @@ function player.new()
         end
     end
 
+	function p.drawLine()
+		local x, y = love.mouse.getPosition()
+		local pos = vec2.new(p.position.x-Camera.position.x, p.position.y-Camera.position.y)
+		love.graphics.setColor(1, 1, 1, 0.1 + (p.aimLineWidth/3)-1)
+		love.graphics.setLineStyle("smooth")
+		love.graphics.setLineWidth(p.aimLineWidth)
+		if utils.distanceTo(pos, vec2.new(x, y)) > 300 then
+			local rot = p.weaponSprite.realRot
+			if p.facing == "left" then
+				rot = rot + math.pi
+			end
+			love.graphics.line({pos.x, pos.y, pos.x+math.cos(rot)*300, pos.y+math.sin(rot)*300})
+		else
+			love.graphics.line({pos.x, pos.y, x, y})
+		end
+	end
     -- Event functions
     function p.load()
         p.weaponSprite.parent = p
@@ -384,6 +403,7 @@ function player.new()
     function p.update(delta)
     	if GamePaused then return end
         if p.health > 0 then
+			p.aimLineWidth = p.aimLineWidth + (3-p.aimLineWidth) / (250 * delta)
         	p.switchSlot()
         	p.shoot(delta)
         	p.movement(delta)
@@ -427,7 +447,11 @@ function player.new()
 
         if not p.dead then
 	       p.drawTrail() end
-    	local width = assets.playerImg:getWidth()
+		
+		if not GamePaused and not CurrentShader then
+			p.drawLine() end
+    	-- Draw self
+		local width = assets.playerImg:getWidth()
     	local height = assets.playerImg:getHeight()
     	local x = (p.position.x - Camera.position.x) * Camera.zoom
     	local y = (p.position.y - Camera.position.y) * Camera.zoom
