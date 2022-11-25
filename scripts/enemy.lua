@@ -34,19 +34,21 @@ function enemy.new()
         dashVelocity = 0;
         dashTimer = 0;
         dashRot = 0;
+        target = Player;
+        dead = false;
     }
 
     function e.dash(delta)
         -- Increment timer
     	e.dashTimer = e.dashTimer + delta
     	if e.dashTimer < 2.5 then return end
-        local distance = utils.distanceTo(Player.position, e.position)
+        local distance = utils.distanceTo(e.target.position, e.position)
         local w = e.weapons[e.slot]
 
-        -- If far away from player and has a reasonable amount of ammo
+        -- If far away from e.target and has a reasonable amount of ammo
         local farAway = distance > 370 and w.magAmmo > w.magSize / 3 and Difficulty > 1
-        -- If player is reloading & near enemy (this shi sounds cool af)
-        local huntTheHunter = distance < 212 and Player.reloading and Difficulty > 2 and uniform(0, 1) < 0.7
+        -- If e.target is reloading & near enemy (this shi sounds cool af)
+        local huntTheHunter = distance < 212 and e.target.reloading and Difficulty > 2 and uniform(0, 1) < 0.7
         -- If low HP (escape combat)
         local escapeCombat = distance < 200 and e.health < e.firstHealth / 2
     	if farAway or huntTheHunter or escapeCombat then
@@ -91,12 +93,12 @@ function enemy.new()
 
     -- Enemy related functions
     function e.checkForDash()
-        local pos = Player.position
+        local pos = e.target.position
         local img = assets.playerImg
         local w = img:getWidth()
         local h = img:getHeight()
         local c = collision(pos.x-(w*e.scale)/2, pos.y-(h*e.scale)/2, w, h, e.position.x-w/2, e.position.y-h/2, w, h)
-        if c and Player.dashVelocity > 0.5 then
+        if c and e.target.dashVelocity > 0.5 then
             -- Damage enemy
             local index = utils.indexOf(StatNames, "Dash Kills")
             e.health = e.health - 100
@@ -129,7 +131,7 @@ function enemy.new()
 
     function e.setFacing(delta)
     	-- Set facing value
-    	local m = Player.position
+    	local m = e.target.position
     	if m.x > e.position.x then
     	    e.facing = "right" else
     	    e.facing = "left" end
@@ -143,7 +145,7 @@ function enemy.new()
     end
 
     function e.shoot(delta)
-        local distance = utils.distanceTo(Player.position, e.position)
+        local distance = utils.distanceTo(e.target.position, e.position)
         if distance > 450 then return end
         -- Return if enemy isn't holding a weapon / reloading / out of ammo
     	local w = e.weapons[e.slot]
@@ -216,7 +218,7 @@ function enemy.new()
     end
 
     function e.move(delta)
-        local distance = utils.distanceTo(Player.position, e.position)
+        local distance = utils.distanceTo(e.target.position, e.position)
         local oldPos = vec2.new(e.position.x, e.position.y)
         -- Move by dash
         e.position.x = e.position.x + math.cos(e.dashRot) * e.dashVelocity * MotionSpeed
@@ -248,7 +250,7 @@ function enemy.new()
     	end
     end
 
-    function e.load()
+    function e.load(index)
         e.weaponSprite.parent = e
         e.weaponSprite.position = vec2.new(e.position.x, e.position.y)
         e.firstHealth = e.health
@@ -277,17 +279,22 @@ function enemy.new()
         end
         e.weapons[e.slot] = w
         e.weapons[e.slot].magAmmo = e.weapons[e.slot].magSize
+        -- Set target
+        if index > 1 then
+            e.target = EnemyManager.enemies[index-1]
+        end
     end
 
     function e.update(delta, i)
     	-- Check for death
     	if e.health < 0.1 and not e.deathAnim then
     	    e.deathAnim = true
+            e.dead = true
             -- Create death particles
             e.createDeathParticle()
         end
 
-        e.rotation = math.atan2(Player.position.y - e.position.y, Player.position.x - e.position.x)
+        e.rotation = math.atan2(e.target.position.y - e.position.y, e.target.position.x - e.position.x)
     	if e.deathAnim then
     	    e.scale = e.scale + 2.5 * MotionSpeed * delta
     	    e.alpha = e.alpha - 6 * MotionSpeed * delta
@@ -297,14 +304,21 @@ function enemy.new()
     	else
             -- Decrease dash velocity
         	e.dashVelocity = e.dashVelocity - e.dashVelocity / (225 * delta)
-    	    -- IDEA: Hard difficulty enemies have the ability to dash
             e.setFacing(delta)
-            if not Player.dead then
+            if not e.target.dead then
                 e.shoot(delta)
                 e.move(delta)
                 e.dash(delta)
                 e.checkForDash()
                 e.updateTrail(delta)
+            else
+                if e.target ~= Player then
+                    -- Find a new dude to attack
+                    local i = 1
+                    repeat
+                        i = math.random(1, #EnemyManager.enemies)
+                    until EnemyManager.enemies[i] ~= e
+                end
             end
             e.reload(delta)
             e.weaponSprite.update(delta)

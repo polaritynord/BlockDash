@@ -40,7 +40,7 @@ function weaponSprite.new()
         if w.parent == Player then
             target = utils.getMousePosition()
         else
-            target = Player.position
+            target = w.parent.target.position
         end
 
         local dx = target.x-w.position.x ; local dy = target.y-w.position.y
