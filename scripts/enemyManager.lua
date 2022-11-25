@@ -7,6 +7,10 @@ local enemyManager = {
     spawnTime = 3.5;
 }
 
+function enemyManager.getCount()
+    return #enemyManager.enemies
+end
+
 function enemyManager.newEnemy(position)
     local newEnemy = enemy.new()
     newEnemy.position = position

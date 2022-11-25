@@ -192,6 +192,8 @@ function enemy.new()
             newBullet.speed = w.bulletSpeed
             newBullet.damage = w.bulletDamage
             newBullet.parent = e
+            -- Set target
+            newBullet.target = e.target
             -- Add to table
             EnemyBullets[#EnemyBullets+1] = newBullet
             -- Particle effects
@@ -282,6 +284,8 @@ function enemy.new()
         -- Set target
         if index > 1 then
             e.target = EnemyManager.enemies[index-1]
+        else
+            e.target = nil
         end
     end
 
@@ -294,18 +298,18 @@ function enemy.new()
             e.createDeathParticle()
         end
 
-        e.rotation = math.atan2(e.target.position.y - e.position.y, e.target.position.x - e.position.x)
     	if e.deathAnim then
     	    e.scale = e.scale + 2.5 * MotionSpeed * delta
     	    e.alpha = e.alpha - 6 * MotionSpeed * delta
     	    -- Despawn
     	    if e.alpha < 0 then
 		          table.remove(EnemyManager.enemies, i) end
-    	else
+            elseif e.target then
+            e.rotation = math.atan2(e.target.position.y - e.position.y, e.target.position.x - e.position.x)
             -- Decrease dash velocity
         	e.dashVelocity = e.dashVelocity - e.dashVelocity / (225 * delta)
-            e.setFacing(delta)
             if not e.target.dead then
+                e.setFacing(delta)
                 e.shoot(delta)
                 e.move(delta)
                 e.dash(delta)
@@ -313,11 +317,14 @@ function enemy.new()
                 e.updateTrail(delta)
             else
                 if e.target ~= Player then
+                    print("shhhe")
                     -- Find a new dude to attack
-                    local i = 1
-                    repeat
-                        i = math.random(1, #EnemyManager.enemies)
-                    until EnemyManager.enemies[i] ~= e
+                    for i = 1, EnemyManager.getCount() do
+                        if EnemyManager.enemies[i] ~= e then
+                            e.target = EnemyManager.enemies[i]
+                            return
+                        end
+                    end
                 end
             end
             e.reload(delta)

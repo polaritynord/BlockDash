@@ -210,6 +210,8 @@ function player.new()
         	newBullet.speed = w.bulletSpeed
             newBullet.damage = w.bulletDamage
             newBullet.parent = p
+			-- Set target
+            newBullet.target = "enemies"
         	-- Add to table
         	p.bullets[#p.bullets+1] = newBullet
 			-- Set line width

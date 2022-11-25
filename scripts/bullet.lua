@@ -19,6 +19,7 @@ function bullet.new()
     	trailCooldown = 0;
     	damage = 10;
         parent = nil;
+        target = nil;
     }
 
     -- Event functions
@@ -36,16 +37,15 @@ function bullet.new()
     	    return
     	end
     	-- Check for collision
+        local image = assets.bulletImg
+        local w1 = image:getWidth()
+        local h1 = image:getHeight()
+        local eImg = assets.playerImg
+        local w2 = eImg:getWidth()
+        local h2 = eImg:getHeight()
         if b.parent == Player then
             for _, v in ipairs(EnemyManager.enemies) do
                 if not v.deathAnim then
-                    local image = assets.bulletImg
-                    local w1 = image:getWidth()
-                    local h1 = image:getHeight()
-                    local eImg = assets.playerImg
-                    local w2 = eImg:getWidth()
-                    local h2 = eImg:getHeight()
-
                     local p = b.position
                     local p2 = v.position
                     if collision(p.x-w1/2, p.y-h1/2, w1, h1, p2.x-w2/2, p2.y-h2/2, w2, h2) then
@@ -66,14 +66,7 @@ function bullet.new()
                     end
                 end
             end
-        elseif Player.dashVelocity < 0.1 then
-            local image = assets.bulletImg
-            local w1 = image:getWidth()
-            local h1 = image:getHeight()
-            local eImg = assets.playerImg
-            local w2 = eImg:getWidth()
-            local h2 = eImg:getHeight()
-
+        elseif b.target == Player then
             local p = b.position
             local p2 = Player.position
             if collision(p.x-w1/2, p.y-h1/2, w1, h1, p2.x-w2/2, p2.y-h2/2, w2, h2) then
@@ -89,6 +82,15 @@ function bullet.new()
                 Player.regenTimer = 0
                 -- Play sound
                 assets.sounds.damage:play()
+                -- Remove self
+                table.remove(EnemyBullets, i)
+                return
+            end
+        else
+            local p = b.position
+            local p2 = b.target.position
+            if collision(p.x-w1/2, p.y-h1/2, w1, h1, p2.x-w2/2, p2.y-h2/2, w2, h2) then
+                b.target.health = b.target.health - b.damage
                 -- Remove self
                 table.remove(EnemyBullets, i)
                 return
