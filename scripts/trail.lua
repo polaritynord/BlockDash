@@ -16,8 +16,8 @@ function trail.new()
 
     function p.update(delta, i)
     	if GamePaused then return end
-    	p.alpha = p.alpha - 1.5 * MotionSpeed * delta
-    	p.scale = p.scale - 2 * MotionSpeed * delta
+    	p.alpha = p.alpha - 1.9 / MotionSpeed * delta
+    	p.scale = p.scale - 1.75 / MotionSpeed * delta
     	p.rotation = p.rotation + 5 * MotionSpeed * delta
     	-- Despawn trail
     	if p.scale < 0 then

@@ -50,16 +50,15 @@ function weaponDrop.new()
 			if distance < 15 then
 			table.remove(WeaponDrops, i) end
 			else
-			local distance = utils.distanceTo(w.position, Player.position)
 			w.nearPlayer = distance < 63
 			-- Change scale
 			if w.nearPlayer then
-				w.scale = w.scale + (1.45-w.scale) / (250 * delta)
+				w.scale = w.scale + (1.45-w.scale) * (10 * delta)
 					-- Check for key press
 					if love.keyboard.isDown("e") then
 						w.obtain() end
 			else
-				w.scale = w.scale + (1-w.scale) / (250 * delta)
+				w.scale = w.scale + (1-w.scale) * (10 * delta)
 			end
 		end
     end

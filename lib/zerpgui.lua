@@ -151,11 +151,11 @@ function zerpgui:newCanvas(pos)
                 end
             else
                 if mx > p.x and mx < p.x + self.size.x and my > p.y and my< p.y + self.size.y then
-                    self.lineWidth = self.lineWidth + (8-self.lineWidth) / (250 * delta)
+                    self.lineWidth = self.lineWidth + (8-self.lineWidth) * (8.25 * delta)
                     self.mouseHover = true
                     self.mouseClick = love.mouse.isDown(1)
                 else
-                    self.lineWidth = self.lineWidth + (3-self.lineWidth) / (250 * delta)
+                    self.lineWidth = self.lineWidth + (3-self.lineWidth) * (8.25 * delta)
                     self.mouseHover = false
                     self.mouseClick = false
                 end

@@ -142,9 +142,9 @@ function interface:updateGame()
         local element = self.game["slot"..i]
         local l = element.lineWidth
         if i == Player.slot then
-            element.lineWidth = l + (6-l) / (250 * delta)
+            element.lineWidth = l + (6-l) * (8.25 * delta)
         else
-            element.lineWidth = l + (3-l) / (250 * delta)
+            element.lineWidth = l + (3-l) * (8.25 * delta)
         end
     end
     -- Inventory slots (image)
