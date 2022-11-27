@@ -67,7 +67,6 @@ function player.new()
     	local newTrail = trail.new()
     	newTrail.position = vec2.new(p.position.x, p.position.y)
         newTrail.parent = p
-		p.trailCooldown = 0
     	-- Add instance to table
     	p.trails[#p.trails+1] = newTrail
     end
@@ -274,7 +273,7 @@ function player.new()
 
     function p.movement(delta)
     	-- Decrease dash velocity
-    	p.dashVelocity = p.dashVelocity - p.dashVelocity * (delta / 0.06)
+    	p.dashVelocity = p.dashVelocity - p.dashVelocity / (225 * delta)
 
     	local speed = 235
     	p.velocity = vec2.new()
@@ -332,7 +331,7 @@ function player.new()
     	if p.dashTimer < 2.5 then return end
     	if CurrentShader and not love.mouse.isDown(2) then
     	    p.dashTimer = 0
-    	    p.dashVelocity = 4200 * delta
+    	    p.dashVelocity = 50
     	    p.dashRot = p.weaponSprite.rotation
     	    if p.facing == "left" then
 	    		p.dashRot = p.dashRot - 135 end

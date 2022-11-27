@@ -88,7 +88,6 @@ function enemy.new()
     	newTrail.position = vec2.new(e.position.x, e.position.y)
         newTrail.parent = e
         newTrail.r = 1 ; newTrail.g = 0.12 ; newTrail.b = 0.12
-        e.trailCooldown = 0
     	-- Add instance to table
     	e.trails[#e.trails+1] = newTrail
     end
@@ -262,7 +261,7 @@ function enemy.new()
     	end
     end
 
-    function e.load()
+    function e.load(index)
         e.weaponSprite.parent = e
         e.weaponSprite.position = vec2.new(e.position.x, e.position.y)
         e.firstHealth = e.health
@@ -291,6 +290,12 @@ function enemy.new()
         end
         e.weapons[e.slot] = w
         e.weapons[e.slot].magAmmo = e.weapons[e.slot].magSize
+        -- Set target
+        if index > 1 then
+            e.target = EnemyManager.enemies[index-1]
+        else
+            e.target = nil
+        end
     end
 
     function e.update(delta, i)
@@ -311,7 +316,7 @@ function enemy.new()
             elseif e.target then
             e.rotation = math.atan2(e.target.position.y - e.position.y, e.target.position.x - e.position.x)
             -- Decrease dash velocity
-        	e.dashVelocity = e.dashVelocity - e.dashVelocity * (delta / 0.06)
+        	e.dashVelocity = e.dashVelocity - e.dashVelocity / (225 * delta)
             if not e.target.dead then
                 e.setFacing(delta)
                 e.shoot(delta)
@@ -321,6 +326,7 @@ function enemy.new()
                 e.updateTrail(delta)
             else
                 if e.target ~= Player then
+                    print("shhhe")
                     -- Find a new dude to attack
                     for i = 1, EnemyManager.getCount() do
                         if EnemyManager.enemies[i] ~= e then

@@ -14,7 +14,7 @@ end
 function enemyManager.newEnemy(position)
     local newEnemy = enemy.new()
     newEnemy.position = position
-    newEnemy.load(#enemyManager.enemies+1)
+    newEnemy.load()
     enemyManager.enemies[#enemyManager.enemies+1] = newEnemy
 end
 
