@@ -82,12 +82,17 @@ function enemy.new()
     	end
     	-- Add new trails
     	e.trailCooldown = e.trailCooldown + delta
-    	if e.trailCooldown < 0.025 or not e.moving then return end
+        local cooldown = 0.05
+		if e.dashVelocity > 0.1 then
+			cooldown = 0
+		end
+    	if e.trailCooldown < cooldown or not e.moving then return end
     	-- Instance trail
     	local newTrail = trail.new()
     	newTrail.position = vec2.new(e.position.x, e.position.y)
         newTrail.parent = e
         newTrail.r = 1 ; newTrail.g = 0.12 ; newTrail.b = 0.12
+        e.trailCooldown = 0
     	-- Add instance to table
     	e.trails[#e.trails+1] = newTrail
     end
@@ -290,12 +295,6 @@ function enemy.new()
         end
         e.weapons[e.slot] = w
         e.weapons[e.slot].magAmmo = e.weapons[e.slot].magSize
-        -- Set target
-        if index > 1 then
-            e.target = EnemyManager.enemies[index-1]
-        else
-            e.target = nil
-        end
     end
 
     function e.update(delta, i)

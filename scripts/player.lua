@@ -67,6 +67,7 @@ function player.new()
     	local newTrail = trail.new()
     	newTrail.position = vec2.new(p.position.x, p.position.y)
         newTrail.parent = p
+		p.trailCooldown = 0
     	-- Add instance to table
     	p.trails[#p.trails+1] = newTrail
     end
@@ -457,7 +458,7 @@ function player.new()
         if not p.dead then
 	       p.drawTrail() end
 		
-		if not GamePaused and not CurrentShader then
+		if not GamePaused and not CurrentShader and not p.dead then
 			p.drawLine() end
     	-- Draw self
 		local width = assets.playerImg:getWidth()

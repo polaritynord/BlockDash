@@ -233,10 +233,16 @@ function interface:load()
         "title", vec2.new(0, 120), "Block Dash", 48, "00", "center"
     )
     self.menu:newButton(
-        "play", vec2.new(380, 260), vec2.new(200, 70), 2, "play", 24, nil, self.playButtonClick, "00"
+        "play", vec2.new(275, 260), vec2.new(200, 70), 2, "play", 24, nil, self.playButtonClick, "00"
     )
     self.menu:newButton(
-        "about", vec2.new(380, 340), vec2.new(200, 70), 2, "help", 24, nil, self.aboutButtonClick, "00"
+        "about", vec2.new(485, 260), vec2.new(200, 70), 2, "help", 24, nil, self.aboutButtonClick, "00"
+    )
+    self.menu:newButton(
+        "settings", vec2.new(485, 340), vec2.new(200, 70), 2, "settings", 24, nil, nil, "00"
+    )
+    self.menu:newButton(
+        "customize", vec2.new(275, 340), vec2.new(200, 70), 2, "customize", 24, nil, nil, "00"
     )
     self.menu:newButton(
         "quit", vec2.new(380, 420), vec2.new(200, 70), 2, "quit", 24, nil, self.quitButtonClick, "00"
