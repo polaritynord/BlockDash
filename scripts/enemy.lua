@@ -150,11 +150,11 @@ function enemy.new()
     	    e.facing = "right" else
     	    e.facing = "left" end
 	    -- Change width
-	    local sm = 250 * delta
+	    local sm = 15 * delta
 	    if e.facing == "right" then
-            e.width = e.width + (1-e.width) / sm * MotionSpeed
+            e.width = e.width + (1-e.width) * sm * MotionSpeed
 	    else
-            e.width = e.width + (-1-e.width) / sm * MotionSpeed
+            e.width = e.width + (-1-e.width) * sm * MotionSpeed
         end
     end
 

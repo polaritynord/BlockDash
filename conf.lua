@@ -6,6 +6,6 @@ function love.conf(t)
     t.window.width = SC_WIDTH ; t.window.height = SC_HEIGHT
     t.window.resizable = true
     t.window.icon = "images/icon.png"
-    t.window.vsync = 1
+    t.window.vsync = 0
     Version = "1.1.dev1"
 end

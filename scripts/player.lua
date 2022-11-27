@@ -274,7 +274,10 @@ function player.new()
 
     function p.movement(delta)
     	-- Decrease dash velocity
-    	p.dashVelocity = p.dashVelocity - p.dashVelocity / (225 * delta)
+    	p.dashVelocity = p.dashVelocity - 500 * delta
+		if p.dashVelocity < 0 then
+			p.dashVelocity = 0
+		end
 
     	local speed = 235
     	p.velocity = vec2.new()
@@ -332,7 +335,7 @@ function player.new()
     	if p.dashTimer < 2.5 then return end
     	if CurrentShader and not love.mouse.isDown(2) then
     	    p.dashTimer = 0
-    	    p.dashVelocity = 50
+    	    p.dashVelocity = 70
     	    p.dashRot = p.weaponSprite.rotation
     	    if p.facing == "left" then
 	    		p.dashRot = p.dashRot - 135 end
@@ -344,10 +347,10 @@ function player.new()
     	if GamePaused then return end
     	if love.mouse.isDown(2) and p.dashTimer > 2.5 then
     	    p.reloading = false
-    	    MotionSpeed = MotionSpeed + (0.25-MotionSpeed) / (200*delta)
+    	    MotionSpeed = 0.25
     	    CurrentShader = p.invertShader
     	else
-    	    MotionSpeed = MotionSpeed + (1-MotionSpeed) / (200*delta)
+    	    MotionSpeed = 1
     	    CurrentShader = nil
     	end
     end
