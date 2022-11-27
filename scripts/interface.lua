@@ -142,9 +142,9 @@ function interface:updateGame()
         local element = self.game["slot"..i]
         local l = element.lineWidth
         if i == Player.slot then
-            element.lineWidth = l + (6-l) / (250 * delta)
+            element.lineWidth = l + (6-l) * (8.25 * delta)
         else
-            element.lineWidth = l + (3-l) / (250 * delta)
+            element.lineWidth = l + (3-l) * (8.25 * delta)
         end
     end
     -- Inventory slots (image)
@@ -181,7 +181,7 @@ end
 function interface:updateDebug()
     if not self.debug.enabled then return end
     -- TODO add actual game versioning
-    self.debug.versionData.text = "BlockDash v1.0 (ZerpGUI " .. zerpgui.version .. ", LÖVE " .. love.getVersion() .. ")"
+    self.debug.versionData.text = "BlockDash " .. Version .. " (ZerpGUI " .. zerpgui.version .. ", LÖVE " .. love.getVersion() .. ")"
     self.debug.fps.text = "FPS: " .. love.timer.getFPS() .. " / " .. math.floor(1/love.timer.getAverageDelta())
     self.debug.enemyCount.text = "Enemy Count: " .. #EnemyManager.enemies
     self.debug.particleCount.text = "Particle Count: " .. #ParticleManager.particles
@@ -201,9 +201,9 @@ function interface:updatePauseMenu()
     local delta = love.timer.getDelta()
     local a = self.pauseMenu.alpha
     if GamePaused then
-    	self.pauseMenu.alpha = a+(1-a) / (250 * delta)
+    	self.pauseMenu.alpha = a+(1-a) * (8.25 * delta)
     else
-        self.pauseMenu.alpha = a+(0-a) / (250 * delta)
+        self.pauseMenu.alpha = a+(0-a) * (8.25 * delta)
     end
     self.pauseMenu.background.color[4] = self.pauseMenu.alpha-0.35
     self.pauseMenu.background.size = vec2.new(SC_WIDTH, SC_HEIGHT)

@@ -44,7 +44,6 @@ function love.keypressed(key, unicode)
 end
 
 local function drawStars()
-    if GamePaused then return end
     for i in pairs(starPositions) do
         love.graphics.rectangle("fill", starPositions[i][1]-Camera.position.x, starPositions[i][2]-Camera.position.y, starPositions[i][3], starPositions[i][4])
     end

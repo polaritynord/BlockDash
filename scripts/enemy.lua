@@ -36,6 +36,7 @@ function enemy.new()
         dashRot = 0;
         target = Player;
         dead = false;
+        oldHealth = 100;
     }
 
     function e.dash(delta)
@@ -51,18 +52,24 @@ function enemy.new()
         local huntTheHunter = distance < 212 and e.target.reloading and Difficulty > 2 and uniform(0, 1) < 0.7
         -- If low HP (escape combat)
         local escapeCombat = distance < 200 and e.health < e.firstHealth / 2
-    	if farAway or huntTheHunter or escapeCombat then
+        -- If the player constantly shooting (flee from bullets)
+        local bulletDodge = e.oldHealth > e.health and Difficulty > 2
+        -- If near player & has low ammunition
+        local fleeForReload =distance < 230 and w.magAmmo < w.magSize /3 and Difficulty > 1
+        e.oldHealth = e.health
+    	if farAway or huntTheHunter or escapeCombat or bulletDodge or fleeForReload then
     	    e.dashTimer = 0
-    	    e.dashVelocity = 50 + (Difficulty * 30)
+    	    e.dashVelocity = 4200 * delta
             if not escapeCombat then
                 e.dashRot = e.weaponSprite.rotation
+            elseif bulletDodge then
+                e.dashRot = e.weaponSprite.rotation + uniform(-math.pi/2, math.pi/2)
             else
                 e.dashRot = e.weaponSprite.rotation + math.pi + uniform(-math.pi/9, math.pi/9)
             end
             e.reloading = false
     	    if e.facing == "left" then
 	    		e.dashRot = e.dashRot - 135 end
-            
     		assets.sounds.dash:play()
     	end
     end
@@ -75,12 +82,13 @@ function enemy.new()
     	end
     	-- Add new trails
     	e.trailCooldown = e.trailCooldown + delta
-    	if e.trailCooldown < 0.1 or not e.moving then return end
+    	if e.trailCooldown < 0.025 or not e.moving then return end
     	-- Instance trail
     	local newTrail = trail.new()
     	newTrail.position = vec2.new(e.position.x, e.position.y)
         newTrail.parent = e
         newTrail.r = 1 ; newTrail.g = 0.12 ; newTrail.b = 0.12
+        e.trailCooldown = 0
     	-- Add instance to table
     	e.trails[#e.trails+1] = newTrail
     end
@@ -97,8 +105,8 @@ function enemy.new()
         local img = assets.playerImg
         local w = img:getWidth()
         local h = img:getHeight()
-        local c = collision(pos.x-(w*e.scale)/2, pos.y-(h*e.scale)/2, w, h, e.position.x-w/2, e.position.y-h/2, w, h)
-        if c and e.target.dashVelocity > 0.5 then
+        local distance = utils.distanceTo(e.position, e.target.position)
+        if distance < 50 and e.target.dashVelocity > 0.1 then
             -- Damage enemy
             local index = utils.indexOf(StatNames, "Dash Kills")
             e.health = e.health - 100
@@ -114,18 +122,20 @@ function enemy.new()
         particle.position.x = particle.position.x + math.cos(particle.rotation) * particle.velocity * MotionSpeed * delta
         particle.position.y = particle.position.y + math.sin(particle.rotation) * particle.velocity * MotionSpeed * delta
         -- Decrease velocity
-        particle.velocity = particle.velocity - particle.velocity / (250 * delta)
+        particle.velocity = particle.velocity - particle.velocity * (particle.speed * delta)
     end
 
     function e.createDeathParticle()
         for i = 1, math.random(12, 25) do
             local size = uniform(3, 7)
+            local speed = uniform(8, 9.3)
             local particle = ParticleManager.new(
                 vec2.new(e.position.x, e.position.y), vec2.new(size, size),
                 uniform(0.8, 1.7), {e.r, 0, 0, 1}, e.deathParticleTick
             )
             particle.velocity = uniform(75, 225)
             particle.rotation = uniform(0, 360)
+            particle.speed = speed
         end
     end
 
@@ -252,7 +262,7 @@ function enemy.new()
     	end
     end
 
-    function e.load(index)
+    function e.load()
         e.weaponSprite.parent = e
         e.weaponSprite.position = vec2.new(e.position.x, e.position.y)
         e.firstHealth = e.health
@@ -281,12 +291,6 @@ function enemy.new()
         end
         e.weapons[e.slot] = w
         e.weapons[e.slot].magAmmo = e.weapons[e.slot].magSize
-        -- Set target
-        if index > 1 then
-            e.target = EnemyManager.enemies[index-1]
-        else
-            e.target = nil
-        end
     end
 
     function e.update(delta, i)
@@ -307,7 +311,7 @@ function enemy.new()
             elseif e.target then
             e.rotation = math.atan2(e.target.position.y - e.position.y, e.target.position.x - e.position.x)
             -- Decrease dash velocity
-        	e.dashVelocity = e.dashVelocity - e.dashVelocity / (225 * delta)
+        	e.dashVelocity = e.dashVelocity - e.dashVelocity * (delta / 0.06)
             if not e.target.dead then
                 e.setFacing(delta)
                 e.shoot(delta)
@@ -317,7 +321,6 @@ function enemy.new()
                 e.updateTrail(delta)
             else
                 if e.target ~= Player then
-                    print("shhhe")
                     -- Find a new dude to attack
                     for i = 1, EnemyManager.getCount() do
                         if EnemyManager.enemies[i] ~= e then

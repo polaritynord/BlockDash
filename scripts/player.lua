@@ -58,11 +58,16 @@ function player.new()
     	end
     	-- Add new trails
     	p.trailCooldown = p.trailCooldown + delta
-    	if p.trailCooldown < 0.1 or (not p.moving and CurrentShader) then return end
+		local cooldown = 0.05
+		if p.dashVelocity > 0.1 then
+			cooldown = 0
+		end
+    	if p.trailCooldown < cooldown or (not p.moving and CurrentShader) then return end
     	-- Instance trail
     	local newTrail = trail.new()
     	newTrail.position = vec2.new(p.position.x, p.position.y)
         newTrail.parent = p
+		p.trailCooldown = 0
     	-- Add instance to table
     	p.trails[#p.trails+1] = newTrail
     end
@@ -111,11 +116,11 @@ function player.new()
     	    p.facing = "right" else
     	    p.facing = "left" end
     	    -- Change width
-    	    local sm = 250 * delta
+    	    local sm = 15 * delta
     	    if p.facing == "right" then
-                p.width = p.width + (1-p.width) / sm * MotionSpeed
+                p.width = p.width + (1-p.width) * sm * MotionSpeed
     	    else
-                p.width = p.width + (-1-p.width) / sm * MotionSpeed
+                p.width = p.width + (-1-p.width) * sm * MotionSpeed
             end
     end
 
@@ -269,7 +274,7 @@ function player.new()
 
     function p.movement(delta)
     	-- Decrease dash velocity
-    	p.dashVelocity = p.dashVelocity - p.dashVelocity / (225 * delta)
+    	p.dashVelocity = p.dashVelocity - p.dashVelocity * (delta / 0.06)
 
     	local speed = 235
     	p.velocity = vec2.new()
@@ -327,11 +332,10 @@ function player.new()
     	if p.dashTimer < 2.5 then return end
     	if CurrentShader and not love.mouse.isDown(2) then
     	    p.dashTimer = 0
-    	    p.dashVelocity = 50
+    	    p.dashVelocity = 4200 * delta
     	    p.dashRot = p.weaponSprite.rotation
     	    if p.facing == "left" then
 	    		p.dashRot = p.dashRot - 135 end
-			
     		assets.sounds.dash:play()
     	end
     end
@@ -352,7 +356,7 @@ function player.new()
         particle.position.x = particle.position.x + math.cos(particle.rotation) * particle.velocity * MotionSpeed * delta
         particle.position.y = particle.position.y + math.sin(particle.rotation) * particle.velocity * MotionSpeed * delta
         -- Decrease velocity
-        particle.velocity = particle.velocity - particle.velocity / (250 * delta)
+        particle.velocity = particle.velocity - particle.velocity * (particle.speed * delta)
     end
 
     function p.regenerate(delta)
@@ -373,6 +377,7 @@ function player.new()
     end
 
 	function p.drawLine()
+		if not p.weapons[p.slot] then return end
 		local x, y = love.mouse.getPosition()
 		local pos = vec2.new(p.position.x-Camera.position.x, p.position.y-Camera.position.y)
 		love.graphics.setColor(1, 1, 1, 0.1 + (p.aimLineWidth/3)-1)
@@ -425,12 +430,14 @@ function player.new()
             if not p.dead then
                 for i = 1, math.random(12, 25) do
                     local size = uniform(3, 7)
+					local speed = uniform(8, 9.3)
                     local particle = ParticleManager.new(
                         vec2.new(p.position.x, p.position.y), vec2.new(size, size),
                         uniform(0.8, 1.7), {0.13, 0.34, 0.8, 1}, p.deathParticleTick
                     )
                     particle.velocity = uniform(75, 225)
                     particle.rotation = uniform(0, 360)
+					particle.speed = speed
                 end
             end
             -- Variables
