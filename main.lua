@@ -1,5 +1,6 @@
 local vec2 = require("lib/vec2")
 local uniform = require("lib/uniform")
+local ser = require("lib/ser")
 local utils   = require("utils")
 
 local assets = require("scripts/assets")
@@ -129,6 +130,25 @@ function love.load()
     for _ = 1, 700 do
         local size = uniform(1.7, 3.45)
         starPositions[#starPositions+1] = {uniform(-1920, 1920), uniform(-1080, 1080), size, size}
+    end
+    -- SAVE FILE MANAGEMENT
+    SettingNames = {"Sounds", "Auto Reload"}
+    Save = nil
+    if love.filesystem.getInfo("save") then
+        -- Read from save
+        local data = love.filesystem.load("save")()
+        Save = data
+    else
+        -- Create new save file
+        Save = {
+            settings = {};
+            highScores = {};
+        }
+        for i = 1, #SettingNames do
+            Save.settings[i] = false
+        end
+        -- Write to save
+        love.filesystem.write("save", ser(Save))
     end
 end
 

@@ -105,7 +105,9 @@ function player.new()
                 -- Check if enemy is dashing
                 if v.dashVelocity < 0.5 then return end
                 p.health = p.health - 50
-                assets.sounds.dashDamage:play()
+				if Save.settings[utils.indexOf(SettingNames, "Sounds")] then
+                	assets.sounds.dashDamage:play()
+				end
             end
         end
     end
@@ -211,7 +213,9 @@ function player.new()
         	-- Shoot event for UI & Sprite
         	p.weaponSprite.parentShot()
         	-- Play sound
-        	assets.sounds.shoot:play()
+			if Save.settings[utils.indexOf(SettingNames, "Sounds")] then
+        		assets.sounds.shoot:play()
+			end
         	-- Special bullet attributes
         	newBullet.speed = w.bulletSpeed
             newBullet.damage = w.bulletDamage
@@ -257,7 +261,9 @@ function player.new()
         		p.reloading = false
         		w.magAmmo = w.magSize
         		-- Play reload sound
-        		assets.sounds.reload:play()
+				if Save.settings[utils.indexOf(SettingNames, "Sounds")] then
+        			assets.sounds.reload:play()
+				end
             end
     	else
     	    -- Get input
@@ -340,7 +346,10 @@ function player.new()
     	    p.dashRot = p.weaponSprite.rotation
     	    if p.facing == "left" then
 	    		p.dashRot = p.dashRot - 135 end
-    		assets.sounds.dash:play()
+			
+			if Save.settings[utils.indexOf(SettingNames, "Sounds")] then
+    			assets.sounds.dash:play()
+			end
     	end
     end
 

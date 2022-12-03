@@ -81,7 +81,9 @@ function bullet.new()
                 Interface.hitmarkers[#Interface.hitmarkers+1] = newMarker
                 Player.regenTimer = 0
                 -- Play sound
-                assets.sounds.damage:play()
+                if Save.settings[utils.indexOf(SettingNames, "Sounds")] then
+                    assets.sounds.damage:play()
+                end
                 -- Remove self
                 table.remove(EnemyBullets, i)
                 return
