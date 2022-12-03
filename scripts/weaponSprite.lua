@@ -24,7 +24,7 @@ function weaponSprite.new()
 
     function w.update(delta)
     	-- Decrease recoil rotation
-    	w.recoil = w.recoil - w.recoil / (250 * delta) / MotionSpeed
+    	w.recoil = w.recoil - w.recoil * (8.25 * delta)
     	-- Set position
     	if w.parent.facing == "right" then
     	    w.position.x = w.parent.position.x + 12.5
@@ -48,7 +48,6 @@ function weaponSprite.new()
         if w.parent.facing == "left" then
             rot = rot + math.pi
         end
-        local temp = rot - w.realRot
         w.realRot = rot--w.realRot + (rot-w.realRot) / (200 * delta)
     	if w.parent.reloading then
     	    -- Reload animation

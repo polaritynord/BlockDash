@@ -38,7 +38,8 @@ function player.new()
     	invertShader = love.graphics.newShader[[ vec4 effect(vec4 color, Image texture, vec2 texture_coords, vec2 pixel_coords) { vec4 col = texture2D( texture, texture_coords ); return vec4(1-col.r, 1-col.g, 1-col.b, col.a); } ]];
     	dashVelocity = 0;
     	dashRot = 0;
-    	dashTimer = 111;
+    	dashCooldownTimer = 111;
+		dashTimer = 999;
     	inReloadTimer = 0;
         dead = false;
         scale = 1;
@@ -273,12 +274,6 @@ function player.new()
     end
 
     function p.movement(delta)
-    	-- Decrease dash velocity
-    	p.dashVelocity = p.dashVelocity - 500 * delta
-		if p.dashVelocity < 0 then
-			p.dashVelocity = 0
-		end
-
     	local speed = 235
     	p.velocity = vec2.new()
     	-- Get key input
@@ -295,6 +290,11 @@ function player.new()
     	-- Set p.moving
     	p.moving = math.abs(p.velocity.x) > 0 or math.abs(p.velocity.y) > 0
     	-- Increment velocity by dash
+		if p.dashTimer < 0.07 then
+			p.dashVelocity = 28--0.25 / delta
+		else
+			p.dashVelocity = 0
+		end
     	p.velocity.x = p.velocity.x + math.cos(p.dashRot) * p.dashVelocity
     	p.velocity.y = p.velocity.y + math.sin(p.dashRot) * p.dashVelocity
     	-- Normalize velocity
@@ -331,11 +331,12 @@ function player.new()
     end
 
     function p.dash(delta)
+    	p.dashCooldownTimer = p.dashCooldownTimer + delta
     	p.dashTimer = p.dashTimer + delta
-    	if p.dashTimer < 2.5 then return end
+    	if p.dashCooldownTimer < 2.5 then return end
     	if CurrentShader and not love.mouse.isDown(2) then
-    	    p.dashTimer = 0
-    	    p.dashVelocity = 70
+    	    p.dashCooldownTimer = 0
+			p.dashTimer = 0
     	    p.dashRot = p.weaponSprite.rotation
     	    if p.facing == "left" then
 	    		p.dashRot = p.dashRot - 135 end
@@ -345,7 +346,7 @@ function player.new()
 
     function p.motionControl(delta)
     	if GamePaused then return end
-    	if love.mouse.isDown(2) and p.dashTimer > 2.5 then
+    	if love.mouse.isDown(2) and p.dashCooldownTimer > 2.5 then
     	    p.reloading = false
     	    MotionSpeed = 0.25
     	    CurrentShader = p.invertShader
@@ -414,7 +415,7 @@ function player.new()
     	if GamePaused then return end
         if p.health > 0 then
 			Time = Time + delta
-			p.aimLineWidth = p.aimLineWidth + (3-p.aimLineWidth) / (250 * delta)
+			p.aimLineWidth = p.aimLineWidth + (3-p.aimLineWidth) * (8.25 * delta)
         	p.switchSlot()
         	p.shoot(delta)
         	p.movement(delta)

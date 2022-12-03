@@ -32,7 +32,8 @@ function enemy.new()
         trailCooldown = 0;
         moving = false;
         dashVelocity = 0;
-        dashTimer = 0;
+        dashCooldownTimer = 0;
+        dashTimer = 31;
         dashRot = 0;
         target = Player;
         dead = false;
@@ -41,8 +42,9 @@ function enemy.new()
 
     function e.dash(delta)
         -- Increment timer
-    	e.dashTimer = e.dashTimer + delta
-    	if e.dashTimer < 2.5 then return end
+    	e.dashCooldownTimer = e.dashCooldownTimer + delta
+        e.dashTimer = e.dashTimer + delta
+    	if e.dashCooldownTimer < 2.5 then return end
         local distance = utils.distanceTo(e.target.position, e.position)
         local w = e.weapons[e.slot]
 
@@ -58,8 +60,9 @@ function enemy.new()
         local fleeForReload =distance < 230 and w.magAmmo < w.magSize /3 and Difficulty > 1
         e.oldHealth = e.health
     	if farAway or huntTheHunter or escapeCombat or bulletDodge or fleeForReload then
-    	    e.dashTimer = 0
-    	    e.dashVelocity = 4200 * delta
+    	    e.dashCooldownTimer = 0
+            e.dashTimer = 0
+    	    e.dashVelocity = 50
             if not escapeCombat then
                 e.dashRot = e.weaponSprite.rotation
             elseif bulletDodge then
@@ -110,7 +113,7 @@ function enemy.new()
         local w = img:getWidth()
         local h = img:getHeight()
         local distance = utils.distanceTo(e.position, e.target.position)
-        if distance < 50 and e.target.dashVelocity > 0.1 then
+        if distance < 85 and e.target.dashVelocity > 0.1 then
             -- Damage enemy
             local index = utils.indexOf(StatNames, "Dash Kills")
             e.health = e.health - 100
@@ -119,6 +122,8 @@ function enemy.new()
             Stats[index] = Stats[index] + 1
             Interface.dashKillAlpha = 1
             Interface.dashKillScale = 1.8
+            if e.target == Player then
+                Interface:dashKill() end
         end
     end
 
@@ -237,13 +242,18 @@ function enemy.new()
         local distance = utils.distanceTo(e.target.position, e.position)
         local oldPos = vec2.new(e.position.x, e.position.y)
         -- Move by dash
-        e.position.x = e.position.x + math.cos(e.dashRot) * e.dashVelocity * MotionSpeed
-    	e.position.y = e.position.y + math.sin(e.dashRot) * e.dashVelocity * MotionSpeed
+        if e.dashTimer < 0.07 then
+            e.dashVelocity = 17.5
+        else
+            e.dashVelocity = 0
+        end
         if distance > 225 then
             local speed = 245
             e.position.x = e.position.x + math.cos(e.rotation) * speed * MotionSpeed * delta
             e.position.y = e.position.y + math.sin(e.rotation) * speed * MotionSpeed * delta
         end
+        e.position.x = e.position.x + math.cos(e.dashRot) * e.dashVelocity * MotionSpeed
+    	e.position.y = e.position.y + math.sin(e.dashRot) * e.dashVelocity * MotionSpeed
         e.moving = oldPos.x ~= e.position.x and oldPos.y ~= e.position.y
     end
 
@@ -314,8 +324,6 @@ function enemy.new()
 		          table.remove(EnemyManager.enemies, i) end
             elseif e.target then
             e.rotation = math.atan2(e.target.position.y - e.position.y, e.target.position.x - e.position.x)
-            -- Decrease dash velocity
-        	e.dashVelocity = e.dashVelocity - e.dashVelocity / (225 * delta)
             if not e.target.dead then
                 e.setFacing(delta)
                 e.shoot(delta)

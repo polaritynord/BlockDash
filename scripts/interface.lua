@@ -97,6 +97,12 @@ function interface:drawDamageNums()
     end
 end
 
+function interface:dashKill()
+    self.game.dashKill.alpha = 0.65
+    self.game.dashKill.scale = 3.5
+    self.game.dashKill.timer = 0
+end
+
 -- Canvas functions
 function interface:setCanvasVisible()
     self.menu.enabled = GameState == "menu"
@@ -160,12 +166,30 @@ function interface:updateGame()
     -- Health text
     self.game.healthText.text = math.floor(Player.health)
     -- Dash indicator text
-    if Player.dashTimer < 2.5 then
+    if Player.dashCooldownTimer < 2.5 then
         self.game.dashText.text = "CHARGING"
         self.game.dashIcon.position.x = 735
     else
         self.game.dashText.text = "READY"
         self.game.dashIcon.position.x = 785
+    end
+    -- Dash kill image
+    local dashKill = self.game.dashKill
+    dashKill.timer = dashKill.timer + delta * MotionSpeed
+    -- Update values
+    -- Set source image
+    if dashKill.timer > 0.45 then
+        dashKill.source = nil
+    else
+        dashKill.source = assets.dashKillImg
+        dashKill.scale = dashKill.scale + 7 * delta * MotionSpeed
+        dashKill.alpha = dashKill.alpha - 1.45 * delta * MotionSpeed
+    end
+    -- Dash instructor
+    if CurrentShader then
+        self.game.dashInstructor.text = "RELEASE RMB TO DASH"
+    else
+        self.game.dashInstructor.text = ""
     end
 end
 
@@ -213,9 +237,9 @@ function interface:updateDeathMenu()
     local a = self.deathMenu.alpha
     local delta = love.timer.getDelta()
     if Player.dead and Player.deathTimer > 1.5 then
-    	self.deathMenu.alpha = a+(1-a) / (250 * delta)
+    	self.deathMenu.alpha = a+(1-a) * (8.25 * delta)
     else
-        self.deathMenu.alpha = a+(0-a) / (250 * delta)
+        self.deathMenu.alpha = a+(0-a) * (8.25 * delta)
     end
     self.deathMenu.background.color[4] = self.deathMenu.alpha-0.35
     self.deathMenu.background.size = vec2.new(SC_WIDTH, SC_HEIGHT)
@@ -335,6 +359,13 @@ function interface:load()
     -- Dash indicator icon
     self.game:newImage("dashIcon", vec2.new(785, 415), 0, assets.dashIconImg, 1.3, "++")
     
+    -- Dashkill indicator
+    self.game:newImage("dashKill", vec2.new(480, 400), 0, assets.dashKillImg, 3, "0+")
+    self.game.dashKill.alpha = 0
+    self.game.dashKill.timer = 99
+    -- Dash text
+    self.game:newTextLabel("dashInstructor", vec2.new(0, 440), "", 24, "00", "center")
+
     -- Debug menu (game) ---------------------------------------------------------------------------------------
     self.debug = zerpgui:newCanvas()
     self.debug:newTextLabel("versionData", vec2.new(), "", 14, "xx", "left", "JetBrainsMono")

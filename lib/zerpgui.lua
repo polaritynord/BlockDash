@@ -96,6 +96,7 @@ function zerpgui:newCanvas(pos)
             source = source or nil;
             scale = scale or 1;
             align = align or "--";
+            alpha = alpha or 1;
         }
 
         function image:draw()
@@ -103,10 +104,12 @@ function zerpgui:newCanvas(pos)
             local p = calculateAlign(self.position, self.align)
             local width = self.source:getWidth()
             local height = self.source:getHeight()
+            love.graphics.setColor(1, 1, 1, self.alpha)
             love.graphics.draw(
                 self.source, p.x, p.y, self.rotation,
                 self.scale, self.scale, width/2, height/2
             )
+            love.graphics.setColor(1, 1, 1, 1)
         end
 
         image.parent = self
