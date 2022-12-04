@@ -26,6 +26,10 @@ function interface.aboutButtonClick()
     GameState = "about"
 end
 
+function interface.settingsButtonClick()
+    GameState = "settings"
+end
+
 function interface:easyButtonClick()
     if interface.diffPreview == "easy" then
         Difficulty = 1
@@ -111,6 +115,7 @@ function interface:setCanvasVisible()
     self.pauseMenu.enabled = GameState == "game" and not CurrentShader and self.pauseMenu.alpha > 0.3
     self.deathMenu.enabled = GameState == "game" and self.deathMenu.alpha > 0.3
     self.about.enabled = GameState == "about"
+    self.settings.enabled = GameState == "settings"
 end
 
 function interface:updateGame()
@@ -263,7 +268,7 @@ function interface:load()
         "about", vec2.new(485, 260), vec2.new(200, 70), 2, "help", 24, nil, self.aboutButtonClick, "00"
     )
     self.menu:newButton(
-        "settings", vec2.new(485, 340), vec2.new(200, 70), 2, "settings", 24, nil, nil, "00"
+        "settings", vec2.new(485, 340), vec2.new(200, 70), 2, "settings", 24, nil, self.settingsButtonClick, "00"
     )
     self.menu:newButton(
         "customize", vec2.new(275, 340), vec2.new(200, 70), 2, "customize", 24, nil, nil, "00"
@@ -305,6 +310,21 @@ function interface:load()
     self.diffSelect:newTextLabel(
         "preview", vec2.new(0, 15), "", 14, "00", "center"
     )
+    -- Settings menu ------------------------------------------------------------------------------------------
+    self.settings = zerpgui:newCanvas()
+    self.settings:newTextLabel(
+        "title", vec2.new(0, 120), "Settings", 48, "00", "center"
+    )
+    self.settings:newButton(
+        "return", vec2.new(380, 420), vec2.new(200, 70), 2, "return", 24, nil, self.titleButtonClick, "00"
+    )
+    -- Create setting names
+    local x = 300 ; local y = 220
+    for i = 1, #SettingNames do
+        self.settings:newTextLabel("setting"..i, vec2.new(x, y), SettingNames[i], 24, "00", "left")
+        y = y + 30
+    end
+    -- TODO: Create checkboxes
     -- Game ---------------------------------------------------------------------------------------------------
     self.game = zerpgui:newCanvas()
     -- Wave text

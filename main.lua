@@ -101,6 +101,28 @@ local function drawEBullets(delta)
     end
 end
 
+local function loadSave()
+    -- SAVE FILE MANAGEMENT
+    SettingNames = {"Sounds", "Auto Reload"}
+    Save = nil
+    if love.filesystem.getInfo("save") then
+        -- Read from save
+        local data = love.filesystem.load("save")()
+        Save = data
+    else
+        -- Create new save file
+        Save = {
+            settings = {};
+            highScores = {};
+        }
+        for i = 1, #SettingNames do
+            Save.settings[i] = true
+        end
+        -- Write to save
+        love.filesystem.write("save", ser(Save))
+    end
+end
+
 local function setStats(delta)
     -- Waves
     Stats[utils.indexOf(StatNames, "Waves")] = WaveManager.wave - 1
@@ -124,31 +146,13 @@ function love.load()
     assets.gameLoad()
     GameLoad()
     GameState = "menu"
+    loadSave()
     Interface:load()
     GamePaused = false
     -- Create star positions
     for _ = 1, 700 do
         local size = uniform(1.7, 3.45)
         starPositions[#starPositions+1] = {uniform(-1920, 1920), uniform(-1080, 1080), size, size}
-    end
-    -- SAVE FILE MANAGEMENT
-    SettingNames = {"Sounds", "Auto Reload"}
-    Save = nil
-    if love.filesystem.getInfo("save") then
-        -- Read from save
-        local data = love.filesystem.load("save")()
-        Save = data
-    else
-        -- Create new save file
-        Save = {
-            settings = {};
-            highScores = {};
-        }
-        for i = 1, #SettingNames do
-            Save.settings[i] = false
-        end
-        -- Write to save
-        love.filesystem.write("save", ser(Save))
     end
 end
 
