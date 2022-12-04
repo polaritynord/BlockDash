@@ -9,7 +9,7 @@ local assets = require("scripts/assets")
 
 local zerpgui = {
     canvases = {};
-    version = "1.0.0";
+    version = "1.1";
 }
 
 local function calculateAlign(position, align)
@@ -219,6 +219,63 @@ function zerpgui:newCanvas(pos)
         rectangle.parent = self
         self[name] = rectangle
         self.elements[#self.elements+1] = rectangle
+    end
+
+    function canvas:newCheckbox(name, position, size, value, align)
+        local checkbox = {
+            parent = nil;
+            position = position or vec2.new();
+            value = value;
+            align = align or "--";
+            size = size or 50;
+            mouseHover = false;
+            mouseClick = false;
+        }
+
+        function checkbox:update(delta)
+            -- Click event
+            if not love.mouse.isDown(1) and self.mouseHover and self.mouseClick then
+                if Save.settings[utils.indexOf(SettingNames, "Sounds")] then
+                    assets.sounds.buttonClick:play()
+                end
+                self.value = not self.value
+            end
+            -- Hover anim & check for click
+            local p = calculateAlign(self.position, self.align)
+            p.x = p.x - self.size/2
+            p.y = p.y - self.size/2
+
+            local mx = love.mouse.getX()
+            local my = love.mouse.getY()
+            if mx > p.x and mx < p.x + self.realSize and my > p.y and my < p.y + self.realSize then
+                self.mouseHover = true
+                self.mouseClick = love.mouse.isDown(1)
+                self.size = self.size + (self.realSize+5-self.size) * (8.25 * delta)
+            else
+                self.mouseHover = false
+                self.mouseClick = false
+                self.size = self.size + (self.realSize-self.size) * (8.25 * delta)
+            end
+        end
+
+        function checkbox:draw()
+            local p = calculateAlign(self.position, self.align)
+            p.x = p.x - self.size/2
+            p.y = p.y - self.size/2
+            -- Draw line
+            love.graphics.setLineWidth(3)
+            love.graphics.rectangle("line", p.x, p.y, self.size, self.size)
+            -- Fill inside if value is true
+            if self.value then
+                love.graphics.rectangle("fill", p.x, p.y, self.size, self.size)
+            end
+        end
+
+        checkbox.parent = self
+        checkbox.realSize = checkbox.size
+        print("AHHHH " .. tostring(checkbox.value))
+        self[name] = checkbox
+        self.elements[#self.elements+1] = checkbox
     end
 
     -- Canvas events

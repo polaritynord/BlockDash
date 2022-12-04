@@ -270,11 +270,11 @@ function player.new()
     	    if not love.mouse.isDown(1) and not CurrentShader and w.magAmmo < w.magSize then
 				p.inReloadTimer = p.inReloadTimer + delta
 		    end
-    	    local intelliReload = w.magAmmo < w.magSize and not CurrentShader
+    	    local intelliReload = w.magAmmo < w.magSize and not CurrentShader and Save.settings[utils.indexOf(SettingNames, "Auto Reload")]
     	    if (love.keyboard.isDown("r") or w.magAmmo < 1 or (intelliReload and p.inReloadTimer > 0.75 and not love.mouse.isDown(1))) and w.magAmmo < w.magSize then
-    		p.reloading = true
-    		p.reloadTimer = 0
-    		p.inReloadTimer = 0
+				p.reloading = true
+				p.reloadTimer = 0
+				p.inReloadTimer = 0
     	    end
     	end
     end

@@ -59,6 +59,7 @@ end
 
 function interface.quitButtonClick()
     if interface.menu.quit.sure then
+        SaveGame()
         love.event.quit()
     else
         interface.menu.quit.sure = true
@@ -71,9 +72,11 @@ end
 
 function interface.titleButtonClick()
     interface.pauseMenu.alpha = 0
+    interface.deathMenu.alpha = 0
     GamePaused = false
     GameState = "menu"
     interface.menu.quit.sure = false
+    SaveGame()
 end
 
 -- Call events
@@ -226,6 +229,12 @@ function interface:updateMenu()
     end
 end
 
+function interface:updateSettingsMenu()
+    for i = 1, #SettingNames do
+        Save.settings[i] = self.settings["checkbox"..i].value
+    end
+end
+
 function interface:updatePauseMenu()
     local delta = love.timer.getDelta()
     local a = self.pauseMenu.alpha
@@ -324,7 +333,15 @@ function interface:load()
         self.settings:newTextLabel("setting"..i, vec2.new(x, y), SettingNames[i], 24, "00", "left")
         y = y + 30
     end
-    -- TODO: Create checkboxes
+    -- Create setting checboxes
+    x = 250 ; y = 236
+    for i = 1, #SettingNames do
+        self.settings:newCheckbox(
+            "checkbox"..i, vec2.new(x, y), 20, Save.settings[i], "00"
+        )
+        y = y + 30
+        print(Save.settings[i])
+    end
     -- Game ---------------------------------------------------------------------------------------------------
     self.game = zerpgui:newCanvas()
     -- Wave text
@@ -478,6 +495,9 @@ function interface:update(delta)
     -- Menu
     if GameState == "menu" then
         self:updateMenu()
+    end
+    if GameState == "settings" then
+        self:updateSettingsMenu()
     end
     -- Zerpgui updating
     zerpgui:update(delta)

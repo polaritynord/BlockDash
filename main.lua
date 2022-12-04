@@ -77,6 +77,10 @@ function GameLoad()
     --Player.health = 0
 end
 
+function SaveGame()
+    love.filesystem.write("save", ser(Save))
+end
+
 local function updateWeaponDrops(delta)
     for i, v in ipairs(WeaponDrops) do
 	       v.update(delta, i)
@@ -106,10 +110,12 @@ local function loadSave()
     SettingNames = {"Sounds", "Auto Reload"}
     Save = nil
     if love.filesystem.getInfo("save") then
+        print("Existing save detected, reading file...")
         -- Read from save
         local data = love.filesystem.load("save")()
         Save = data
     else
+        print("Creating a new save file...")
         -- Create new save file
         Save = {
             settings = {};
