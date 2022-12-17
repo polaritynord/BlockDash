@@ -39,6 +39,18 @@ function interface.colorDButtonClick()
         Save.playerColorSlot = #PlayerColors end
 end
 
+function interface.accPButtonClick()
+    Save.playerAccSlot = Save.playerAccSlot + 1
+    if Save.playerAccSlot > #assets.accessories then
+        Save.playerAccSlot = 1 end
+end
+
+function interface.accDButtonClick()
+    Save.playerAccSlot = Save.playerAccSlot - 1
+    if Save.playerAccSlot < 1 then
+        Save.playerAccSlot = #assets.accessories end
+end
+
 function interface.settingsButtonClick()
     GameState = "settings"
 end
@@ -258,6 +270,7 @@ function interface:updateCustomizeMenu()
     self.customize.player.color[1] = color[1]
     self.customize.player.color[2] = color[2]
     self.customize.player.color[3] = color[3]
+    self.customize.accPreview.source = assets.accessories[Save.playerAccSlot]
 end
 
 function interface:updatePauseMenu()
@@ -343,7 +356,7 @@ function interface:load()
     self.customize:newButton(
         "colorNeg", vec2.new(380, 235), vec2.new(25, 25), 2, "", 24, nil, self.colorDButtonClick, "00"
     )
-    -- Accessory chanhing buttons
+    -- Accessory changing buttons
     self.customize:newTextLabel(
         "accText", vec2.new(620, 200), "Accessory", 14, "00", "left"
     )
@@ -352,6 +365,9 @@ function interface:load()
     )
     self.customize:newButton(
         "accNeg", vec2.new(380, 200), vec2.new(25, 25), 2, "", 24, nil, self.accDButtonClick, "00"
+    )
+    self.customize:newImage(
+        "accPreview", vec2.new(480, 250), 0, assets.accessories[Save.playerAccSlot], 3, {1,1,1,1}, "00"
     )
 
     self.customize:newButton(

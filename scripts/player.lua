@@ -490,6 +490,17 @@ function player.new()
     	    Camera.zoom * p.width * p.scale, Camera.zoom * p.scale, width/2, height/2
     	)
     	love.graphics.setColor(1, 1, 1, 1)
+		-- Draw accessory
+		if not p.dead then
+			local a = assets.accessories[Save.playerAccSlot]
+			if a then
+				love.graphics.draw(
+					a, x-(16*p.width), y-16, p.rotation,
+					Camera.zoom * p.width * p.scale, Camera.zoom * p.scale, width/2, height/2
+				)
+			end
+		end
+		-- Draw weapon & bullets
         if not p.dead then
     	       p.weaponSprite.draw() end
     	p.drawBullets()

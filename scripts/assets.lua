@@ -30,8 +30,11 @@ function assets.gameLoad()
     assets.weapons.assaultRifleImg = love.graphics.newImage("images/weapons/assault_rifle.png")
     assets.weapons.shotgunImg = love.graphics.newImage("images/weapons/shotgun.png")
     -- Accessory images
-    assets.accessories = {}
-    assets.accessories.glassesImg = love.graphics.newImage("images/accessories/glasses.png")
+    assets.accessories = {
+        nil, love.graphics.newImage("images/accessories/glasses.png"),
+        love.graphics.newImage("images/accessories/crown.png"),
+        love.graphics.newImage("images/accessories/sunglasses.png")
+    }
     -- Sounds
     assets.sounds.shoot = love.audio.newSource("sounds/shoot.wav", "static")
     assets.sounds.reload = love.audio.newSource("sounds/reload.wav", "static")

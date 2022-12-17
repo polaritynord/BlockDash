@@ -121,6 +121,7 @@ local function loadSave()
             settings = {};
             highScores = {};
             playerColorSlot = 1;
+            playerAccSlot = 1;
         }
         for i = 1, #SettingNames do
             Save.settings[i] = true
@@ -194,6 +195,7 @@ function love.update(delta)
 end
 
 function love.draw()
+    print(Save.playerAccSlot)
     if CurrentShader then
 		love.graphics.setBackgroundColor(0.93, 0.93, 0.93, 1)
     else
