@@ -104,7 +104,8 @@ function player.new()
             if collision(a.x-w/2, a.y-h/2, w, h, b.x-w/2, b.y-h/2, w, h) then
                 -- Check if enemy is dashing
                 if v.dashVelocity < 0.5 then return end
-                p.health = p.health - 50
+				local damageLowerer = (p.health/75)
+                p.health = p.health - (25*damageLowerer)
 				if Save.settings[utils.indexOf(SettingNames, "Sounds")] then
                 	assets.sounds.dashDamage:play()
 				end
@@ -422,7 +423,7 @@ function player.new()
 
     function p.update(delta)
     	if GamePaused then return end
-        if p.health > 0 then
+        if p.health >= 1 then
 			Time = Time + delta
 			p.aimLineWidth = p.aimLineWidth + (3-p.aimLineWidth) * (8.25 * delta)
         	p.switchSlot()

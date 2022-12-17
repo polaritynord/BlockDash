@@ -70,7 +70,8 @@ function bullet.new()
             local p = b.position
             local p2 = Player.position
             if collision(p.x-w1/2, p.y-h1/2, w1, h1, p2.x-w2/2, p2.y-h2/2, w2, h2) then
-                Player.health = Player.health - b.damage
+                local damageLowerer = (Player.health/75)
+                Player.health = Player.health - (b.damage*damageLowerer)
                 -- Create hitmarker
                 local newMarker = hitmarker.new()
                 newMarker.rotation = b.rotation
