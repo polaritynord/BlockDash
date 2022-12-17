@@ -30,6 +30,10 @@ function interface.settingsButtonClick()
     GameState = "settings"
 end
 
+function interface.customizeButtonClick()
+    GameState = "customize"
+end
+
 function interface:easyButtonClick()
     if interface.diffPreview == "easy" then
         Difficulty = 1
@@ -119,6 +123,7 @@ function interface:setCanvasVisible()
     self.deathMenu.enabled = GameState == "game" and self.deathMenu.alpha > 0.3
     self.about.enabled = GameState == "about"
     self.settings.enabled = GameState == "settings"
+    self.customize.enabled = GameState == "customize"
 end
 
 function interface:updateGame()
@@ -280,7 +285,7 @@ function interface:load()
         "settings", vec2.new(485, 340), vec2.new(200, 70), 2, "settings", 24, nil, self.settingsButtonClick, "00"
     )
     self.menu:newButton(
-        "customize", vec2.new(275, 340), vec2.new(200, 70), 2, "customize", 24, nil, nil, "00"
+        "customize", vec2.new(275, 340), vec2.new(200, 70), 2, "customize", 24, nil, self.customizeButtonClick, "00"
     )
     self.menu:newButton(
         "quit", vec2.new(380, 420), vec2.new(200, 70), 2, "quit", 24, nil, self.quitButtonClick, "00"
@@ -298,6 +303,14 @@ function interface:load()
         "keyControls", vec2.new(180, 220), self.text, 16, "00", "left"
     )
     self.about:newButton(
+        "return", vec2.new(380, 420), vec2.new(200, 70), 2, "return", 24, nil, self.titleButtonClick, "00"
+    )
+    -- Customize menu ------------------------------------------------------------------------------------------
+    self.customize = zerpgui:newCanvas()
+    self.customize:newTextLabel(
+        "title", vec2.new(0, 120), "Customize", 48, "00", "center"
+    )
+    self.customize:newButton(
         "return", vec2.new(380, 420), vec2.new(200, 70), 2, "return", 24, nil, self.titleButtonClick, "00"
     )
     -- Difficulty selection ------------------------------------------------------------------------------------
@@ -340,7 +353,6 @@ function interface:load()
             "checkbox"..i, vec2.new(x, y), 20, Save.settings[i], "00"
         )
         y = y + 30
-        print(Save.settings[i])
     end
     -- Game ---------------------------------------------------------------------------------------------------
     self.game = zerpgui:newCanvas()

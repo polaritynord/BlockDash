@@ -12,7 +12,7 @@ local zerpgui = {
     version = "1.1";
 }
 
-local function calculateAlign(position, align)
+local function calculateAlign(position, align, canvas)
     local x = position.x
     local y = position.y
     -- Find x position
@@ -39,7 +39,7 @@ local function calculateAlign(position, align)
         y = y + (SC_HEIGHT-540)/2
     end
 
-    return vec2.new(x, y)
+    return vec2.new(x + canvas.position.x, y + canvas.position.y)
 end
 
 -- Thanks to @pgimeno at https://love2d.org/forums/viewtopic.php?f=4&t=93768&p=250899#p250899
@@ -79,7 +79,7 @@ function zerpgui:newCanvas(pos)
         function textLabel:draw()
             SetFont("fonts/" .. self.font .. ".ttf", self.size)
 
-            local p = calculateAlign(self.position, self.align)
+            local p = calculateAlign(self.position, self.align, canvas)
             
             love.graphics.printf(self.text, p.x, p.y, 1000, self.begin)
         end
@@ -102,7 +102,7 @@ function zerpgui:newCanvas(pos)
 
         function image:draw()
             if not self.source then return end
-            local p = calculateAlign(self.position, self.align)
+            local p = calculateAlign(self.position, self.align, canvas)
             local width = self.source:getWidth()
             local height = self.source:getHeight()
             love.graphics.setColor(1, 1, 1, self.alpha)
@@ -143,7 +143,7 @@ function zerpgui:newCanvas(pos)
                 end
                 self.clickEvent()
             end
-            local p = calculateAlign(self.position, self.align)
+            local p = calculateAlign(self.position, self.align, canvas)
             local mx = love.mouse.getX()
             local my = love.mouse.getY()
             if self.style == 1 then
@@ -169,7 +169,7 @@ function zerpgui:newCanvas(pos)
         end
 
         function button:draw()
-            local p = calculateAlign(self.position, self.align)
+            local p = calculateAlign(self.position, self.align, canvas)
             if self.style == 1 then
                 -- Draw text
                 local t = ""
@@ -209,7 +209,7 @@ function zerpgui:newCanvas(pos)
         }
 
         function rectangle:draw()
-            local p = calculateAlign(self.position, self.align)
+            local p = calculateAlign(self.position, self.align, canvas)
             love.graphics.setColor(self.color[1], self.color[2], self.color[3], self.color[4])
             love.graphics.setLineWidth(self.lineWidth)
             love.graphics.rectangle(self.type, p.x, p.y, self.size.x, self.size.y)
@@ -241,7 +241,7 @@ function zerpgui:newCanvas(pos)
                 self.value = not self.value
             end
             -- Hover anim & check for click
-            local p = calculateAlign(self.position, self.align)
+            local p = calculateAlign(self.position, self.align, canvas)
             p.x = p.x - self.size/2
             p.y = p.y - self.size/2
 
@@ -259,7 +259,7 @@ function zerpgui:newCanvas(pos)
         end
 
         function checkbox:draw()
-            local p = calculateAlign(self.position, self.align)
+            local p = calculateAlign(self.position, self.align, canvas)
             p.x = p.x - self.size/2
             p.y = p.y - self.size/2
             -- Draw line
@@ -273,7 +273,6 @@ function zerpgui:newCanvas(pos)
 
         checkbox.parent = self
         checkbox.realSize = checkbox.size
-        print("AHHHH " .. tostring(checkbox.value))
         self[name] = checkbox
         self.elements[#self.elements+1] = checkbox
     end
