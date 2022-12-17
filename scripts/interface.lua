@@ -26,6 +26,19 @@ function interface.aboutButtonClick()
     GameState = "about"
 end
 
+-- All those fucking color buttons and stuff
+function interface.colorPButtonClick()
+    Save.playerColorSlot = Save.playerColorSlot + 1
+    if Save.playerColorSlot > #PlayerColors then
+        Save.playerColorSlot = 1 end
+end
+
+function interface.colorDButtonClick()
+    Save.playerColorSlot = Save.playerColorSlot - 1
+    if Save.playerColorSlot < 1 then
+        Save.playerColorSlot = #PlayerColors end
+end
+
 function interface.settingsButtonClick()
     GameState = "settings"
 end
@@ -318,8 +331,29 @@ function interface:load()
         "title", vec2.new(0, 120), "Customize", 48, "00", "center"
     )
     self.customize:newImage(
-        "player", vec2.new(490, 200), 0, assets.playerImg, 3, {0, 0, 0, 1}, "00"
+        "player", vec2.new(480, 250), 0, assets.playerImg, 3, {0, 0, 0, 1}, "00"
     )
+    -- Color changing buttons
+    self.customize:newTextLabel(
+        "colorText", vec2.new(620, 240), "Color", 14, "00", "left"
+    )
+    self.customize:newButton(
+        "colorPlus", vec2.new(560, 235), vec2.new(25, 25), 2, "", 24, nil, self.colorPButtonClick, "00"
+    )
+    self.customize:newButton(
+        "colorNeg", vec2.new(380, 235), vec2.new(25, 25), 2, "", 24, nil, self.colorDButtonClick, "00"
+    )
+    -- Accessory chanhing buttons
+    self.customize:newTextLabel(
+        "accText", vec2.new(620, 200), "Accessory", 14, "00", "left"
+    )
+    self.customize:newButton(
+        "accPlus", vec2.new(560, 200), vec2.new(25, 25), 2, "", 24, nil, self.accPButtonClick, "00"
+    )
+    self.customize:newButton(
+        "accNeg", vec2.new(380, 200), vec2.new(25, 25), 2, "", 24, nil, self.accDButtonClick, "00"
+    )
+
     self.customize:newButton(
         "return", vec2.new(380, 420), vec2.new(200, 70), 2, "return", 24, nil, self.titleButtonClick, "00"
     )
