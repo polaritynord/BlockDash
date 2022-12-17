@@ -120,6 +120,7 @@ local function loadSave()
         Save = {
             settings = {};
             highScores = {};
+            playerColorSlot = 1;
         }
         for i = 1, #SettingNames do
             Save.settings[i] = true
@@ -147,7 +148,9 @@ end
 
 function love.load()
     love.graphics.setDefaultFilter("nearest", "nearest")
-    -- Set custom cursor
+    PlayerColors = {
+        {0.13, 0.34, 0.8}, {1, 0, 0.5}, {1, 0.5, 0}, {1, 0.8, 0}, {0, 0.4, 0.4}
+    }
     assets.load()
     assets.gameLoad()
     GameLoad()

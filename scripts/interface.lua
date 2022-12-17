@@ -240,6 +240,13 @@ function interface:updateSettingsMenu()
     end
 end
 
+function interface:updateCustomizeMenu()
+    local color = PlayerColors[Save.playerColorSlot]
+    self.customize.player.color[1] = color[1]
+    self.customize.player.color[2] = color[2]
+    self.customize.player.color[3] = color[3]
+end
+
 function interface:updatePauseMenu()
     local delta = love.timer.getDelta()
     local a = self.pauseMenu.alpha
@@ -310,6 +317,9 @@ function interface:load()
     self.customize:newTextLabel(
         "title", vec2.new(0, 120), "Customize", 48, "00", "center"
     )
+    self.customize:newImage(
+        "player", vec2.new(490, 200), 0, assets.playerImg, 3, {0, 0, 0, 1}, "00"
+    )
     self.customize:newButton(
         "return", vec2.new(380, 420), vec2.new(200, 70), 2, "return", 24, nil, self.titleButtonClick, "00"
     )
@@ -362,7 +372,7 @@ function interface:load()
     )
     -- Weapon image
     self.game:newImage(
-        "weaponImg", vec2.new(60, 445), 0, nil, 3, "x+"
+        "weaponImg", vec2.new(60, 445), 0, nil, 3, {1, 1, 1, 1}, "x+"
     )
     -- ***WEAPON UI***
     -- Weapon text
@@ -375,7 +385,7 @@ function interface:load()
     )
     -- Ammo icon
     self.game:newImage(
-        "ammoIcon", vec2.new(55, 518.5), 0, nil, 1, "x+"
+        "ammoIcon", vec2.new(55, 518.5), 0, nil, 1, {1, 1, 1, 1}, "x+"
     )
     -- "Infinite" symbol
     self.game:newTextLabel(
@@ -394,22 +404,22 @@ function interface:load()
     x = 925 ; y = 505
     j = 4
     for _ = 1, Player.slotCount do
-        self.game:newImage("slotW"..j, vec2.new(x, y), 0, nil, 1.5, "++")
+        self.game:newImage("slotW"..j, vec2.new(x, y), 0, nil, 1.5, {1, 1, 1, 1}, "++")
         j = j - 1
         x = x - 64
     end
     -- Health icon & text
-    self.game:newImage("healthIcon", vec2.new(925, 450), 0, assets.healthIconImg, 4, "++")
+    self.game:newImage("healthIcon", vec2.new(925, 450), 0, assets.healthIconImg, 4, {1, 1, 1, 1}, "++")
     self.game:newTextLabel("healthText", vec2.new(-100, 435), "100", 24, "++", "right")
     -- Dash right click icon
-    self.game:newImage("rmb", vec2.new(925, 415), 0, assets.rmbImg, 2, "++")
+    self.game:newImage("rmb", vec2.new(925, 415), 0, assets.rmbImg, 2, {1, 1, 1, 1}, "++")
     -- Dash indicator text
     self.game:newTextLabel("dashText", vec2.new(-100, 400), "READY", 24, "++", "right")
     -- Dash indicator icon
-    self.game:newImage("dashIcon", vec2.new(785, 415), 0, assets.dashIconImg, 1.3, "++")
+    self.game:newImage("dashIcon", vec2.new(785, 415), 0, assets.dashIconImg, 1.3, {1, 1, 1, 1}, "++")
     
     -- Dashkill indicator
-    self.game:newImage("dashKill", vec2.new(480, 400), 0, assets.dashKillImg, 3, "0+")
+    self.game:newImage("dashKill", vec2.new(480, 400), 0, assets.dashKillImg, 3, {1 ,1, 1, 1}, "0+")
     self.game.dashKill.alpha = 0
     self.game.dashKill.timer = 99
     -- Dash text
@@ -510,6 +520,9 @@ function interface:update(delta)
     end
     if GameState == "settings" then
         self:updateSettingsMenu()
+    end
+    if GameState == "customize" then
+        self:updateCustomizeMenu()
     end
     -- Zerpgui updating
     zerpgui:update(delta)

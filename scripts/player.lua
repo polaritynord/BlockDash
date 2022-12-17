@@ -67,6 +67,10 @@ function player.new()
     	-- Instance trail
     	local newTrail = trail.new()
     	newTrail.position = vec2.new(p.position.x, p.position.y)
+		local color = PlayerColors[Save.playerColorSlot]
+		newTrail.r = color[1]
+		newTrail.g = color[2]
+		newTrail.b = color[3]
         newTrail.parent = p
 		p.trailCooldown = 0
     	-- Add instance to table
@@ -479,7 +483,8 @@ function player.new()
     	local height = assets.playerImg:getHeight()
     	local x = (p.position.x - Camera.position.x) * Camera.zoom
     	local y = (p.position.y - Camera.position.y) * Camera.zoom
-    	love.graphics.setColor(0.13, 0.34, 0.8, p.alpha)
+		local color = PlayerColors[Save.playerColorSlot]
+    	love.graphics.setColor(color[1], color[2], color[3], p.alpha)
     	love.graphics.draw(
     	    assets.playerImg, x, y, p.rotation,
     	    Camera.zoom * p.width * p.scale, Camera.zoom * p.scale, width/2, height/2
