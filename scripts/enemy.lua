@@ -57,12 +57,11 @@ function enemy.new()
         -- If the player constantly shooting (flee from bullets)
         local bulletDodge = e.oldHealth > e.health and Difficulty > 2
         -- If near player & has low ammunition
-        local fleeForReload =distance < 230 and w.magAmmo < w.magSize /3 and Difficulty > 1
+        local fleeForReload = distance < 230 and w.magAmmo < w.magSize /3 and Difficulty > 1
         e.oldHealth = e.health
     	if farAway or huntTheHunter or escapeCombat or bulletDodge or fleeForReload then
     	    e.dashCooldownTimer = 0
             e.dashTimer = 0
-    	    e.dashVelocity = 50
             if not escapeCombat then
                 e.dashRot = e.weaponSprite.rotation
             elseif bulletDodge then
@@ -243,21 +242,21 @@ function enemy.new()
     end
 
     function e.move(delta)
+        local speed = 245
         local distance = utils.distanceTo(e.target.position, e.position)
         local oldPos = vec2.new(e.position.x, e.position.y)
         -- Move by dash
         if e.dashTimer < 0.07 then
-            e.dashVelocity = 17.5
+            e.dashVelocity = 22
         else
             e.dashVelocity = 0
         end
         if distance > 225 then
-            local speed = 245
             e.position.x = e.position.x + math.cos(e.rotation) * speed * MotionSpeed * delta
             e.position.y = e.position.y + math.sin(e.rotation) * speed * MotionSpeed * delta
         end
-        e.position.x = e.position.x + math.cos(e.dashRot) * e.dashVelocity * MotionSpeed
-    	e.position.y = e.position.y + math.sin(e.dashRot) * e.dashVelocity * MotionSpeed
+        e.position.x = e.position.x + math.cos(e.dashRot) * e.dashVelocity * speed * MotionSpeed * delta
+    	e.position.y = e.position.y + math.sin(e.dashRot) * e.dashVelocity * speed * MotionSpeed * delta
         e.moving = oldPos.x ~= e.position.x and oldPos.y ~= e.position.y
     end
 

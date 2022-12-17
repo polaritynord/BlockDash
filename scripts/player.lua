@@ -390,7 +390,7 @@ function player.new()
     end
 
 	function p.drawLine()
-		if not p.weapons[p.slot] then return end
+		if not p.weapons[p.slot] or p.reloading or not Save.settings[utils.indexOf(SettingNames, "Aim Line")] then return end
 		local x, y = love.mouse.getPosition()
 		local pos = vec2.new(p.position.x-Camera.position.x, p.position.y-Camera.position.y)
 		love.graphics.setColor(1, 1, 1, 0.1 + (p.aimLineWidth/3)-1)

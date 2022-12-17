@@ -107,7 +107,7 @@ end
 
 local function loadSave()
     -- SAVE FILE MANAGEMENT
-    SettingNames = {"Sounds", "Auto Reload"}
+    SettingNames = {"Sounds", "Auto Reload", "Aim Line"}
     Save = nil
     if love.filesystem.getInfo("save") then
         print("Existing save detected, reading file...")
