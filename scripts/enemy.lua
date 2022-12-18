@@ -49,15 +49,15 @@ function enemy.new()
         local w = e.weapons[e.slot]
 
         -- If far away from e.target and has a reasonable amount of ammo
-        local farAway = distance > 370 and w.magAmmo > w.magSize / 3 and Difficulty > 1
+        local farAway = distance > 370 and w.magAmmo > w.magSize / 3
         -- If e.target is reloading & near enemy (this shi sounds cool af)
         local huntTheHunter = distance < 212 and e.target.reloading and Difficulty > 2 and uniform(0, 1) < 0.7
         -- If low HP (escape combat)
         local escapeCombat = distance < 200 and e.health < e.firstHealth / 2
         -- If the player constantly shooting (flee from bullets)
-        local bulletDodge = e.oldHealth > e.health and Difficulty > 2
+        local bulletDodge = e.oldHealth > e.health and Difficulty > 1
         -- If near player & has low ammunition
-        local fleeForReload = distance < 230 and w.magAmmo < w.magSize /3 and Difficulty > 1
+        local fleeForReload = distance < 230 and w.magAmmo < w.magSize / 3 and Difficulty > 1
         e.oldHealth = e.health
     	if farAway or huntTheHunter or escapeCombat or bulletDodge or fleeForReload then
     	    e.dashCooldownTimer = 0

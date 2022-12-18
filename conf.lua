@@ -7,5 +7,5 @@ function love.conf(t)
     t.window.resizable = true
     t.window.icon = "images/icon.png"
     t.window.vsync = 1
-    Version = "1.1.dev2"
+    Version = "1.1.dev3"
 end

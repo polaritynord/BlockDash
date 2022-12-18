@@ -46,7 +46,13 @@ end
 
 local function drawStars()
     for i in pairs(starPositions) do
-        love.graphics.rectangle("fill", starPositions[i][1]-Camera.position.x, starPositions[i][2]-Camera.position.y, starPositions[i][3], starPositions[i][4])
+        love.graphics.rectangle(
+            "fill",
+            (starPositions[i][1]-Camera.position.x)*Camera.zoom,
+            (starPositions[i][2]-Camera.position.y)*Camera.zoom,
+            starPositions[i][3]*Camera.zoom,
+            starPositions[i][4]*Camera.zoom
+        )
     end
 end
 
@@ -195,7 +201,6 @@ function love.update(delta)
 end
 
 function love.draw()
-    print(Save.playerAccSlot)
     if CurrentShader then
 		love.graphics.setBackgroundColor(0.93, 0.93, 0.93, 1)
     else
