@@ -11,7 +11,6 @@ Movements are already explained inside the game, but here, I wrote it anyways to
 Key(s)  | Action Name
 ------------- | -------------
 W, A, S, D  | Move
-Content Cell  | Content Cell
 E | Pick up Weapon
 1, 2, 3, 4 | Switch Slots
 Q | Quick Slot Switch (really useful in medium/hard)

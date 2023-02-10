@@ -108,7 +108,7 @@ function player.new()
             if collision(a.x-w/2, a.y-h/2, w, h, b.x-w/2, b.y-h/2, w, h) then
                 -- Check if enemy is dashing
                 if v.dashVelocity < 0.5 then return end
-				local damageLowerer = (p.health/75)
+				local damageLowerer = (p.health/100)
                 p.health = p.health - (25*damageLowerer)
 				if Save.settings[utils.indexOf(SettingNames, "Sounds")] then
                 	assets.sounds.dashDamage:play()

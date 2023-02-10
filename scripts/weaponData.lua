@@ -43,7 +43,7 @@ shotgun.reloadTime = 1.4
 shotgun.shootTime = 0.22
 shotgun.magSize = 7
 shotgun.bulletOffset = 15
-shotgun.recoil = 0.55
+shotgun.recoil = 0.45
 
 weaponData["pistol"] = pistol
 weaponData["assaultRifle"] = ar
