@@ -1,0 +1,2 @@
+- name: Love actions for Android
+  uses: love-actions/love-actions-android@v1.1.3
