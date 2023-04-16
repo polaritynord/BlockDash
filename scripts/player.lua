@@ -186,6 +186,9 @@ function player.new()
         if w.weaponType == "shotgun" then
             local spread = -w.bulletSpread
         end
+		-- Shake screen
+		
+		-- Create bullets
         for i = 1, w.bulletPerShot do
         	-- Instance bullet
         	local newBullet = bullet.new()

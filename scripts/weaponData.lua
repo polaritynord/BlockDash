@@ -16,6 +16,7 @@ pistol.shootTime = 0.18
 pistol.magSize = 13
 pistol.bulletOffset = 15
 pistol.recoil = 0.35
+pistol.screenShakeIntensity = 5
 
 -- Assault Rifle
 local ar = weapon.new()

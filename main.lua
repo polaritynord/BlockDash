@@ -113,10 +113,11 @@ end
 
 local function loadSave()
     -- SAVE FILE MANAGEMENT
-    SettingNames = {"Sounds", "Auto Reload", "Aim Line"}
+    SettingNames = {"Sounds", "Auto Reload", "Aim Line", "Screen Shake"}
     Save = nil
     if love.filesystem.getInfo("save") then
         print("Existing save detected, reading file...")
+        -- Check if the save is up to date
         -- Read from save
         local data = love.filesystem.load("save")()
         Save = data

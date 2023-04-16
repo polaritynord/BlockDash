@@ -13,6 +13,7 @@ function weapon.new()
     	magSize;
     	recoil;
     	magAmmo = 0;
+		screenShakeIntensity = 0;
     }
 
     function w.new()
