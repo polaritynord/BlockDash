@@ -161,7 +161,7 @@ function interface:updateGame()
     end
     -- Score texts
     self.game.scoreNum.text = Score
-    self.game.scoreText.text = "SCORE | HIGH: " .. Save.highScore
+    self.game.scoreText.text = "SCORE | HIGH: " .. Save.highScore[Difficulty]
     -- Weapon UI
     local w = Player.weapons[Player.slot]
     if w then
