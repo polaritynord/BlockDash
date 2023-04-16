@@ -111,30 +111,39 @@ local function drawEBullets(delta)
     end
 end
 
+local function createNewSave()
+    -- Create new save file
+    Save = {
+        version = Version;
+        settings = {};
+        highScores = {};
+        playerColorSlot = 1;
+        playerAccSlot = 1;
+    }
+    for i = 1, #SettingNames do
+        Save.settings[i] = true
+    end
+    -- Write to save
+    love.filesystem.write("save", ser(Save))
+end
+
 local function loadSave()
     -- SAVE FILE MANAGEMENT
     SettingNames = {"Sounds", "Auto Reload", "Aim Line", "Screen Shake"}
     Save = nil
     if love.filesystem.getInfo("save") then
         print("Existing save detected, reading file...")
-        -- Check if the save is up to date
         -- Read from save
         local data = love.filesystem.load("save")()
         Save = data
+        -- Check if the save is up to date
+        if Save.version ~= Version then
+            print("Recent save file is outdated, creating a new save file...")
+            createNewSave()
+        end
     else
         print("Creating a new save file...")
-        -- Create new save file
-        Save = {
-            settings = {};
-            highScores = {};
-            playerColorSlot = 1;
-            playerAccSlot = 1;
-        }
-        for i = 1, #SettingNames do
-            Save.settings[i] = true
-        end
-        -- Write to save
-        love.filesystem.write("save", ser(Save))
+        createNewSave()
     end
 end
 

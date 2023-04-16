@@ -82,6 +82,9 @@ function bullet.new()
                 Interface.hitmarkers[#Interface.hitmarkers+1] = newMarker
                 Player.regenTimer = 0
                 -- Play sound
+                if Save.settings[utils.indexOf(SettingNames, "Screen Shake")] then
+                    Camera.damageShake(10)
+                end
                 if Save.settings[utils.indexOf(SettingNames, "Sounds")] then
                     assets.sounds.damage:play()
                 end

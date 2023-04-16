@@ -16,7 +16,7 @@ pistol.shootTime = 0.18
 pistol.magSize = 13
 pistol.bulletOffset = 15
 pistol.recoil = 0.35
-pistol.screenShakeIntensity = 5
+pistol.screenShakeIntensity = 6.5
 
 -- Assault Rifle
 local ar = weapon.new()
@@ -31,6 +31,7 @@ ar.magSize = 30
 ar.bulletOffset = 20
 ar.recoil = 0.65
 ar.shootTime = 0.1
+ar.screenShakeIntensity = 7.5
 
 -- Shotgun
 local shotgun = weapon.new()
@@ -45,6 +46,7 @@ shotgun.shootTime = 0.22
 shotgun.magSize = 7
 shotgun.bulletOffset = 15
 shotgun.recoil = 0.45
+shotgun.screenShakeIntensity = 10
 
 weaponData["pistol"] = pistol
 weaponData["assaultRifle"] = ar

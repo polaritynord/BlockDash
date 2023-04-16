@@ -110,6 +110,9 @@ function player.new()
                 if v.dashVelocity < 0.5 then return end
 				local damageLowerer = (p.health/100)
                 p.health = p.health - (25*damageLowerer)
+				if Save.settings[utils.indexOf(SettingNames, "Screen Shake")] then
+					Camera.damageShake(30)
+				end
 				if Save.settings[utils.indexOf(SettingNames, "Sounds")] then
                 	assets.sounds.dashDamage:play()
 				end
@@ -187,7 +190,9 @@ function player.new()
             local spread = -w.bulletSpread
         end
 		-- Shake screen
-		
+		if Save.settings[utils.indexOf(SettingNames, "Screen Shake")] then
+			Camera.fireShake(p.weaponSprite.realRot, w.screenShakeIntensity)
+		end
 		-- Create bullets
         for i = 1, w.bulletPerShot do
         	-- Instance bullet
