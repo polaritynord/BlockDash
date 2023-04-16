@@ -41,6 +41,8 @@ function assets.gameLoad()
     assets.sounds.dash = love.audio.newSource("sounds/dash.wav", "static")
     assets.sounds.dashDamage = love.audio.newSource("sounds/dash_damage.wav", "static")
     assets.sounds.damage = love.audio.newSource("sounds/damage.wav", "static")
+    assets.sounds.dashBegin = love.audio.newSource("sounds/dash_begin.wav", "static")
+    assets.sounds.dashCancel = love.audio.newSource("sounds/dash_cancel.wav", "static")
 end
 
 function assets.menuLoad()

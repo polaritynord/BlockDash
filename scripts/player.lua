@@ -49,6 +49,7 @@ function player.new()
 		hitBullets = 0;
 		missedBullets = 0;
 		aimLineWidth = 3;
+		dashDurationTimer = 0;
     }
 
     -- Trail related functions
@@ -353,7 +354,15 @@ function player.new()
     	p.dashCooldownTimer = p.dashCooldownTimer + delta
     	p.dashTimer = p.dashTimer + delta
     	if p.dashCooldownTimer < 2.5 then return end
+		if p.dashDurationTimer > 2 then
+			p.dashDurationTimer = 0
+			p.dashCooldownTimer = 0
+			if Save.settings[utils.indexOf(SettingNames, "Sounds")] then
+				assets.sounds.dashCancel:play()
+			end
+		end
     	if CurrentShader and not love.mouse.isDown(2) then
+			p.dashDurationTimer = 0
     	    p.dashCooldownTimer = 0
 			p.dashTimer = 0
     	    p.dashRot = p.weaponSprite.rotation
@@ -368,10 +377,14 @@ function player.new()
 
     function p.motionControl(delta)
     	if GamePaused then return end
-    	if love.mouse.isDown(2) and p.dashCooldownTimer > 2.5 then
+    	if love.mouse.isDown(2) and p.dashCooldownTimer > 2.5 and p.dashDurationTimer < 2 then
+			if Save.settings[utils.indexOf(SettingNames, "Sounds")] and MotionSpeed ~= 0.25 then
+				assets.sounds.dashBegin:play()
+			end
     	    p.reloading = false
     	    MotionSpeed = 0.25
     	    CurrentShader = p.invertShader
+			p.dashDurationTimer = p.dashDurationTimer + delta
     	else
     	    MotionSpeed = 1
     	    CurrentShader = nil
@@ -457,9 +470,10 @@ function player.new()
                 for i = 1, math.random(12, 25) do
                     local size = uniform(3, 7)
 					local speed = uniform(8, 9.3)
+					local color = PlayerColors[Save.playerColorSlot]
                     local particle = ParticleManager.new(
                         vec2.new(p.position.x, p.position.y), vec2.new(size, size),
-                        uniform(0.8, 1.7), {0.13, 0.34, 0.8, 1}, p.deathParticleTick
+                        uniform(0.8, 1.7), {color[1], color[2], color[3], 1}, p.deathParticleTick
                     )
                     particle.velocity = uniform(75, 225)
                     particle.rotation = uniform(0, 360)

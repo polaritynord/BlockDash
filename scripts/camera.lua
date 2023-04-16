@@ -25,8 +25,8 @@ function camera.new()
     function c.update(delta)
     	if GamePaused then return end
 		-- Camera shake returns to normal
-		c.shakePos.x = c.shakePos.x + -c.shakePos.x * 28 * delta / MotionSpeed
-		c.shakePos.y = c.shakePos.y + -c.shakePos.y * 28 * delta / MotionSpeed
+		c.shakePos.x = c.shakePos.x + -c.shakePos.x * 0.5
+		c.shakePos.y = c.shakePos.y + -c.shakePos.y * 0.5
         -- Camera following
     	if not c.lockedTarget then return end
 		c.position.x = c.position.x + c.shakePos.x + (c.lockedTarget.position.x - c.position.x-(SC_WIDTH/2)) * (c.smoothness * delta) / MotionSpeed
