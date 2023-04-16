@@ -229,8 +229,12 @@ function interface:updateGame()
     -- Dash instructor
     if CurrentShader then
         self.game.dashInstructor.text = "RELEASE RMB TO DASH"
+        self.game.dashTimeBar.color[4] = 1
+        self.game.dashTimeBar.size.x = (2-Player.dashDurationTimer)*235/2
+        self.game.dashTimeBar.position.x = 380 - (self.game.dashTimeBar.size.x-235)/2
     else
         self.game.dashInstructor.text = ""
+        self.game.dashTimeBar.color[4] = 0
     end
 end
 
@@ -477,6 +481,8 @@ function interface:load()
     self.game.dashKill.timer = 99
     -- Dash text
     self.game:newTextLabel("dashInstructor", vec2.new(0, 440), "", 24, "00", "center")
+    -- Dash time bar
+    self.game:newRectangle("dashTimeBar", vec2.new(380, 70), vec2.new(235, 15), "fill", {1, 1, 1, 1}, 0, "0x")
     -- **SCORE UI**
     self.game:newTextLabel("scoreNum", vec2.new(15, 0), "0", 48, "xx", "left")
     self.game:newTextLabel("scoreText", vec2.new(15, 64), "SCORE (RECORD: 0)", 16, "xx", "left")
