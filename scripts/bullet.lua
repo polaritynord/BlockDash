@@ -62,6 +62,9 @@ function bullet.new()
                         damageNum.number = b.damage + math.random(-2, 2)
                         Interface.damageNums[#Interface.damageNums+1] = damageNum
                         Player.hitBullets = Player.hitBullets + 1
+                        if v.health < 1 then
+                            Score = Score + 10
+                        end
                         return
                     end
                 end

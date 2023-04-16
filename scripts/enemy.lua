@@ -124,7 +124,10 @@ function enemy.new()
             Interface.dashKillAlpha = 1
             Interface.dashKillScale = 1.8
             if e.target == Player then
-                Interface:dashKill() end
+                Interface:dashKill()
+                Score = Score + 20
+                e.dead = true
+            end
         end
     end
 

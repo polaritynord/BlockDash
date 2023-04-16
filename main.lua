@@ -64,6 +64,7 @@ function GameLoad()
     EnemyBullets = {}
     StatNames = {"Time", "Waves", "Accuracy", "Kills", "Dash Kills"}
     Stats = {0, 0, 0, 0, 0}
+    Score = 0
     -- Setup player
     Player = player.new()
     Player.load()
@@ -119,6 +120,7 @@ local function createNewSave()
         highScores = {};
         playerColorSlot = 1;
         playerAccSlot = 1;
+        highScore = 0;
     }
     for i = 1, #SettingNames do
         Save.settings[i] = true
@@ -203,6 +205,9 @@ function love.update(delta)
         WaveManager.update(delta)
 		ParticleManager.update(delta)
         updateEBullets(delta)
+        if Score > Save.highScore then
+            Save.highScore = Score
+        end
     end
     -- Hide debug menu if no in-game
     if GameState ~= "game" then

@@ -159,6 +159,9 @@ function interface:updateGame()
     else
         self.game.wave.text = "WAVE " .. WaveManager.wave .. " - " .. #EnemyManager.enemies .. " ENEMIES LEFT"
     end
+    -- Score texts
+    self.game.scoreNum.text = Score
+    self.game.scoreText.text = "SCORE | HIGH: " .. Save.highScore
     -- Weapon UI
     local w = Player.weapons[Player.slot]
     if w then
@@ -474,6 +477,9 @@ function interface:load()
     self.game.dashKill.timer = 99
     -- Dash text
     self.game:newTextLabel("dashInstructor", vec2.new(0, 440), "", 24, "00", "center")
+    -- **SCORE UI**
+    self.game:newTextLabel("scoreNum", vec2.new(15, 0), "0", 48, "xx", "left")
+    self.game:newTextLabel("scoreText", vec2.new(15, 64), "SCORE (RECORD: 0)", 16, "xx", "left")
 
     -- Debug menu (game) ---------------------------------------------------------------------------------------
     self.debug = zerpgui:newCanvas()
