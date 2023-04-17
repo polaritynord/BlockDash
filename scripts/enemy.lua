@@ -311,6 +311,12 @@ function enemy.new()
         end
         e.weapons[e.slot] = w
         e.weapons[e.slot].magAmmo = e.weapons[e.slot].magSize
+        -- Set target
+        if index > 1 then
+            e.target = EnemyManager.enemies[index-1]
+        else
+            e.target = nil
+        end
     end
 
     function e.update(delta, i)
@@ -327,7 +333,7 @@ function enemy.new()
     	    e.alpha = e.alpha - 6 * MotionSpeed * delta
     	    -- Despawn
     	    if e.alpha < 0 then
-		          table.remove(EnemyManager.enemies, i) end
+                table.remove(EnemyManager.enemies, i) end
             elseif e.target then
             e.rotation = math.atan2(e.target.position.y - e.position.y, e.target.position.x - e.position.x)
             if not e.target.dead then

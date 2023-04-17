@@ -230,7 +230,7 @@ function interface:updateGame()
     if CurrentShader then
         self.game.dashInstructor.text = "RELEASE RMB TO DASH"
         self.game.dashTimeBar.color[4] = 1
-        self.game.dashTimeBar.size.x = (2-Player.dashDurationTimer)*235/2
+        self.game.dashTimeBar.size.x = (1.3-Player.dashDurationTimer)*235/1.3
         self.game.dashTimeBar.position.x = 380 - (self.game.dashTimeBar.size.x-235)/2
     else
         self.game.dashInstructor.text = ""

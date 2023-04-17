@@ -36,7 +36,7 @@ function player.new()
     	sprinting = false;
     	sprintCooldown = 3131;
     	invertShader = love.graphics.newShader[[ vec4 effect(vec4 color, Image texture, vec2 texture_coords, vec2 pixel_coords) { vec4 col = texture2D( texture, texture_coords ); return vec4(1-col.r, 1-col.g, 1-col.b, col.a); } ]];
-    	dashVelocity = 0;
+		dashVelocity = 0;
     	dashRot = 0;
     	dashCooldownTimer = 111;
 		dashTimer = 999;
@@ -354,7 +354,7 @@ function player.new()
     	p.dashCooldownTimer = p.dashCooldownTimer + delta
     	p.dashTimer = p.dashTimer + delta
     	if p.dashCooldownTimer < 2.5 then return end
-		if p.dashDurationTimer > 2 then
+		if p.dashDurationTimer > 1.3 then
 			p.dashDurationTimer = 0
 			p.dashCooldownTimer = 0
 			if Save.settings[utils.indexOf(SettingNames, "Sounds")] then
@@ -377,7 +377,7 @@ function player.new()
 
     function p.motionControl(delta)
     	if GamePaused then return end
-    	if love.mouse.isDown(2) and p.dashCooldownTimer > 2.5 and p.dashDurationTimer < 2 then
+    	if love.mouse.isDown(2) and p.dashCooldownTimer > 2.5 and p.dashDurationTimer < 1.3 then
 			if Save.settings[utils.indexOf(SettingNames, "Sounds")] and MotionSpeed ~= 0.25 then
 				assets.sounds.dashBegin:play()
 			end

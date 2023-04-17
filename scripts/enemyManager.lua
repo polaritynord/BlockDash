@@ -4,7 +4,7 @@ local enemy = require("scripts/enemy")
 local enemyManager = {
     spawnTimer = 0;
     enemies = {};
-    spawnTime = 3.5;
+    spawnTime = 0.25;
 }
 
 function enemyManager.getCount()
@@ -14,17 +14,16 @@ end
 function enemyManager.newEnemy(position)
     local newEnemy = enemy.new()
     newEnemy.position = position
-    newEnemy.load()
+    newEnemy.load(#enemyManager.enemies+1)
     enemyManager.enemies[#enemyManager.enemies+1] = newEnemy
 end
 
-function enemyManager.spawnEnemies(delta)
-    if Player.dead then return end
+function enemyManager.spawnSimEnemies(delta)
     -- Increment timer
-    enemyManager.spawnTimer = enemyManager.spawnTimer + MotionSpeed * delta
+    enemyManager.spawnTimer = enemyManager.spawnTimer + delta
     if enemyManager.spawnTimer < enemyManager.spawnTime then return end
     -- Spawn enemy
-    enemyManager.newEnemy(vec2.new(math.random(-800, 800), math.random(-800, 800)))
+    enemyManager.newEnemy(vec2.new(math.random(0, SC_WIDTH), math.random(0, SC_HEIGHT)))
     enemyManager.spawnTimer = 0
 end
 

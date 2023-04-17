@@ -13,8 +13,8 @@ function camera.new()
     }
 
 	function c.fireShake(direction, intensity)
-		c.shakePos.x = c.shakePos.x + math.cos(direction) * intensity--uniform(-intensity, intensity)
-		c.shakePos.y = c.shakePos.y + math.sin(direction) * intensity--uniform(-intensity, intensity)
+		c.shakePos.x = c.shakePos.x + math.cos(direction) * -intensity--uniform(-intensity, intensity)
+		c.shakePos.y = c.shakePos.y + math.sin(direction) * -intensity--uniform(-intensity, intensity)
 	end
 
 	function c.damageShake(intensity)

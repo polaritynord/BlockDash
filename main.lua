@@ -16,6 +16,7 @@ WaveManager = require("scripts/waveManager")
 local fullscreen = false
 CurrentShader = nil
 local starPositions = {}
+local menuSimTimer = 0
 
 local function dropWeapon(weapon, position)
     local newWeapon = weapon.new()
@@ -182,6 +183,11 @@ function love.load()
         local size = uniform(1.7, 3.45)
         starPositions[#starPositions+1] = {uniform(-1920, 1920), uniform(-1080, 1080), size, size}
     end
+    -- Create simulation enemies
+    Difficulty = 3
+    for i = 1, 10 do
+        EnemyManager.newEnemy(vec2.new(uniform(0, SC_WIDTH), uniform(0, SC_HEIGHT)))
+    end
 end
 
 function love.update(delta)
@@ -190,6 +196,9 @@ function love.update(delta)
     -- Set cursor
     if GameState ~= "game" or GamePaused then
         love.mouse.setCursor(assets.cursorDefault)
+        if GameState == "menu" then
+            EnemyManager.spawnSimEnemies(delta)
+        end
     else
 		if CurrentShader then
 	    	love.mouse.setCursor(assets.cursorCombatI) else
@@ -197,14 +206,14 @@ function love.update(delta)
     end
 
     Interface:update(delta)
+    EnemyManager.update(delta)
+    ParticleManager.update(delta)
+    updateEBullets(delta)
     if GameState == "game" then
 		Player.update(delta)
 		Camera.update(delta)
 		updateWeaponDrops(delta)
-		EnemyManager.update(delta)
         WaveManager.update(delta)
-		ParticleManager.update(delta)
-        updateEBullets(delta)
         if Score > Save.highScore[Difficulty] then
             Save.highScore[Difficulty] = Score
         end
@@ -222,13 +231,13 @@ function love.draw()
 		love.graphics.setBackgroundColor(0.07, 0.07, 0.07, 1)
     end
     love.graphics.setShader(CurrentShader)
+    EnemyManager.draw()
+    ParticleManager.draw()
+    drawEBullets()
     if GameState == "game" then
         drawStars()
 		drawWeaponDrops()
 		Player.draw()
-		EnemyManager.draw()
-        drawEBullets()
-        ParticleManager.draw()
     end
     Interface:draw()
 end
