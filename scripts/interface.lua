@@ -106,6 +106,9 @@ function interface.titleButtonClick()
     interface.pauseMenu.alpha = 0
     interface.deathMenu.alpha = 0
     GamePaused = false
+    if GameState == "game" then
+        EnemyManager.enemies = {}
+    end
     GameState = "menu"
     interface.menu.quit.sure = false
     interface.trails = {}

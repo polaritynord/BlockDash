@@ -38,6 +38,7 @@ function enemy.new()
         target = Player;
         dead = false;
         oldHealth = 100;
+        accessorySlot = math.random(1, #assets.accessories)
     }
 
     function e.dash(delta)
@@ -375,6 +376,16 @@ function enemy.new()
     	    e.scale*e.width, e.scale, width/2, height/2
     	)
     	love.graphics.setColor(1, 1, 1, 1)
+        -- Draw accessory
+		if not e.dead then
+			local a = assets.accessories[e.accessorySlot]
+			if a then
+				love.graphics.draw(
+					a, x-(16*e.width), y-16, 0,
+					Camera.zoom * e.width * e.scale, Camera.zoom * e.scale, width/2, height/2
+				)
+			end
+		end
         e.weaponSprite.draw()
     end
 

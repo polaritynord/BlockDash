@@ -16,7 +16,39 @@ WaveManager = require("scripts/waveManager")
 local fullscreen = false
 CurrentShader = nil
 local starPositions = {}
-local menuSimTimer = 0
+local starCanvas = nil
+local repeatShader = love.graphics.newShader[[
+
+    // extern number tex_width;     // To be used if the texture is not the same size as the screen, and replace `love_ScreenSize` with these values
+    // extern number tex_height;
+
+    extern vec2 cam_pos;
+
+    vec4 effect(vec4 color, Image tex, vec2 tex_coords, vec2 screen_coords)
+    {
+        number x = mod(screen_coords.x + cam_pos.x, love_ScreenSize.x) / love_ScreenSize.x;
+        number y = mod(screen_coords.y + cam_pos.y, love_ScreenSize.y) / love_ScreenSize.y;
+
+        return Texel(tex, vec2(x, y));
+    }
+
+]]
+
+local function genStars(nStars)
+    local canvas = love.graphics.newCanvas()
+    love.graphics.setCanvas(canvas)
+    for _ = 1, nStars do
+        local size = uniform(1.7, 3.45)
+        love.graphics.rectangle(
+            "fill",
+            uniform(0, SC_WIDTH),
+            uniform(0, SC_HEIGHT),
+            size, size
+        )
+    end
+    love.graphics.setCanvas()
+    return canvas
+end
 
 local function dropWeapon(weapon, position)
     local newWeapon = weapon.new()
@@ -178,6 +210,7 @@ function love.load()
     loadSave()
     Interface:load()
     GamePaused = false
+    starCanvas = genStars(44)
     -- Create star positions
     for _ = 1, 700 do
         local size = uniform(1.7, 3.45)
@@ -232,10 +265,16 @@ function love.draw()
 		love.graphics.setBackgroundColor(0.07, 0.07, 0.07, 1)
     end
     love.graphics.setShader(CurrentShader)
+    -- Draw the stars
+    repeatShader:send("cam_pos", {Camera.position.x, Camera.position.y})
+    love.graphics.setShader(repeatShader)
+    love.graphics.draw(starCanvas)
+    love.graphics.setShader(CurrentShader)
+
     EnemyManager.draw()
     ParticleManager.draw()
     drawEBullets()
-    drawStars()
+    --drawStars()
     if GameState == "game" then
 		drawWeaponDrops()
 		Player.draw()
