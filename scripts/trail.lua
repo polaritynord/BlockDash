@@ -12,6 +12,7 @@ function trail.new()
     	rotation = 0;
         r = 0.12 ; g = 0.12, b = 1;
         parent;
+		velocity = vec2.new();
     }
 
     function p.update(delta, i)
@@ -19,6 +20,8 @@ function trail.new()
     	p.alpha = p.alpha - 1.9 / MotionSpeed * delta
     	p.scale = p.scale - 1.75 / MotionSpeed * delta
     	p.rotation = p.rotation + 5 * MotionSpeed * delta
+		p.position.x = p.position.x + p.velocity.x * delta
+		p.position.y = p.position.y + p.velocity.y * delta
     	-- Despawn trail
     	if p.scale < 0 then
     	    table.remove(p.parent.trails, i)

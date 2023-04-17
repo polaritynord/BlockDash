@@ -72,7 +72,7 @@ function enemy.new()
             e.reloading = false
     	    if e.facing == "left" then
 	    		e.dashRot = e.dashRot - 135 end
-            if Save.settings[utils.indexOf(SettingNames, "Sounds")] then
+            if Save.settings[utils.indexOf(SettingNames, "Sounds")] and GameState == "game" then
     		    assets.sounds.dash:play()
             end
     	end
@@ -210,7 +210,7 @@ function enemy.new()
             -- Shoot event for UI & Sprite
             e.weaponSprite.parentShot()
             -- Play sound
-            if Save.settings[utils.indexOf(SettingNames, "Sounds")] then
+            if Save.settings[utils.indexOf(SettingNames, "Sounds")] and GameState == "game" then
                 assets.sounds.shoot:play()
             end
             -- Special bullet attributes
@@ -311,11 +311,13 @@ function enemy.new()
         end
         e.weapons[e.slot] = w
         e.weapons[e.slot].magAmmo = e.weapons[e.slot].magSize
-        -- Set target
-        if index > 1 then
-            e.target = EnemyManager.enemies[index-1]
-        else
-            e.target = nil
+        if GameState ~= "game" then
+            -- Set target
+            if index > 1 then
+                e.target = EnemyManager.enemies[index-1]
+            else
+                e.target = nil
+            end
         end
     end
 

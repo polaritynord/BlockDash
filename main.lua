@@ -82,7 +82,7 @@ function GameLoad()
     Camera = camera.new()
     Camera.lockedTarget = Player
     drawStars()
-    --Player.health = 0
+    ParticleManager.particles = {}
 end
 
 function SaveGame()
@@ -196,7 +196,8 @@ function love.update(delta)
     -- Set cursor
     if GameState ~= "game" or GamePaused then
         love.mouse.setCursor(assets.cursorDefault)
-        if GameState == "menu" then
+        if GameState ~= "game" then
+            Camera.updateMenu()
             EnemyManager.spawnSimEnemies(delta)
         end
     else
@@ -234,8 +235,8 @@ function love.draw()
     EnemyManager.draw()
     ParticleManager.draw()
     drawEBullets()
+    drawStars()
     if GameState == "game" then
-        drawStars()
 		drawWeaponDrops()
 		Player.draw()
     end

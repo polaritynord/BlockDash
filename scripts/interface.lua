@@ -2,6 +2,7 @@ local utils = require("utils")
 local vec2 = require("lib/vec2")
 local zerpgui = require("lib/zerpgui")
 local assets = require("scripts/assets")
+local trail = require("scripts/trail")
 
 local interface = {
     damageNums = {};
@@ -14,6 +15,8 @@ local interface = {
     };
     statElements = {};
     text = love.filesystem.read("string", "howtoplay.txt");
+    trails = {};
+    trailCooldown = 0;
 }
 
 -- Button events
@@ -105,6 +108,8 @@ function interface.titleButtonClick()
     GamePaused = false
     GameState = "menu"
     interface.menu.quit.sure = false
+    interface.trails = {}
+    interface.trailCooldown = 0
     SaveGame()
 end
 
@@ -272,12 +277,32 @@ function interface:updateSettingsMenu()
     end
 end
 
-function interface:updateCustomizeMenu()
+function interface:updateCustomizeMenu(delta)
     local color = PlayerColors[Save.playerColorSlot]
     self.customize.player.color[1] = color[1]
     self.customize.player.color[2] = color[2]
     self.customize.player.color[3] = color[3]
     self.customize.accPreview.source = assets.accessories[Save.playerAccSlot]
+
+    -- Update existing trails
+    for i, v in ipairs(self.trails) do
+        v.update(delta, i)
+    end
+    -- Create trails
+    self.trailCooldown = self.trailCooldown + delta
+    if self.trailCooldown < 0.05 then return end
+    self.trailCooldown = 0
+    local newTrail = trail.new()
+    newTrail.position = vec2.new(480+Camera.position.x, 250+Camera.position.y)
+    color = PlayerColors[Save.playerColorSlot]
+    newTrail.r = color[1]
+    newTrail.g = color[2]
+    newTrail.b = color[3]
+    newTrail.scale = 2.1
+    newTrail.velocity.x = -500
+    newTrail.parent = self
+    -- Add instance to table
+    self.trails[#self.trails+1] = newTrail
 end
 
 function interface:updatePauseMenu()
@@ -584,13 +609,18 @@ function interface:update(delta)
         self:updateSettingsMenu()
     end
     if GameState == "customize" then
-        self:updateCustomizeMenu()
+        self:updateCustomizeMenu(delta)
     end
     -- Zerpgui updating
     zerpgui:update(delta)
 end
 
 function interface:draw()
+    if GameState == "customize" then
+        for _, v in ipairs(self.trails) do
+    	    v.draw()
+    	end
+    end
     zerpgui:draw()
     self:drawHitmarkers()
     self:drawDamageNums()
