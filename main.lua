@@ -224,7 +224,7 @@ function love.update(delta)
     if GameState ~= "game" or GamePaused then
         love.mouse.setCursor(assets.cursorDefault)
         if GameState ~= "game" then
-            Camera.updateMenu()
+            Camera.updateMenu(delta)
             EnemyManager.spawnSimEnemies(delta)
         end
     else
@@ -267,7 +267,7 @@ function love.draw()
     local sy = SC_HEIGHT/540
     love.graphics.setShader(repeatShader)
         love.graphics.draw(starCanvas,0,0,0,sx,sy)
-    love.graphics.setShader()
+    love.graphics.setShader(CurrentShader)
 
     EnemyManager.draw()
     ParticleManager.draw()
