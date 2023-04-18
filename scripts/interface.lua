@@ -518,12 +518,12 @@ function interface:load()
 
     -- Debug menu (game) ---------------------------------------------------------------------------------------
     self.debug = zerpgui:newCanvas()
-    self.debug:newTextLabel("versionData", vec2.new(), "", 14, "xx", "left", "JetBrainsMono")
-    self.debug:newTextLabel("fps", vec2.new(0, 15), "", 14, "xx", "left", "JetBrainsMono")
-    self.debug:newTextLabel("enemyCount", vec2.new(0, 30), "", 14, "xx", "left", "JetBrainsMono")
-    self.debug:newTextLabel("particleCount", vec2.new(0, 45), "", 14, "xx", "left", "JetBrainsMono")
-    self.debug:newTextLabel("bulletCount", vec2.new(0, 60), "", 14, "xx", "left", "JetBrainsMono")
-    self.debug:newTextLabel("wave", vec2.new(0, 75), "", 14, "xx", "left", "JetBrainsMono")
+    self.debug:newTextLabel("versionData", vec2.new(15, 100), "", 14, "xx", "left", "JetBrainsMono")
+    self.debug:newTextLabel("fps", vec2.new(15, 115), "", 14, "xx", "left", "JetBrainsMono")
+    self.debug:newTextLabel("enemyCount", vec2.new(15, 130), "", 14, "xx", "left", "JetBrainsMono")
+    self.debug:newTextLabel("particleCount", vec2.new(15, 145), "", 14, "xx", "left", "JetBrainsMono")
+    self.debug:newTextLabel("bulletCount", vec2.new(15, 160), "", 14, "xx", "left", "JetBrainsMono")
+    self.debug:newTextLabel("wave", vec2.new(15, 175), "", 14, "xx", "left", "JetBrainsMono")
 
     -- Pause menu (game) ---------------------------------------------------------------------------------------
     self.pauseMenu = zerpgui:newCanvas()

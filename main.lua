@@ -224,7 +224,7 @@ function love.update(delta)
     if GameState ~= "game" or GamePaused then
         love.mouse.setCursor(assets.cursorDefault)
         if GameState ~= "game" then
-            Camera.updateMenu()
+            Camera.updateMenu(delta)
             EnemyManager.spawnSimEnemies(delta)
         end
     else

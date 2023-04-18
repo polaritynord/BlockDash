@@ -33,10 +33,12 @@ function camera.new()
 		c.position.y = c.position.y + c.shakePos.y + (c.lockedTarget.position.y - c.position.y-(SC_HEIGHT/2)) * (c.smoothness * delta) / MotionSpeed
     end
 
-	function c.updateMenu()
+	function c.updateMenu(delta)
 		local mx, my = love.mouse.getPosition()
-		c.position.x = c.position.x + (mx-SC_WIDTH/2)/150-c.position.x * 0.04
-		c.position.y = c.position.y + (my-SC_HEIGHT/2)/150-c.position.y * 0.04
+		--c.position.x = c.position.x + ((mx-SC_WIDTH/2)/35-c.position.x)
+		--c.position.y = c.position.y + ((my-SC_HEIGHT/2)/35-c.position.y)
+		c.position.x = c.position.x + ((mx-SC_WIDTH/2)/7.5-c.position.x) * 5*delta
+		c.position.y = c.position.y + ((my-SC_HEIGHT/2)/7.5-c.position.y) * 5*delta
 	end
 
     return c
