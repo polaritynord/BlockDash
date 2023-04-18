@@ -17,21 +17,16 @@ local fullscreen = false
 CurrentShader = nil
 local starPositions = {}
 local starCanvas = nil
+-- Massive credits to Bigfoot71 for helping with infinite stars - You a real one fr
+-- Forum link for the curious: https://love2d.org/forums/viewtopic.php?p=254398#p254398
 local repeatShader = love.graphics.newShader[[
-
-    // extern number tex_width;     // To be used if the texture is not the same size as the screen, and replace `love_ScreenSize` with these values
-    // extern number tex_height;
-
+    extern vec2 tex_size;
     extern vec2 cam_pos;
 
-    vec4 effect(vec4 color, Image tex, vec2 tex_coords, vec2 screen_coords)
-    {
-        number x = mod(screen_coords.x + cam_pos.x, love_ScreenSize.x) / love_ScreenSize.x;
-        number y = mod(screen_coords.y + cam_pos.y, love_ScreenSize.y) / love_ScreenSize.y;
-
-        return Texel(tex, vec2(x, y));
+    vec4 effect(vec4 color, Image tex, vec2 tex_coords, vec2 screen_coords) {
+        vec2 wrapped_coords = (screen_coords + cam_pos) / tex_size;
+        return Texel(tex, fract(wrapped_coords)); // Get the fractional part (xy%1)
     }
-
 ]]
 
 local function genStars(nStars)
@@ -65,11 +60,10 @@ function love.keypressed(key, unicode)
     -- Fullscreen key
     if key == "f11" then
        fullscreen = not fullscreen
-          love.window.setFullscreen(fullscreen, "desktop")
-        -- Set window dimensions to default
-    	if not fullscreen then
-    	    love.window.setMode(960, 540, {resizable=true})
-        end
+       love.window.setFullscreen(fullscreen, "desktop")
+       -- Set window dimensions to default
+       if not fullscreen and false then
+        love.window.setMode(960, 540, {resizable=true}) end
     end
     -- Toggle debug menu
     if key == "f1" and GameState == "game" then
@@ -210,7 +204,7 @@ function love.load()
     loadSave()
     Interface:load()
     GamePaused = false
-    starCanvas = genStars(44)
+    starCanvas = genStars(60)
     -- Create star positions
     for _ = 1, 700 do
         local size = uniform(1.7, 3.45)
@@ -267,9 +261,13 @@ function love.draw()
     love.graphics.setShader(CurrentShader)
     -- Draw the stars
     repeatShader:send("cam_pos", {Camera.position.x, Camera.position.y})
+    repeatShader:send("tex_size", {960, 540})
+     
+    local sx = SC_WIDTH/960
+    local sy = SC_HEIGHT/540
     love.graphics.setShader(repeatShader)
-    love.graphics.draw(starCanvas)
-    love.graphics.setShader(CurrentShader)
+        love.graphics.draw(starCanvas,0,0,0,sx,sy)
+    love.graphics.setShader()
 
     EnemyManager.draw()
     ParticleManager.draw()

@@ -113,6 +113,7 @@ function interface.titleButtonClick()
     interface.menu.quit.sure = false
     interface.trails = {}
     interface.trailCooldown = 0
+    Difficulty = 3
     SaveGame()
 end
 
