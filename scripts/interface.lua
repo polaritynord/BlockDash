@@ -114,6 +114,7 @@ function interface.titleButtonClick()
     interface.trails = {}
     interface.trailCooldown = 0
     Difficulty = 3
+    WaveManager.wave = 1
     SaveGame()
 end
 
@@ -297,7 +298,7 @@ function interface:updateCustomizeMenu(delta)
     if self.trailCooldown < 0.05 then return end
     self.trailCooldown = 0
     local newTrail = trail.new()
-    newTrail.position = vec2.new(480+Camera.position.x, 250+Camera.position.y)
+    newTrail.position = vec2.new(SC_WIDTH/2+Camera.position.x, SC_HEIGHT/2-13+Camera.position.y)
     color = PlayerColors[Save.playerColorSlot]
     newTrail.r = color[1]
     newTrail.g = color[2]

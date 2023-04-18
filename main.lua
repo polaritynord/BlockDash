@@ -166,7 +166,7 @@ local function loadSave()
         local data = love.filesystem.load("save")()
         Save = data
         -- Check if the save is up to date
-        if Save.version ~= Version then
+        if Save.version ~= Version or not Save.version then
             print("Recent save file is outdated, creating a new save file...")
             createNewSave()
         end
@@ -270,7 +270,6 @@ function love.draw()
     love.graphics.setShader(CurrentShader)
 
     EnemyManager.draw()
-    ParticleManager.draw()
     drawEBullets()
     --drawStars()
     if GameState == "game" then
