@@ -71,18 +71,6 @@ function love.keypressed(key, unicode)
     end
 end
 
-local function drawStars()
-    for i in pairs(starPositions) do
-        love.graphics.rectangle(
-            "fill",
-            (starPositions[i][1]-Camera.position.x)*Camera.zoom,
-            (starPositions[i][2]-Camera.position.y)*Camera.zoom,
-            starPositions[i][3]*Camera.zoom,
-            starPositions[i][4]*Camera.zoom
-        )
-    end
-end
-
 function GameLoad()
     GameState = "game"
     -- Globals
@@ -107,7 +95,6 @@ function GameLoad()
     -- Setup camera
     Camera = camera.new()
     Camera.lockedTarget = Player
-    drawStars()
     ParticleManager.particles = {}
 end
 
@@ -262,13 +249,14 @@ function love.draw()
     -- Draw the stars
     repeatShader:send("cam_pos", {Camera.position.x, Camera.position.y})
     repeatShader:send("tex_size", {960, 540})
-     
+
     local sx = SC_WIDTH/960
     local sy = SC_HEIGHT/540
     love.graphics.setShader(repeatShader)
         love.graphics.draw(starCanvas,0,0,0,sx,sy)
     love.graphics.setShader(CurrentShader)
 
+    ParticleManager.draw()
     EnemyManager.draw()
     drawEBullets()
     --drawStars()
