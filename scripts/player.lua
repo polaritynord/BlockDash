@@ -140,29 +140,29 @@ function player.new()
     	--if p.reloading then return end
     	-- Switch slot
     	for i = 1, p.slotCount do
-    	    if not p.slotKeys[i] and love.keyboard.isDown(tostring(i)) then
+    	    if not p.slotKeys[i] and love.keyboard.isScancodeDown(tostring(i)) then
 	    		p.oldSlot = p.slot
 	    		p.slot = i
 				p.reloading = false
     	    end
     	end
     	-- Quick slot switch
-    	if not p.slotKeys[#p.slotKeys] and love.keyboard.isDown("q") and p.oldSlot then
+    	if not p.slotKeys[#p.slotKeys] and love.keyboard.isScancodeDown("q") and p.oldSlot then
     	    local newSlot = p.oldSlot
     	    p.oldSlot = p.slot
     	    p.slot = newSlot
     	end
     	-- Get key input
     	for i = 1, p.slotCount do
-    	    p.slotKeys[i] = love.keyboard.isDown(tostring(i))
+    	    p.slotKeys[i] = love.keyboard.isScancodeDown(tostring(i))
     	end
     	-- Get quick slot key input
-    	p.slotKeys[#p.slotKeys] = love.keyboard.isDown("q")
+    	p.slotKeys[#p.slotKeys] = love.keyboard.isScancodeDown("q")
         end
 
         function p.drop()
         	local w = p.weapons[p.slot]
-        	if not w or not love.keyboard.isDown("v") or CurrentShader or p.reloading then return end
+        	if not w or not love.keyboard.isScancodeDown("v") or CurrentShader or p.reloading then return end
         	-- Instance weaponDrop
         	local newDrop = weaponDrop.new()
         	local rot = p.weaponSprite.rotation
@@ -285,7 +285,7 @@ function player.new()
 				p.inReloadTimer = p.inReloadTimer + delta
 		    end
     	    local intelliReload = w.magAmmo < w.magSize and not CurrentShader and Save.settings[utils.indexOf(SettingNames, "Auto Reload")]
-    	    if (love.keyboard.isDown("r") or w.magAmmo < 1 or (intelliReload and p.inReloadTimer > 0.75 and not love.mouse.isDown(1))) and w.magAmmo < w.magSize then
+    	    if (love.keyboard.isScancodeDown("r") or w.magAmmo < 1 or (intelliReload and p.inReloadTimer > 0.75 and not love.mouse.isDown(1))) and w.magAmmo < w.magSize then
 				p.reloading = true
 				p.reloadTimer = 0
 				p.inReloadTimer = 0
@@ -298,13 +298,13 @@ function player.new()
     	p.velocity = vec2.new()
     	-- Get key input
     	if p.dashVelocity < 0.1 then
-    	    if love.keyboard.isDown("right", "d") then
+    	    if love.keyboard.isScancodeDown("right", "d") then
     		p.velocity.x = p.velocity.x + 1 end
-    	    if love.keyboard.isDown("left", "a") then
+    	    if love.keyboard.isScancodeDown("left", "a") then
     		p.velocity.x = p.velocity.x - 1 end
-    	    if love.keyboard.isDown("up", "w") then
+    	    if love.keyboard.isScancodeDown("up", "w") then
     		p.velocity.y = p.velocity.y - 1 end
-    	    if love.keyboard.isDown("down", "s") then
+    	    if love.keyboard.isScancodeDown("down", "s") then
     		p.velocity.y = p.velocity.y + 1 end
     	end
     	-- Set p.moving

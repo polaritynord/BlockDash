@@ -243,7 +243,7 @@ function love.draw()
     if CurrentShader then
 		love.graphics.setBackgroundColor(0.93, 0.93, 0.93, 1)
     else
-		love.graphics.setBackgroundColor(0.07, 0.07, 0.07, 1)
+		love.graphics.setBackgroundColor(0.05, 0.05, 0.05, 1)
     end
     love.graphics.setShader(CurrentShader)
     -- Draw the stars

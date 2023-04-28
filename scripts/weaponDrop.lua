@@ -55,7 +55,7 @@ function weaponDrop.new()
 			if w.nearPlayer then
 				w.scale = w.scale + (1.45-w.scale) * (10 * delta)
 					-- Check for key press
-					if love.keyboard.isDown("e") then
+					if love.keyboard.isScancodeDown("e") then
 						w.obtain() end
 			else
 				w.scale = w.scale + (1-w.scale) * (10 * delta)

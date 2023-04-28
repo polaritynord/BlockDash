@@ -118,7 +118,8 @@ function bullet.new()
     	local y = (b.position.y - Camera.position.y) * Camera.zoom
 
         if b.parent == Player then
-            love.graphics.setColor(0.13, 0.34, 0.8, 1)
+            local color = PlayerColors[Save.playerColorSlot]
+            love.graphics.setColor(color[1], color[2], color[3], color[4])
         else
             love.graphics.setColor(1, 0, 0, 1)
         end
