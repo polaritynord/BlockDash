@@ -1,7 +1,7 @@
 local vec2 = require("lib/vec2")
 local uniform = require("lib/uniform")
 local ser = require("lib/ser")
-local utils   = require("utils")
+local utils = require("utils")
 
 local assets = require("scripts/assets")
 local player = require("scripts/player")
@@ -13,8 +13,12 @@ local weaponData = require("scripts/weaponData")
 EnemyManager = require("scripts/enemyManager")
 WaveManager = require("scripts/waveManager")
 
+Logger = require("lib/logger")
+
 local fullscreen = false
 CurrentShader = nil
+ControlType = "keyboard"
+Joystick = nil
 local starPositions = {}
 local starCanvas = nil
 -- Massive credits to Bigfoot71 for helping with infinite stars - You a real one fr
@@ -54,6 +58,7 @@ local function dropWeapon(weapon, position)
 end
 
 function love.keypressed(key, unicode)
+    ControlType = "keyboard"
     -- Pause key
     if key == "escape" and GameState == "game" and not CurrentShader and not Player.dead then
         GamePaused = not GamePaused end
@@ -69,6 +74,15 @@ function love.keypressed(key, unicode)
     if key == "f1" and GameState == "game" then
         Interface.debug.enabled = not Interface.debug.enabled
     end
+end
+
+function love.joystickpressed(joystick)
+    if joystick ~= Joystick then return end
+    ControlType = "gamepad"
+end
+
+function love.joystickadded(joystick)
+    Joystick = joystick
 end
 
 function GameLoad()
@@ -237,6 +251,7 @@ function love.update(delta)
     if GameState ~= "game" then
         Interface.debug.enabled = false
     end
+    Logger:log(ControlType)
 end
 
 function love.draw()

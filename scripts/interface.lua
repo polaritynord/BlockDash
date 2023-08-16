@@ -259,13 +259,24 @@ end
 
 function interface:updateDebug()
     if not self.debug.enabled then return end
-    -- TODO add actual game versioning
     self.debug.versionData.text = "BlockDash " .. Version .. " (ZerpGUI " .. zerpgui.version .. ", LÖVE " .. love.getVersion() .. ")"
     self.debug.fps.text = "FPS: " .. love.timer.getFPS() .. " / " .. math.floor(1/love.timer.getAverageDelta())
     self.debug.enemyCount.text = "Enemy Count: " .. #EnemyManager.enemies
     self.debug.particleCount.text = "Particle Count: " .. #ParticleManager.particles
     self.debug.bulletCount.text = "Bullet Count: " .. #EnemyBullets + #Player.bullets
     self.debug.wave.text = "Wave: " .. WaveManager.wave
+    -- Update logs
+    self.debug.logs.text = ""
+    if #Logger.logList <= 50 then
+        for i = #Logger.logList, 1, -1 do
+            self.debug.logs.text = self.debug.logs.text .. Logger.logList[i] .. "\n"
+        end
+    else
+        for i = #Logger.logList, #Logger.logList-50, -1 do
+            self.debug.logs.text = self.debug.logs.text .. Logger.logList[i] .. "\n"
+        end
+    end
+    
 end
 
 function interface:updateMenu()
@@ -525,6 +536,7 @@ function interface:load()
     self.debug:newTextLabel("particleCount", vec2.new(15, 145), "", 14, "xx", "left", "JetBrainsMono")
     self.debug:newTextLabel("bulletCount", vec2.new(15, 160), "", 14, "xx", "left", "JetBrainsMono")
     self.debug:newTextLabel("wave", vec2.new(15, 175), "", 14, "xx", "left", "JetBrainsMono")
+    self.debug:newTextLabel("logs", vec2.new(15, 190), "", 14, "xx", "left", "JetBrainsMono", {0, 1, 0, 0.7})
 
     -- Pause menu (game) ---------------------------------------------------------------------------------------
     self.pauseMenu = zerpgui:newCanvas()

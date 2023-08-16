@@ -330,7 +330,6 @@ function player.new()
     function p.drawDashLine()
     	local w = 20
     	local pos = vec2.new((p.position.x-Camera.position.x)*Camera.zoom, (p.position.y-Camera.position.y)*Camera.zoom)
-    	local mousePos = utils.getMousePosition()
     	local rot = p.weaponSprite.rotation
     	if p.facing == "left" then rot = rot - 135 end
     	-- Disable shader

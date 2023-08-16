@@ -65,7 +65,7 @@ function zerpgui:newCanvas(pos)
     }
 
     -- Elements
-    function canvas:newTextLabel(name, position, text, size, align, begin, font)
+    function canvas:newTextLabel(name, position, text, size, align, begin, font, color)
         local textLabel = {
             parent = nil;
             position = position or vec2.new();
@@ -74,14 +74,17 @@ function zerpgui:newCanvas(pos)
             align = align or "--"; -- "- -" means it will get aligned in bottom left of screen
             begin = begin or "left";
             font = font or "Minecraftia";
+            color = color or {1, 1, 1, 1};
         }
 
         function textLabel:draw()
+            love.graphics.setColor(self.color[1], self.color[2], self.color[3], self.color[4])
             SetFont("fonts/" .. self.font .. ".ttf", self.size)
 
             local p = calculateAlign(self.position, self.align, canvas)
             
             love.graphics.printf(self.text, p.x, p.y, 1000, self.begin)
+            love.graphics.setColor(1, 1, 1, 1)
         end
 
         textLabel.parent = self

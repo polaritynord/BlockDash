@@ -38,7 +38,12 @@ function weaponSprite.new()
         -- Point towards target
         local target
         if w.parent == Player then
-            target = utils.getMousePosition()
+			if ControlType == "keyboard" then
+            	target = utils.getMousePosition()
+			else
+				--local dir1 = Joystick
+				--target = vec2.new(60*math.cos(dir), 60*math.sin(dir))
+			end
         else
             target = w.parent.target.position
         end
