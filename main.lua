@@ -201,16 +201,11 @@ function love.load()
     assets.load()
     assets.gameLoad()
     GameLoad()
-    GameState = "menu"
+    GameState = "intro"
     loadSave()
     Interface:load()
     GamePaused = false
     starCanvas = genStars(60)
-    -- Create star positions
-    for _ = 1, 700 do
-        local size = uniform(1.7, 3.45)
-        starPositions[#starPositions+1] = {uniform(-1920, 1920), uniform(-1080, 1080), size, size}
-    end
     -- Create simulation enemies
     Difficulty = 3
     for i = 1, 10 do

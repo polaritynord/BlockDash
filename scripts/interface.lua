@@ -159,6 +159,7 @@ function interface:setCanvasVisible()
     self.about.enabled = GameState == "about"
     self.settings.enabled = GameState == "settings"
     self.customize.enabled = GameState == "customize"
+    self.introMenu.enabled = GameState == "intro"
 end
 
 function interface:updateGame()
@@ -267,12 +268,13 @@ function interface:updateDebug()
     self.debug.wave.text = "Wave: " .. WaveManager.wave
     -- Update logs
     self.debug.logs.text = ""
-    if #Logger.logList <= 50 then
+    local maxAmount = (SC_HEIGHT - 190)/20
+    if #Logger.logList <= maxAmount then
         for i = #Logger.logList, 1, -1 do
             self.debug.logs.text = self.debug.logs.text .. Logger.logList[i] .. "\n"
         end
     else
-        for i = #Logger.logList, #Logger.logList-50, -1 do
+        for i = #Logger.logList, #Logger.logList-maxAmount, -1 do
             self.debug.logs.text = self.debug.logs.text .. Logger.logList[i] .. "\n"
         end
     end
@@ -347,6 +349,32 @@ function interface:updateDeathMenu()
     for _, v in ipairs(self.statElements) do
         v.text = Stats[v.statName]
     end
+end
+
+function interface:updateIntroMenu(delta)
+    local intro = self.introMenu
+    intro.background.size = vec2.new(SC_WIDTH, SC_HEIGHT)
+    intro.timer = self.introMenu.timer + delta
+    -- Sound
+    if intro.titleAlpha > 0.6 then
+        if Save.settings[utils.indexOf(SettingNames, "Sounds")] and not intro.soundPlayed then
+            assets.sounds.intro:play()
+            intro.soundPlayed = true
+        end
+    end
+    -- Show
+    if intro.timer > 1 and intro.timer < 3 then
+        intro.titleAlpha = intro.titleAlpha + delta*4
+        if intro.titleAlpha > 0.6 then intro.titleAlpha = 1 end
+    end
+    -- Hide
+    if intro.timer > 3 then
+        intro.titleAlpha = intro.titleAlpha - delta*4
+        intro.background.color[4] = intro.background.color[4] - delta*4
+        if intro.background.color[4] < 0 then GameState = "menu" end
+    end
+    intro.title.color[4] = intro.titleAlpha
+    intro.zerpie.color[4] = intro.titleAlpha
 end
 
 -- Event functions
@@ -567,6 +595,15 @@ function interface:load()
     self.deathMenu:newTextLabel(
         "statsTitle", vec2.new(0, 200), "Statistics:", 20, "00", "center"
     )
+    -- Intro ---------------------------------------------------------------------------------------
+    self.introMenu = zerpgui:newCanvas()
+    self.introMenu:newRectangle("background", vec2.new(), vec2.new(SC_WIDTH, SC_HEIGHT), "fill", {0, 0, 0, 0.8}, 0, "xx")
+    self.introMenu:newTextLabel("title", vec2.new(450, 220), "Made by\nZerpnord", 36, "00", "left", "Minecraftia", {1,1,1,0})
+    self.introMenu:newImage("zerpie", vec2.new(385, 270), 0, assets.profileImg, 0.3, {1,1,1,0}, "00")
+    self.introMenu.titleAlpha = 0
+    self.introMenu.timer = 0
+    self.introMenu.soundPlayed = false
+
     -- Stat numbers
     local r = 3
     local pos = vec2.new(-700, 230)
@@ -627,6 +664,9 @@ function interface:update(delta)
     end
     if GameState == "customize" then
         self:updateCustomizeMenu(delta)
+    end
+    if GameState == "intro" then
+        self:updateIntroMenu(delta)
     end
     -- Zerpgui updating
     zerpgui:update(delta)

@@ -78,7 +78,7 @@ function zerpgui:newCanvas(pos)
         }
 
         function textLabel:draw()
-            love.graphics.setColor(self.color[1], self.color[2], self.color[3], self.color[4])
+            love.graphics.setColor(self.color[1], self.color[2], self.color[3], self.color[4]*self.parent.alpha)
             SetFont("fonts/" .. self.font .. ".ttf", self.size)
 
             local p = calculateAlign(self.position, self.align, canvas)
@@ -108,7 +108,7 @@ function zerpgui:newCanvas(pos)
             local p = calculateAlign(self.position, self.align, canvas)
             local width = self.source:getWidth()
             local height = self.source:getHeight()
-            love.graphics.setColor(self.color[1], self.color[2], self.color[3], self.color[4])
+            love.graphics.setColor(self.color[1], self.color[2], self.color[3], self.color[4]*self.parent.alpha)
             love.graphics.draw(
                 self.source, p.x, p.y, self.rotation,
                 self.scale, self.scale, width/2, height/2
@@ -172,6 +172,7 @@ function zerpgui:newCanvas(pos)
         end
 
         function button:draw()
+            love.graphics.setColor(1, 1, 1, self.parent.alpha)
             local p = calculateAlign(self.position, self.align, canvas)
             if self.style == 1 then
                 -- Draw text
@@ -212,11 +213,11 @@ function zerpgui:newCanvas(pos)
         }
 
         function rectangle:draw()
+            love.graphics.setColor(1, 1, 1, self.parent.alpha*self.color[4])
             local p = calculateAlign(self.position, self.align, canvas)
             love.graphics.setColor(self.color[1], self.color[2], self.color[3], self.color[4])
             love.graphics.setLineWidth(self.lineWidth)
             love.graphics.rectangle(self.type, p.x, p.y, self.size.x, self.size.y)
-            love.graphics.setColor(1, 1, 1, self.parent.alpha)
         end
 
         rectangle.parent = self
@@ -262,6 +263,7 @@ function zerpgui:newCanvas(pos)
         end
 
         function checkbox:draw()
+            love.graphics.setColor(1, 1, 1, self.parent.alpha)
             local p = calculateAlign(self.position, self.align, canvas)
             p.x = p.x - self.size/2
             p.y = p.y - self.size/2
@@ -289,7 +291,7 @@ function zerpgui:newCanvas(pos)
     end
 
     function canvas:draw()
-        love.graphics.setColor(1, 1, 1, self.alpha)
+        --love.graphics.setColor(1, 1, 1, self.alpha)
         -- Draw elements
         for _, v in ipairs(self.elements) do
             v:draw()

@@ -23,7 +23,8 @@ function assets.gameLoad()
     assets.dashIconImg = love.graphics.newImage("images/dash_icon.png")
     assets.hitmarkerImg = love.graphics.newImage("images/hitmarker.png")
     assets.rmbImg = love.graphics.newImage("images/rmb.png")
-    assets.dashKillImg = love.graphics.newImage("images/dashkill.png") 
+    assets.dashKillImg = love.graphics.newImage("images/dashkill.png")
+    assets.profileImg = love.graphics.newImage("images/profile_transparent.png")
     -- Weapon images
     assets.weapons = {}
     assets.weapons.pistolImg = love.graphics.newImage("images/weapons/pistol.png")
@@ -43,6 +44,7 @@ function assets.gameLoad()
     assets.sounds.damage = love.audio.newSource("sounds/damage.wav", "static")
     assets.sounds.dashBegin = love.audio.newSource("sounds/dash_begin.wav", "static")
     assets.sounds.dashCancel = love.audio.newSource("sounds/dash_cancel.wav", "static")
+    assets.sounds.intro = love.audio.newSource("sounds/intro.wav", "static")
 end
 
 function assets.menuLoad()

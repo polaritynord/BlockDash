@@ -450,6 +450,7 @@ function player.new()
 	end
 
 	function p.updateJoystickData()
+		if ControlType == "keyboard" then return end
 		-- Right Stick
 		-- Check if being used, leave the old values if not
 		local xAxis = Joystick:getAxis(3)
