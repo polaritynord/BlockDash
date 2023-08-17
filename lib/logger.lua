@@ -3,7 +3,7 @@ local logger = {
 }
 
 function logger:log(input)
-    self.logList[#self.logList+1] = input
+    logger.logList[#logger.logList+1] = input
 end
 
 function logger:clear()

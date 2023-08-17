@@ -50,6 +50,10 @@ function player.new()
 		missedBullets = 0;
 		aimLineWidth = 3;
 		dashDurationTimer = 0;
+		gamepad = {
+			rightStick = {xAxis = 0 ; yAxis = 0};
+			leftStick = {}
+		};
     }
 
     -- Trail related functions
@@ -122,9 +126,15 @@ function player.new()
     end
 
     function p.setFacing(delta)
+    	-- Get where the weapon is pointing at
+		local m
+		if ControlType == "keyboard" then
+    		m = utils.getMousePosition()
+		else
+			m = vec2.new(p.position.x + 60*p.gamepad.rightStick.xAxis, p.position.y + 60*p.gamepad.rightStick.yAxis)
+		end
     	-- Set facing value
-    	local m = utils.getMousePosition()
-    	if m.x > p.position.x then
+		if m.x > p.position.x then
     	    p.facing = "right" else
     	    p.facing = "left" end
     	    -- Change width
@@ -416,7 +426,14 @@ function player.new()
 
 	function p.drawLine()
 		if not p.weapons[p.slot] or p.reloading or not Save.settings[utils.indexOf(SettingNames, "Aim Line")] then return end
-		local x, y = love.mouse.getPosition()
+		-- Get pointing target
+		local x, y
+		if ControlType == "keyboard" then
+			x, y = love.mouse.getPosition()
+		else
+			x = p.gamepad.rightStick.xAxis ; y = p.gamepad.rightStick.yAxis
+		end
+
 		local pos = vec2.new(p.position.x-Camera.position.x, p.position.y-Camera.position.y)
 		love.graphics.setColor(1, 1, 1, 0.1 + (p.aimLineWidth/3)-1)
 		love.graphics.setLineStyle("smooth")
@@ -431,6 +448,33 @@ function player.new()
 			love.graphics.line({pos.x, pos.y, x, y})
 		end
 	end
+
+	function p.updateJoystickData()
+		-- Right Stick
+		-- Check if being used, leave the old values if not
+		local xAxis = Joystick:getAxis(3)
+		local yAxis = Joystick:getAxis(4)
+		-- Deadzone
+		if math.abs(xAxis) > 0.05 then
+			p.gamepad.rightStick.xAxis = xAxis
+		end
+		if math.abs(yAxis) > 0.05 then
+			p.gamepad.rightStick.yAxis = yAxis
+		end
+
+		-- Left Stick
+		-- Check if being used, leave the old values if not
+		xAxis = Joystick:getAxis(1)
+		yAxis = Joystick:getAxis(2)
+		-- Deadzone
+		if math.abs(xAxis) > 0.05 then
+			p.gamepad.leftStick.xAxis = xAxis
+		end
+		if math.abs(yAxis) > 0.05 then
+			p.gamepad.leftStick.yAxis = yAxis
+		end
+	end
+
     -- Event functions
     function p.load()
         p.weaponSprite.parent = p
@@ -450,6 +494,7 @@ function player.new()
         if p.health >= 1 then
 			Time = Time + delta
 			p.aimLineWidth = p.aimLineWidth + (3-p.aimLineWidth) * (8.25 * delta)
+			p.updateJoystickData()
         	p.switchSlot()
         	p.shoot(delta)
         	p.movement(delta)

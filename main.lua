@@ -251,7 +251,6 @@ function love.update(delta)
     if GameState ~= "game" then
         Interface.debug.enabled = false
     end
-    Logger:log(ControlType)
 end
 
 function love.draw()
