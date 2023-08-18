@@ -202,6 +202,9 @@ function love.load()
     assets.gameLoad()
     GameLoad()
     GameState = "intro"
+    MotionSpeed = 0.25
+    -- Skip intro sequence
+    if table.contains(arg, "--skip-intro") then GameState = "menu" ; MotionSpeed = 1 end
     loadSave()
     Interface:load()
     GamePaused = false

@@ -38,7 +38,8 @@ function enemy.new()
         target = Player;
         dead = false;
         oldHealth = 100;
-        accessorySlot = math.random(1, #assets.accessories)
+        accessorySlot = math.random(1, #assets.accessories);
+        heyImAnEnemy = 1;
     }
 
     function e.dash(delta)

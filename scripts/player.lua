@@ -393,7 +393,7 @@ function player.new()
     	    p.reloading = false
     	    MotionSpeed = 0.25
     	    CurrentShader = p.invertShader
-			p.dashDurationTimer = p.dashDurationTimer + delta
+			p.dashDurationTimer = p.dashDurationTimer + delta*MotionSpeed
     	else
     	    MotionSpeed = 1
     	    CurrentShader = nil

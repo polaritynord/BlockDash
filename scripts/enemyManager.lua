@@ -20,7 +20,7 @@ end
 
 function enemyManager.spawnSimEnemies(delta)
     -- Increment timer
-    enemyManager.spawnTimer = enemyManager.spawnTimer + delta
+    enemyManager.spawnTimer = enemyManager.spawnTimer + delta*MotionSpeed
     if enemyManager.spawnTimer < enemyManager.spawnTime then return end
     -- Spawn enemy
     enemyManager.newEnemy(vec2.new(math.random(0, SC_WIDTH), math.random(0, SC_HEIGHT)))

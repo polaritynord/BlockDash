@@ -371,7 +371,11 @@ function interface:updateIntroMenu(delta)
     if intro.timer > 3 then
         intro.titleAlpha = intro.titleAlpha - delta*4
         intro.background.color[4] = intro.background.color[4] - delta*4
-        if intro.background.color[4] < 0 then GameState = "menu" end
+        -- Launch menu
+        if intro.timer > 3.7 then
+            GameState = "menu"
+            MotionSpeed = 1
+        end
     end
     intro.title.color[4] = intro.titleAlpha
     intro.zerpie.color[4] = intro.titleAlpha
