@@ -1,8 +1,3 @@
---[[
-    ZerpGUI 1.0.0
-    Made by Zerpnord
---]]
-
 local utils = require("utils")
 local vec2 = require("lib/vec2")
 local assets = require("scripts/assets")

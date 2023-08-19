@@ -24,7 +24,7 @@ function coreFuncs.spawnHumanoidTrails(humanoid, delta)
     size = vec2.new(22.4, 22.4)
     if humanoid == Player then
         -- Player trail
-        color = {1, 0.36, 0}
+        color = PlayerColors[Save.playerColorSlot]
     elseif humanoid.hiyaImAnEnemy then
         -- Enemy trail
         color = {1, 0.12, 0.12}

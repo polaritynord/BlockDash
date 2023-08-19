@@ -51,7 +51,8 @@ function bullet.new()
                     local p = b.position
                     local p2 = v.position
                     if collision(p.x-w1/2, p.y-h1/2, w1, h1, p2.x-w2/2, p2.y-h2/2, w2, h2) then
-                        v.health = v.health - b.damage
+                        local damage = b.damage + math.random(-2, 2)
+                        v.health = v.health - damage
                         -- Increment kill count
                         if v.health < 1 then
                             local index = utils.indexOf(StatNames, "Kills")
@@ -61,7 +62,7 @@ function bullet.new()
                         -- Create damage number
                         local damageNum = damageNumber.new()
                         damageNum.position = vec2.new(v.position.x+uniform(-10, 10), v.position.y+uniform(-10, 10))
-                        damageNum.number = b.damage + math.random(-2, 2)
+                        damageNum.number = damage
                         Interface.damageNums[#Interface.damageNums+1] = damageNum
                         Player.hitBullets = Player.hitBullets + 1
                         if v.health < 1 then

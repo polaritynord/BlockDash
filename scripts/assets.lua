@@ -10,6 +10,7 @@ function assets.load()
 end
 
 function assets.gameLoad()
+    Logger:verboseLog("Loading game assets...")
     -- Cursors
     assets.cursorDefault = love.mouse.newCursor("images/cursor_default.png", 0, 0)
     assets.cursorCombat = love.mouse.newCursor("images/cursor_combat.png", 12, 12)

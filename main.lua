@@ -15,7 +15,7 @@ WaveManager = require("scripts/waveManager")
 
 Logger = require("lib/logger")
 
-local fullscreen = false
+local fullscreen = table.contains(arg, "--fullscreen")
 CurrentShader = nil
 ControlType = "keyboard"
 Joystick = nil
@@ -162,19 +162,20 @@ local function loadSave()
     SettingNames = {"Sounds", "Auto Reload", "Aim Line", "Screen Shake"}
     Save = nil
     if love.filesystem.getInfo("save") then
-        print("Existing save detected, reading file...")
+        Logger:verboseLog("Existing save detected, reading file...")
         -- Read from save
         local data = love.filesystem.load("save")()
         Save = data
         -- Check if the save is up to date
         if Save.version ~= Version or not Save.version then
-            print("Recent save file is outdated, creating a new save file...")
+            Logger:verboseLog("Recent save file is outdated, creating a new save file...")
             createNewSave()
         end
     else
-        print("Creating a new save file...")
+        Logger:verboseLog("Creating a new save file...")
         createNewSave()
     end
+    Logger:verboseLog("Loading save sequence complete.")
 end
 
 local function setStats(delta)
@@ -195,6 +196,10 @@ end
 
 function love.load()
     love.graphics.setDefaultFilter("nearest", "nearest")
+    starCanvas = genStars(60)
+    -- Fullscreen
+    if table.contains(arg, "--fullscreen") then
+        love.window.setFullscreen(fullscreen, "desktop") end
     PlayerColors = {
         {0.13, 0.34, 0.8}, {1, 0, 0.5}, {1, 0.5, 0}, {1, 0.8, 0}, {0, 0.4, 0.4}
     }
@@ -208,7 +213,6 @@ function love.load()
     loadSave()
     Interface:load()
     GamePaused = false
-    starCanvas = genStars(60)
     -- Create simulation enemies
     Difficulty = 3
     for i = 1, 10 do
