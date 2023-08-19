@@ -74,7 +74,7 @@ function bullet.new()
     	end
         b.updateTrail(delta)
     	-- Check for collision
-        local image = assets.bulletImg
+        local image = assets.playerImg
         local w1 = image:getWidth()
         local h1 = image:getHeight()
         local eImg = assets.playerImg

@@ -39,7 +39,6 @@ function enemy.new()
         dead = false;
         oldHealth = 100;
         accessorySlot = math.random(1, #assets.accessories);
-        heyImAnEnemy = 1;
     }
 
     function e.dash(delta)
@@ -47,6 +46,7 @@ function enemy.new()
     	e.dashCooldownTimer = e.dashCooldownTimer + delta
         e.dashTimer = e.dashTimer + delta
     	if e.dashCooldownTimer < 2.5 then return end
+        if GameState == "intro" then e.dashCooldownTimer = 0 ; return end
         local distance = utils.distanceTo(e.target.position, e.position)
         local w = e.weapons[e.slot]
 

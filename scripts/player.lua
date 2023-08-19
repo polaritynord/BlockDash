@@ -9,6 +9,7 @@ local trail = require("scripts/trail")
 local weaponData = require("scripts/weaponData")
 local weaponSprite = require("scripts/weaponSprite")
 local weaponDrop = require("scripts/weaponDrop")
+local coreFuncs = require("scripts.coreFuncs")
 
 local player = {}
 
@@ -58,10 +59,12 @@ function player.new()
 
     -- Trail related functions
     function p.updateTrail(delta)
+		--[[
     	-- Draw existing trails
     	for i, v in ipairs(p.trails) do
     	    v.update(delta, i)
     	end
+		]]--
     	-- Add new trails
     	p.trailCooldown = p.trailCooldown + delta
 		local cooldown = 0.05
@@ -69,6 +72,14 @@ function player.new()
 			cooldown = 0
 		end
     	if p.trailCooldown < cooldown or (not p.moving and CurrentShader) then return end
+		local particle = ParticleManager.new(
+			vec2.new(p.position.x, p.position.y),
+			vec2.new(22.4, 22.4),
+			0.315, {1, 0.36, 0}, coreFuncs.trailParticleTick
+        )
+		particle.velocity = vec2.new()
+		p.trailCooldown = 0
+		--[[
     	-- Instance trail
     	local newTrail = trail.new()
     	newTrail.position = vec2.new(p.position.x, p.position.y)
@@ -80,6 +91,7 @@ function player.new()
 		p.trailCooldown = 0
     	-- Add instance to table
     	p.trails[#p.trails+1] = newTrail
+		--]]
     end
 
     function p.drawTrail()
@@ -251,7 +263,7 @@ function player.new()
 			-- Set line width
 			p.aimLineWidth = 5 
         	-- Particle effects
-        	for i = 1, 4 do
+        	for _ = 1, 4 do
         	    local particle = ParticleManager.new(
             		vec2.new(newBullet.position.x, newBullet.position.y),
             		vec2.new(8, 8),
@@ -393,7 +405,7 @@ function player.new()
     	    p.reloading = false
     	    MotionSpeed = 0.25
     	    CurrentShader = p.invertShader
-			p.dashDurationTimer = p.dashDurationTimer + delta*MotionSpeed
+			p.dashDurationTimer = p.dashDurationTimer + delta
     	else
     	    MotionSpeed = 1
     	    CurrentShader = nil
