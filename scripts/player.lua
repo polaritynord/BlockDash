@@ -5,11 +5,10 @@ local collision = require("lib/collision")
 
 local bullet = require("scripts/bullet")
 local assets = require("scripts/assets")
-local trail = require("scripts/trail")
 local weaponData = require("scripts/weaponData")
 local weaponSprite = require("scripts/weaponSprite")
 local weaponDrop = require("scripts/weaponDrop")
-local coreFuncs = require("scripts.coreFuncs")
+local coreFuncs = require("scripts/coreFuncs")
 
 local player = {}
 
@@ -19,7 +18,6 @@ function player.new()
         velocity = vec2.new();
     	facing = "right";
     	bullets = {};
-    	trails = {};
     	weapons = {};
     	slotCount = 4;
     	slot = 1;

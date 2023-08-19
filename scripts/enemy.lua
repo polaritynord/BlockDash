@@ -29,7 +29,6 @@ function enemy.new()
         reloading = false;
         reloadTimer = 0;
         r = uniform(0.45, 1);
-        trails = {};
         trailCooldown = 0;
         moving = false;
         dashVelocity = 0;
@@ -40,6 +39,7 @@ function enemy.new()
         dead = false;
         oldHealth = 100;
         accessorySlot = math.random(1, #assets.accessories);
+        hiyaImAnEnemy = 1;
     }
 
     function e.dash(delta)

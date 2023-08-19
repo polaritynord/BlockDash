@@ -6,7 +6,7 @@ local utils   = require("utils")
 local assets = require("scripts/assets")
 local damageNumber = require("scripts/damageNumber")
 local hitmarker = require("scripts/hitmarker")
-local trail = require("scripts/trail")
+local coreFuncs = require("scripts/coreFuncs")
 
 local bullet = {}
 
@@ -16,48 +16,12 @@ function bullet.new()
     	rotation = 0;
     	lifetime = 0;
     	speed = 500;
-    	trails = {};
     	trailCooldown = 0;
     	damage = 10;
         parent = nil;
         target = nil;
     }
-
-    -- Trail related functions
-    function b.updateTrail(delta)
-    	-- Draw existing trails
-    	for i, v in ipairs(b.trails) do
-    	    v.update(delta, i)
-    	end
-    	-- Add new trails
-    	b.trailCooldown = b.trailCooldown + delta
-		local cooldown = 0
-    	if b.trailCooldown < cooldown then return end
-    	-- Instance trail
-    	local newTrail = trail.new()
-    	newTrail.position = vec2.new(b.position.x, b.position.y)
-        newTrail.scale = 0.2
-        Logger:log(tostring(b.parent == Player))
-        if b.parent == Player then
-            local color = PlayerColors[Save.playerColorSlot]
-            newTrail.r = color[1]
-            newTrail.g = color[2]
-            newTrail.b = color[3]
-        else
-            newTrail.r = 1 ; newTrail.g = 0 ; newTrail.b = 0;
-        end
-        newTrail.parent = b
-		b.trailCooldown = 0
-    	-- Add instance to table
-    	b.trails[#b.trails+1] = newTrail
-    end
-
-    function b.drawTrail()
-    	for _, v in ipairs(b.trails) do
-    	    v.draw()
-    	end
-    end
-
+    
     -- Event functions
     function b.update(delta, i)
     	if GamePaused then return end
@@ -72,7 +36,8 @@ function bullet.new()
     	    table.remove(t, i)
     	    return
     	end
-        b.updateTrail(delta)
+        --b.updateTrail(delta)
+        coreFuncs.spawnHumanoidTrails(b, delta)
     	-- Check for collision
         local image = assets.playerImg
         local w1 = image:getWidth()
@@ -153,9 +118,6 @@ function bullet.new()
     	local height = image:getHeight()
     	local x = (b.position.x - Camera.position.x) * Camera.zoom
     	local y = (b.position.y - Camera.position.y) * Camera.zoom
-
-        -- Draw trail
-        b.drawTrail()
 
         -- Draw self
         if b.parent == Player then

@@ -12,23 +12,35 @@ end
 
 function coreFuncs.spawnHumanoidTrails(humanoid, delta)
     -- Increment timer
-    humanoid.trailCooldown = humanoid.trailCooldown + delta
+    humanoid.trailCooldown = humanoid.trailCooldown + delta*MotionSpeed
     local cooldown = 0.05
-    if humanoid.dashVelocity > 0.1 then
+    if humanoid.dashVelocity and humanoid.dashVelocity > 0.1 then
         cooldown = 0
     end
-    if humanoid.trailCooldown < cooldown or not humanoid.moving then return end
-    -- Define the color for the trail
-    local color
+    if humanoid.moving == nil then cooldown = 0.025 end
+    if humanoid.trailCooldown < cooldown or (humanoid.moving ~= nil and not humanoid.moving) then return end
+    -- Define the color, size for the trail
+    local color, size
+    size = vec2.new(22.4, 22.4)
     if humanoid == Player then
+        -- Player trail
         color = {1, 0.36, 0}
-    else
+    elseif humanoid.hiyaImAnEnemy then
+        -- Enemy trail
         color = {1, 0.12, 0.12}
+    else
+        -- Bullet trail
+        size = vec2.new(6.4, 6.4)
+        if humanoid.parent == Player then
+            color = PlayerColors[Save.playerColorSlot]
+        else
+            color = {1, 0, 0}
+        end
     end
     -- Create the particle 
     local particle = ParticleManager.new(
         vec2.new(humanoid.position.x, humanoid.position.y),
-        vec2.new(22.4, 22.4),
+        size,
         0.315, color, coreFuncs.trailParticleTick
     )
     particle.velocity = vec2.new()

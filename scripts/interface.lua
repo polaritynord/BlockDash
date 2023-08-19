@@ -2,7 +2,7 @@ local utils = require("utils")
 local vec2 = require("lib/vec2")
 local zerpgui = require("lib/zerpgui")
 local assets = require("scripts/assets")
-local trail = require("scripts/trail")
+local coreFuncs = require("scripts/coreFuncs")
 
 local interface = {
     damageNums = {};
@@ -306,21 +306,18 @@ function interface:updateCustomizeMenu(delta)
     for i, v in ipairs(self.trails) do
         v.update(delta, i)
     end
-    -- Create trails
+
+    -- Trail creation
     self.trailCooldown = self.trailCooldown + delta
     if self.trailCooldown < 0.05 then return end
     self.trailCooldown = 0
-    local newTrail = trail.new()
-    newTrail.position = vec2.new(SC_WIDTH/2+Camera.position.x, SC_HEIGHT/2-13+Camera.position.y)
-    color = PlayerColors[Save.playerColorSlot]
-    newTrail.r = color[1]
-    newTrail.g = color[2]
-    newTrail.b = color[3]
-    newTrail.scale = 2.1
-    newTrail.velocity.x = -500
-    newTrail.parent = self
-    -- Add instance to table
-    self.trails[#self.trails+1] = newTrail
+
+    local particle = ParticleManager.new(
+        vec2.new(SC_WIDTH/2+Camera.position.x, SC_HEIGHT/2-13+Camera.position.y),
+        vec2.new(67.2, 67.2),
+        0.315, color, coreFuncs.trailParticleTick
+    )
+    particle.velocity = vec2.new(-500, 0)
 end
 
 function interface:updatePauseMenu()
