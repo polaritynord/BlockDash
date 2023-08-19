@@ -57,49 +57,6 @@ function player.new()
 		};
     }
 
-    -- Trail related functions
-    function p.updateTrail(delta)
-		--[[
-    	-- Draw existing trails
-    	for i, v in ipairs(p.trails) do
-    	    v.update(delta, i)
-    	end
-		]]--
-    	-- Add new trails
-    	p.trailCooldown = p.trailCooldown + delta
-		local cooldown = 0.05
-		if p.dashVelocity > 0.1 then
-			cooldown = 0
-		end
-    	if p.trailCooldown < cooldown or (not p.moving and CurrentShader) then return end
-		local particle = ParticleManager.new(
-			vec2.new(p.position.x, p.position.y),
-			vec2.new(22.4, 22.4),
-			0.315, {1, 0.36, 0}, coreFuncs.trailParticleTick
-        )
-		particle.velocity = vec2.new()
-		p.trailCooldown = 0
-		--[[
-    	-- Instance trail
-    	local newTrail = trail.new()
-    	newTrail.position = vec2.new(p.position.x, p.position.y)
-		local color = PlayerColors[Save.playerColorSlot]
-		newTrail.r = color[1]
-		newTrail.g = color[2]
-		newTrail.b = color[3]
-        newTrail.parent = p
-		p.trailCooldown = 0
-    	-- Add instance to table
-    	p.trails[#p.trails+1] = newTrail
-		--]]
-    end
-
-    function p.drawTrail()
-    	for _, v in ipairs(p.trails) do
-    	    v.draw()
-    	end
-    end
-
     -- Bullet related functions
     function p.updateBullets(delta)
     	for i, v in ipairs(p.bullets) do
@@ -516,7 +473,7 @@ function player.new()
         	p.dash(delta)
         	p.motionControl(delta)
         	p.drop()
-        	p.updateTrail(delta)
+        	coreFuncs.spawnHumanoidTrails(p, delta)
         	p.updateBullets(delta)
             p.regenerate(delta)
             p.checkForDash()
@@ -551,9 +508,6 @@ function player.new()
     function p.draw()
     	if CurrentShader then
     	    p.drawDashLine() end
-
-        if not p.dead then
-	       p.drawTrail() end
 		
 		if not GamePaused and not CurrentShader and not p.dead then
 			p.drawLine() end

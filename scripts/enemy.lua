@@ -7,6 +7,7 @@ local weaponSprite = require("scripts/weaponSprite")
 local weaponData = require("scripts/weaponData")
 local bullet = require("scripts/bullet")
 local trail = require("scripts/trail")
+local coreFuncs = require("scripts/coreFuncs")
 
 local enemy = {}
 
@@ -77,35 +78,6 @@ function enemy.new()
             if Save.settings[utils.indexOf(SettingNames, "Sounds")] and GameState == "game" then
     		    assets.sounds.dash:play()
             end
-    	end
-    end
-
-    -- Trail related functions
-    function e.updateTrail(delta)
-    	-- Draw existing trails
-    	for i, v in ipairs(e.trails) do
-    	    v.update(delta, i)
-    	end
-    	-- Add new trails
-    	e.trailCooldown = e.trailCooldown + delta
-        local cooldown = 0.05
-		if e.dashVelocity > 0.1 then
-			cooldown = 0
-		end
-    	if e.trailCooldown < cooldown or not e.moving then return end
-    	-- Instance trail
-    	local newTrail = trail.new()
-    	newTrail.position = vec2.new(e.position.x, e.position.y)
-        newTrail.parent = e
-        newTrail.r = 1 ; newTrail.g = 0.12 ; newTrail.b = 0.12
-        e.trailCooldown = 0
-    	-- Add instance to table
-    	e.trails[#e.trails+1] = newTrail
-    end
-
-    function e.drawTrail()
-    	for _, v in ipairs(e.trails) do
-    	    v.draw()
     	end
     end
 
@@ -346,7 +318,7 @@ function enemy.new()
                 e.move(delta)
                 e.dash(delta)
                 e.checkForDash()
-                e.updateTrail(delta)
+                coreFuncs.spawnHumanoidTrails(e, delta)
             else
                 if e.target ~= Player then
                     print("shhhe")
@@ -370,7 +342,6 @@ function enemy.new()
     	local height = image:getHeight()
     	local x = (e.position.x - Camera.position.x) * Camera.zoom
     	local y = (e.position.y - Camera.position.y) * Camera.zoom
-        e.drawTrail()
     	love.graphics.setColor(e.r, 0, 0, e.alpha)
     	love.graphics.draw(
     	    image, x, y, 0,
