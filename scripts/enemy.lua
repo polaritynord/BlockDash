@@ -95,10 +95,7 @@ function enemy.new()
             Stats[index] = Stats[index] + 1
             index = utils.indexOf(StatNames, "Kills")
             Stats[index] = Stats[index] + 1
-            Interface.dashKillAlpha = 1
-            Interface.dashKillScale = 1.8
             if e.target == Player then
-                Interface:dashKill()
                 Score = Score + 20
                 e.dead = true
             end

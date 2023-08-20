@@ -55,6 +55,20 @@ function player.new()
 		};
     }
 
+	function love.wheelmoved(x, y)
+		if GamePaused or GameState ~= "game" or p.dead then return end
+		-- Switching slots
+		if y > 0 then
+			--Backward
+			Player.slot = Player.slot - 1
+			if Player.slot < 1 then Player.slot = Player.slotCount end
+		elseif y < 0 then
+			--Forward
+			Player.slot = Player.slot + 1
+			if Player.slot > Player.slotCount then Player.slot = 1 end
+		end
+	end
+
     -- Bullet related functions
     function p.updateBullets(delta)
     	for i, v in ipairs(p.bullets) do
@@ -114,10 +128,9 @@ function player.new()
     end
 
     function p.switchSlot()
-    	--if p.reloading then return end
     	-- Switch slot
     	for i = 1, p.slotCount do
-    	    if not p.slotKeys[i] and love.keyboard.isScancodeDown(tostring(i)) then
+    	    if not p.slotKeys[i] and love.keyboard.isScancodeDown(tostring(i)) and i ~= p.slot then
 	    		p.oldSlot = p.slot
 	    		p.slot = i
 				p.reloading = false

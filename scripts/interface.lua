@@ -143,12 +143,6 @@ function interface:drawDamageNums()
     end
 end
 
-function interface:dashKill()
-    self.game.dashKill.alpha = 0.65
-    self.game.dashKill.scale = 3.5
-    self.game.dashKill.timer = 0
-end
-
 -- Canvas functions
 function interface:setCanvasVisible()
     self.menu.enabled = GameState == "menu"
@@ -176,8 +170,6 @@ function interface:updateGame()
     -- Weapon UI
     local w = Player.weapons[Player.slot]
     if w then
-        -- Weapon name
-        self.game.weaponText.text = utils.capitalize(w.name)
         -- Mag ammo
         local len = #tostring(w.magAmmo)
         local t = w.magAmmo
@@ -186,11 +178,26 @@ function interface:updateGame()
         self.game.magAmmo.position.x = 545 - (len-1)*15
         self.game.ammoIcon.source = assets.ammoIconImg
         self.game.infAmmo.text = "∞"
+        -- Slot line
+        self.game.slotLine.color[4] = 1
+        local temp = self.game.slotLine.size.x
+        self.game.slotLine.size.x = temp + (assets.weapons[w.name .. "Img"]:getWidth()*3-temp) * (8.25 * delta)
+        temp = self.game.slotLine.position.x
+        self.game.slotLine.position.x = temp + (276+Player.slot*106-self.game.slotLine.size.x/2-temp) * (8.25 * delta)
     else
         self.game.weaponText.text = ""
         self.game.magAmmo.text = ""
         self.game.ammoIcon.source = nil
         self.game.infAmmo.text = ""
+        self.game.slotLine.color[4] = 0
+    end
+    -- Quick switch UI
+    if Player.oldSlot then
+        self.game.qKey.source = assets.qKeyImg
+        self.game.quickSwitchW.text = Player.weapons[Player.oldSlot].name
+    else
+        self.game.quickSwitchW.text = ""
+        self.game.qKey.source = nil
     end
     -- Inventory slots (image)
     for i = 1, Player.slotCount do
@@ -205,10 +212,8 @@ function interface:updateGame()
         local s = element.scale
         if i == Player.slot then
             element.rotation = r + (0-r) * (8.25 * delta)
-            --element.scale = s + (3.25-s) * (8.25 * delta)
         else
             element.rotation = r + (math.pi/10-r) * (8.25 * delta)
-            --element.scale = s + (2.5-s) * (8.25 * delta)
         end
     end
     -- Health text
@@ -216,22 +221,10 @@ function interface:updateGame()
     -- Dash indicator text
     if Player.dashCooldownTimer < 2.5 then
         self.game.dashText.text = "CHARGING"
-        self.game.dashIcon.position.x = 735
+        --self.game.dashIcon.position.x = 735
     else
         self.game.dashText.text = "READY"
-        self.game.dashIcon.position.x = 785
-    end
-    -- Dash kill image
-    local dashKill = self.game.dashKill
-    dashKill.timer = dashKill.timer + delta * MotionSpeed
-    -- Update values
-    -- Set source image
-    if dashKill.timer > 0.45 then
-        dashKill.source = nil
-    else
-        dashKill.source = assets.dashKillImg
-        dashKill.scale = dashKill.scale + 7 * delta * MotionSpeed
-        dashKill.alpha = dashKill.alpha - 1.45 * delta * MotionSpeed
+        --self.game.dashIcon.position.x = 785
     end
     -- Dash instructor
     if CurrentShader then
@@ -494,10 +487,6 @@ function interface:load()
         "wave", vec2.new(0, 20), "WAVE 1", 24, "0x", "center"
     )
     -- ***WEAPON UI***
-    -- Weapon text
-    self.game:newTextLabel(
-        "weaponText", vec2.new(25, 470), "", 24, "x+", "left"
-    )
     -- Magazine ammo
     self.game:newTextLabel(
         "magAmmo", vec2.new(558, 466), 0, 20, "0+", "left"
@@ -514,9 +503,13 @@ function interface:load()
     self.game:newImage(
         "qKey", vec2.new(368, 480), 0, assets.qKeyImg, 2, {1, 1, 1, 1}, "0+"
     )
+    -- Previous weapon text
+    self.game:newTextLabel(
+        "quickSwitchW", vec2.new(381.5, 471.5), "", 12, "0+", "left"
+    )
     -- Current slot line
     self.game:newRectangle(
-        "slotLine", vec2.new(541, 427), vec2.new(106, 3.25), "fill", {1, 1, 1, 1}, 0, "0+"
+        "slotLine", vec2.new(329, 427), vec2.new(106, 3.25), "fill", {1, 1, 1, 1}, 0, "0+"
     )
     -- ***HEALTH AND INV UI***
     -- Slot weapons
@@ -528,19 +521,13 @@ function interface:load()
         x = x - 106
     end
     -- Health icon & text
-    self.game:newImage("healthIcon", vec2.new(925, 450), 0, assets.healthIconImg, 4, {1, 1, 1, 1}, "++")
-    self.game:newTextLabel("healthText", vec2.new(-100, 435), "100", 24, "++", "right")
-    -- Dash right click icon
-    self.game:newImage("rmb", vec2.new(925, 415), 0, assets.rmbImg, 2, {1, 1, 1, 1}, "++")
+    self.game:newImage("healthIcon", vec2.new(625, 407), 0, assets.healthIconImg, 4, {1, 1, 1, 1}, "0+")
+    self.game:newTextLabel("healthText", vec2.new(-400, 393), "100", 24, "0+", "right")
     -- Dash indicator text
-    self.game:newTextLabel("dashText", vec2.new(-100, 400), "READY", 24, "++", "right")
+    self.game:newTextLabel("dashText", vec2.new(380, 392), "READY", 24, "0+", "left")
     -- Dash indicator icon
-    self.game:newImage("dashIcon", vec2.new(785, 415), 0, assets.dashIconImg, 1.3, {1, 1, 1, 1}, "++")
+    self.game:newImage("dashIcon", vec2.new(368, 407), 0, assets.dashIconImg, 1.3, {1, 1, 1, 1}, "0+")
     
-    -- Dashkill indicator
-    self.game:newImage("dashKill", vec2.new(480, 400), 0, assets.dashKillImg, 3, {1 ,1, 1, 1}, "0+")
-    self.game.dashKill.alpha = 0
-    self.game.dashKill.timer = 99
     -- Dash text
     self.game:newTextLabel("dashInstructor", vec2.new(0, 440), "", 24, "00", "center")
     -- Dash time bar
