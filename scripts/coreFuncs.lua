@@ -18,7 +18,7 @@ function coreFuncs.spawnHumanoidTrails(humanoid, delta)
         cooldown = 0
     end
     if humanoid.moving == nil then cooldown = 0.025 end
-    if humanoid.trailCooldown < cooldown or (humanoid.moving ~= nil and not humanoid.moving) then return end
+    if humanoid.trailCooldown < cooldown or (humanoid.moving ~= nil and not humanoid.moving and humanoid.dashVelocity < 0.1) then return end
     -- Define the color, size for the trail
     local color, size
     size = vec2.new(22.4, 22.4)

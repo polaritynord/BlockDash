@@ -99,9 +99,9 @@ function GameLoad()
     Player.load()
     -- Weapon drops
     WeaponDrops = {}
-    dropWeapon(weaponData.pistol, vec2.new(100, 100))
-    dropWeapon(weaponData.assaultRifle, vec2.new(150, 100))
-    dropWeapon(weaponData.shotgun, vec2.new(100, 150))
+    --dropWeapon(weaponData.pistol, vec2.new(100, 100))
+    --dropWeapon(weaponData.assaultRifle, vec2.new(150, 100))
+    --dropWeapon(weaponData.shotgun, vec2.new(100, 150))
     -- Enemies
     EnemyManager.load()
     WaveManager.load()

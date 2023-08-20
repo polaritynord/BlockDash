@@ -176,8 +176,6 @@ function interface:updateGame()
     -- Weapon UI
     local w = Player.weapons[Player.slot]
     if w then
-        -- Weapon Image
-        self.game.weaponImg.source = assets.weapons[w.name .. "Img"]
         -- Weapon name
         self.game.weaponText.text = utils.capitalize(w.name)
         -- Mag ammo
@@ -185,34 +183,32 @@ function interface:updateGame()
         local t = w.magAmmo
         if Player.reloading then t = ". ." end
         self.game.magAmmo.text = t
-        self.game.magAmmo.position.x = 25 - (len-1)*15
+        self.game.magAmmo.position.x = 545 - (len-1)*15
         self.game.ammoIcon.source = assets.ammoIconImg
         self.game.infAmmo.text = "∞"
     else
-        self.game.weaponImg.source = nil
         self.game.weaponText.text = ""
         self.game.magAmmo.text = ""
         self.game.ammoIcon.source = nil
         self.game.infAmmo.text = ""
     end
-    -- Inventory slots (rectangle)
-    for i = 1, Player.slotCount do
-        local element = self.game["slot"..i]
-        local l = element.lineWidth
-        if i == Player.slot then
-            element.lineWidth = l + (6-l) * (8.25 * delta)
-        else
-            element.lineWidth = l + (3-l) * (8.25 * delta)
-        end
-    end
     -- Inventory slots (image)
     for i = 1, Player.slotCount do
         local element = self.game["slotW"..i]
-        local w = Player.weapons[i]
+        w = Player.weapons[i]
         if w then
             element.source = assets.weapons[w.name .. "Img"]
         else
             element.source = nil
+        end
+        local r = element.rotation
+        local s = element.scale
+        if i == Player.slot then
+            element.rotation = r + (0-r) * (8.25 * delta)
+            --element.scale = s + (3.25-s) * (8.25 * delta)
+        else
+            element.rotation = r + (math.pi/10-r) * (8.25 * delta)
+            --element.scale = s + (2.5-s) * (8.25 * delta)
         end
     end
     -- Health text
@@ -497,10 +493,6 @@ function interface:load()
     self.game:newTextLabel(
         "wave", vec2.new(0, 20), "WAVE 1", 24, "0x", "center"
     )
-    -- Weapon image
-    self.game:newImage(
-        "weaponImg", vec2.new(60, 445), 0, nil, 3, {1, 1, 1, 1}, "x+"
-    )
     -- ***WEAPON UI***
     -- Weapon text
     self.game:newTextLabel(
@@ -508,32 +500,32 @@ function interface:load()
     )
     -- Magazine ammo
     self.game:newTextLabel(
-        "magAmmo", vec2.new(25, 505), 0, 20, "x+", "left"
+        "magAmmo", vec2.new(558, 466), 0, 20, "0+", "left"
     )
     -- Ammo icon
     self.game:newImage(
-        "ammoIcon", vec2.new(55, 518.5), 0, nil, 1, {1, 1, 1, 1}, "x+"
+        "ammoIcon", vec2.new(588, 479.5), 0, nil, 1, {1, 1, 1, 1}, "0+"
     )
     -- "Infinite" symbol
     self.game:newTextLabel(
-        "infAmmo", vec2.new(71, 503), "∞", 20, "x+", "left"
+        "infAmmo", vec2.new(604, 466), "∞", 20, "0+", "left"
+    )
+    -- Quick slot key img
+    self.game:newImage(
+        "qKey", vec2.new(368, 480), 0, assets.qKeyImg, 2, {1, 1, 1, 1}, "0+"
+    )
+    -- Current slot line
+    self.game:newRectangle(
+        "slotLine", vec2.new(541, 427), vec2.new(106, 3.25), "fill", {1, 1, 1, 1}, 0, "0+"
     )
     -- ***HEALTH AND INV UI***
-    -- Slots
-    local x = 900 ; local y = 480
-    local j = 4
-    for _ = 1, Player.slotCount do
-        self.game:newRectangle("slot"..j, vec2.new(x, y), vec2.new(50, 50), "line", {1,1,1,1}, 3, "++")
-        x = x - 64
-        j = j - 1
-    end
     -- Slot weapons
-    x = 925 ; y = 505
-    j = 4
+    x = 594 ; y = 450
+    local j = Player.slotCount
     for _ = 1, Player.slotCount do
-        self.game:newImage("slotW"..j, vec2.new(x, y), 0, nil, 1.5, {1, 1, 1, 1}, "++")
+        self.game:newImage("slotW"..j, vec2.new(x, y), 0, nil, 2.5, {1, 1, 1, 1}, "0+")
         j = j - 1
-        x = x - 64
+        x = x - 106
     end
     -- Health icon & text
     self.game:newImage("healthIcon", vec2.new(925, 450), 0, assets.healthIconImg, 4, {1, 1, 1, 1}, "++")
@@ -596,7 +588,7 @@ function interface:load()
     self.deathMenu:newTextLabel(
         "statsTitle", vec2.new(0, 200), "Statistics:", 20, "00", "center"
     )
-    -- Intro ---------------------------------------------------------------------------------------
+    -- Intro ---------------------------------------------------------------------------------------------------
     self.introMenu = zerpgui:newCanvas()
     self.introMenu:newRectangle("background", vec2.new(), vec2.new(SC_WIDTH, SC_HEIGHT), "fill", {0, 0, 0, 0.8}, 0, "xx")
     self.introMenu:newTextLabel("title", vec2.new(450, 220), "Made by\nZerpnord", 36, "00", "left", "Minecraftia", {1,1,1,0})

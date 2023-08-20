@@ -19,7 +19,7 @@ function player.new()
     	facing = "right";
     	bullets = {};
     	weapons = {};
-    	slotCount = 4;
+    	slotCount = 3;
     	slot = 1;
     	shootCooldown = 1000;
     	trailCooldown = 0;
@@ -455,6 +455,10 @@ function player.new()
     	end
     	-- Quick slot switch
     	p.slotKeys[#p.slotKeys+1] = false
+		-- Weapons
+		p.weapons[1] = weaponData["pistol"].new()
+		p.weapons[2] = weaponData["assaultRifle"].new()
+		p.weapons[3] = weaponData["shotgun"].new()
     end
 
     function p.update(delta)
@@ -471,7 +475,7 @@ function player.new()
         	p.dash(delta)
         	p.motionControl(delta)
         	p.drop()
-        	coreFuncs.spawnHumanoidTrails(p, delta)
+			coreFuncs.spawnHumanoidTrails(p, delta)
         	p.updateBullets(delta)
             p.regenerate(delta)
             p.checkForDash()
