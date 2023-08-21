@@ -51,10 +51,14 @@ function player.new()
 		dashDurationTimer = 0;
 		gamepad = {
 			rightStick = {xAxis = 0 ; yAxis = 0};
-			leftStick = {}
+			leftStick = {xAxis = 0 ; yAxis = 0};
 		};
+		oldGamepadDir = 0;
     }
 
+	-- Input-related love functions
+
+	-- MOUSE WHEEL SLOT SWITCHING
 	function love.wheelmoved(x, y)
 		if GamePaused or GameState ~= "game" or p.dead then return end
 		-- Switching slots
@@ -71,6 +75,27 @@ function player.new()
 			Player.slot = Player.slot + 1
 			if Player.slot > Player.slotCount then Player.slot = 1 end
 			Player.oldSlot = temp
+		end
+	end
+
+	-- JOYSTICK BUTTONS
+	function love.joystickpressed(joystick, button)
+		if joystick ~= Joystick then return end
+		ControlType = "gamepad"
+		Logger:log(button)
+		if not GamePaused then
+			-- Slot switching buttons
+			if button == 11 then
+				local temp = Player.slot
+				Player.slot = Player.slot + 1
+				if Player.slot > Player.slotCount then Player.slot = 1 end
+				Player.oldSlot = temp
+			elseif button == 10 then
+				local temp = Player.slot
+				Player.slot = Player.slot - 1
+				if Player.slot < 1 then Player.slot = Player.slotCount end
+				Player.oldSlot = temp
+			end
 		end
 	end
 
@@ -117,7 +142,15 @@ function player.new()
 		if ControlType == "keyboard" then
     		m = utils.getMousePosition()
 		else
-			m = vec2.new(p.position.x + 60*p.gamepad.rightStick.xAxis, p.position.y + 60*p.gamepad.rightStick.yAxis)
+			-- Make sure the right stick is being used
+			m = vec2.new(
+				p.position.x + 60*p.gamepad.rightStick.xAxis, p.position.y + 60*p.gamepad.rightStick.yAxis
+			)
+			-- Aim at 0 if stick not being used
+			if p.gamepad.rightStick.yAxis == 0 and p.gamepad.rightStick.xAxis == 0 then
+				m.x = p.position.x + 60
+				m.y = p.position.y
+			end
 		end
     	-- Set facing value
 		if m.x > p.position.x then
@@ -291,16 +324,21 @@ function player.new()
     function p.movement(delta)
     	local speed = 235
     	p.velocity = vec2.new()
-    	-- Get key input
+    	-- Get input
     	if p.dashVelocity < 0.1 then
-    	    if love.keyboard.isScancodeDown("right", "d") then
-    		p.velocity.x = p.velocity.x + 1 end
-    	    if love.keyboard.isScancodeDown("left", "a") then
-    		p.velocity.x = p.velocity.x - 1 end
-    	    if love.keyboard.isScancodeDown("up", "w") then
-    		p.velocity.y = p.velocity.y - 1 end
-    	    if love.keyboard.isScancodeDown("down", "s") then
-    		p.velocity.y = p.velocity.y + 1 end
+			if ControlType == "keyboard" then
+				if love.keyboard.isScancodeDown("right", "d") then
+				p.velocity.x = p.velocity.x + 1 end
+				if love.keyboard.isScancodeDown("left", "a") then
+				p.velocity.x = p.velocity.x - 1 end
+				if love.keyboard.isScancodeDown("up", "w") then
+				p.velocity.y = p.velocity.y - 1 end
+				if love.keyboard.isScancodeDown("down", "s") then
+				p.velocity.y = p.velocity.y + 1 end
+			else
+				p.velocity.x = p.gamepad.leftStick.xAxis
+				p.velocity.y = p.gamepad.leftStick.yAxis
+			end
     	end
     	-- Set p.moving
     	p.moving = math.abs(p.velocity.x) > 0 or math.abs(p.velocity.y) > 0
@@ -411,6 +449,8 @@ function player.new()
 
 	function p.drawLine()
 		if not p.weapons[p.slot] or p.reloading or not Save.settings[utils.indexOf(SettingNames, "Aim Line")] then return end
+		if ControlType == "gamepad" and p.gamepad.rightStick.yAxis == 0 and p.gamepad.rightStick.xAxis == 0 then
+			return end
 		-- Get pointing target
 		local x, y
 		if ControlType == "keyboard" then
@@ -437,28 +477,22 @@ function player.new()
 	function p.updateJoystickData()
 		if ControlType == "keyboard" then return end
 		-- Right Stick
-		-- Check if being used, leave the old values if not
 		local xAxis = Joystick:getAxis(3)
 		local yAxis = Joystick:getAxis(4)
 		-- Deadzone
-		if math.abs(xAxis) > 0.05 then
-			p.gamepad.rightStick.xAxis = xAxis
-		end
-		if math.abs(yAxis) > 0.05 then
-			p.gamepad.rightStick.yAxis = yAxis
-		end
+		if math.abs(xAxis) < 0.05 then xAxis = 0 end
+		if math.abs(yAxis) < 0.05 then yAxis = 0 end
+		p.gamepad.rightStick.xAxis = xAxis
+		p.gamepad.rightStick.yAxis = yAxis
 
 		-- Left Stick
-		-- Check if being used, leave the old values if not
 		xAxis = Joystick:getAxis(1)
 		yAxis = Joystick:getAxis(2)
 		-- Deadzone
-		if math.abs(xAxis) > 0.05 then
-			p.gamepad.leftStick.xAxis = xAxis
-		end
-		if math.abs(yAxis) > 0.05 then
-			p.gamepad.leftStick.yAxis = yAxis
-		end
+		if math.abs(xAxis) < 0.05 then xAxis = 0 end
+		if math.abs(yAxis) < 0.05 then yAxis = 0 end
+		p.gamepad.leftStick.xAxis = xAxis
+		p.gamepad.leftStick.yAxis = yAxis
 	end
 
     -- Event functions

@@ -76,11 +76,6 @@ function love.keypressed(key, unicode)
     end
 end
 
-function love.joystickpressed(joystick)
-    if joystick ~= Joystick then return end
-    ControlType = "gamepad"
-end
-
 function love.joystickadded(joystick)
     Joystick = joystick
 end
