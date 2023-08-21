@@ -58,14 +58,19 @@ function player.new()
 	function love.wheelmoved(x, y)
 		if GamePaused or GameState ~= "game" or p.dead then return end
 		-- Switching slots
+		local temp
 		if y > 0 then
 			--Backward
+			temp = Player.slot
 			Player.slot = Player.slot - 1
 			if Player.slot < 1 then Player.slot = Player.slotCount end
+			Player.oldSlot = Player.slot
 		elseif y < 0 then
 			--Forward
+			temp = Player.slot
 			Player.slot = Player.slot + 1
 			if Player.slot > Player.slotCount then Player.slot = 1 end
+			Player.oldSlot = temp
 		end
 	end
 

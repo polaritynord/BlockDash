@@ -159,7 +159,7 @@ end
 
 local function loadSave()
     -- SAVE FILE MANAGEMENT
-    SettingNames = {"Sounds", "Auto Reload", "Aim Line", "Screen Shake"}
+    SettingNames = {"Sounds", "Auto Reload", "Aim Line", "Screen Shake", "Bullet Particles"}
     Save = nil
     if love.filesystem.getInfo("save") then
         Logger:verboseLog("Existing save detected, reading file...")

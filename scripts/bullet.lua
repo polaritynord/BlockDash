@@ -36,8 +36,11 @@ function bullet.new()
     	    table.remove(t, i)
     	    return
     	end
-        --b.updateTrail(delta)
-        coreFuncs.spawnHumanoidTrails(b, delta)
+
+        -- Trail
+        if Save.settings[utils.indexOf(SettingNames, "Bullet Particles")] then
+            coreFuncs.spawnHumanoidTrails(b, delta)
+        end
     	-- Check for collision
         local image = assets.playerImg
         local w1 = image:getWidth()
