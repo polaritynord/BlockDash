@@ -19,6 +19,7 @@ local fullscreen = table.contains(arg, "--fullscreen")
 CurrentShader = nil
 ControlType = "keyboard"
 Joystick = nil
+JRightStick, JLeftStick = nil, nil
 local starPositions = {}
 local starCanvas = nil
 -- Massive credits to Bigfoot71 for helping with infinite stars - You a real one fr
@@ -78,6 +79,8 @@ end
 
 function love.joystickadded(joystick)
     Joystick = joystick
+    JRightStick = {xAxis = 0 ; yAxis = 0}
+    JLeftStick = {xAxis = 0 ; yAxis = 0}
 end
 
 function GameLoad()
@@ -105,6 +108,27 @@ function GameLoad()
     Camera = camera.new()
     Camera.lockedTarget = Player
     ParticleManager.particles = {}
+end
+
+local function updateJoystickData()
+    if ControlType == "keyboard" then return end
+    -- Right Stick
+    local xAxis = Joystick:getAxis(3)
+    local yAxis = Joystick:getAxis(4)
+    -- Deadzone
+    if math.abs(xAxis) < 0.1 then xAxis = 0 end
+    if math.abs(yAxis) < 0.1 then yAxis = 0 end
+    JRightStick.xAxis = xAxis
+    JRightStick.yAxis = yAxis
+
+    -- Left Stick
+    xAxis = Joystick:getAxis(1)
+    yAxis = Joystick:getAxis(2)
+    -- Deadzone
+    if math.abs(xAxis) < 0.1 then xAxis = 0 end
+    if math.abs(yAxis) < 0.1 then yAxis = 0 end
+    JLeftStick.xAxis = xAxis
+    JLeftStick.yAxis = yAxis
 end
 
 function SaveGame()
@@ -218,6 +242,7 @@ end
 function love.update(delta)
     setStats(delta)
     SC_WIDTH, SC_HEIGHT = love.graphics.getDimensions()
+    updateJoystickData()
     -- Set cursor
     if GameState ~= "game" or GamePaused then
         love.mouse.setCursor(assets.cursorDefault)
@@ -226,9 +251,12 @@ function love.update(delta)
             EnemyManager.spawnSimEnemies(delta)
         end
     else
-		if CurrentShader then
-	    	love.mouse.setCursor(assets.cursorCombatI) else
-	    	love.mouse.setCursor(assets.cursorCombat) end
+        if Player.dead then love.mouse.setCursor(assets.cursorDefault)
+        else
+            if CurrentShader then
+                love.mouse.setCursor(assets.cursorCombatI) else
+                love.mouse.setCursor(assets.cursorCombat) end
+        end
     end
 
     Interface:update(delta)

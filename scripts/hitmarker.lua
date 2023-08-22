@@ -24,10 +24,13 @@ function hitmarker.new()
         local image = assets.hitmarkerImg
         local width = image:getWidth()
         local height = image:getHeight()
-        love.graphics.draw(
-            image, h.position.x+(SC_WIDTH-960)/2, h.position.y+(SC_HEIGHT-540)/2, h.rotation,
-            1.3*h.scale, 1.3*h.scale, width/2, height/2
-        )
+        love.graphics.push()
+            love.graphics.setColor(PlayerColors[Save.playerColorSlot])
+            love.graphics.draw(
+                image, h.position.x+(SC_WIDTH-960)/2, h.position.y+(SC_HEIGHT-540)/2, h.rotation,
+                1.3*h.scale, 1.3*h.scale, width/2, height/2
+            )
+        love.graphics.pop()
     end
 
     return h

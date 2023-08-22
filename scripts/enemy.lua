@@ -258,8 +258,8 @@ function enemy.new()
         e.weaponSprite.position = vec2.new(e.position.x, e.position.y)
         e.firstHealth = e.health
         -- Define weapon
-        local shotgunWave = math.floor(9 / Difficulty)
-        local ARWave = math.floor(15 / Difficulty)
+        local shotgunWave = 6
+        local ARWave = 4
         local w
         if WaveManager.wave > ARWave then
             local c = math.random()

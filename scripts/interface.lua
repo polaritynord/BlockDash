@@ -236,6 +236,12 @@ function interface:updateGame()
         self.game.dashInstructor.text = ""
         self.game.dashTimeBar.color[4] = 0
     end
+    -- Gamepad icon
+    if ControlType == "keyboard" then
+        self.game.gamepadIcon.source = nil
+    else
+        self.game.gamepadIcon.source = assets.gamepadIcon
+    end
 end
 
 function interface:updateDiffSelect()
@@ -510,6 +516,10 @@ function interface:load()
     -- Current slot line
     self.game:newRectangle(
         "slotLine", vec2.new(329, 427), vec2.new(106, 3.25), "fill", {1, 1, 1, 1}, 0, "0+"
+    )
+    -- Gamepad usage symbol
+    self.game:newImage(
+        "gamepadIcon", vec2.new(488.5, 510), 0, nil, 2, {1, 1, 1, 1}, "0+"
     )
     -- ***HEALTH AND INV UI***
     -- Slot weapons

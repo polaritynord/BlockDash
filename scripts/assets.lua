@@ -27,6 +27,7 @@ function assets.gameLoad()
     assets.qKeyImg = love.graphics.newImage("images/q_key.png")
     assets.dashKillImg = love.graphics.newImage("images/dashkill.png")
     assets.profileImg = love.graphics.newImage("images/profile_transparent.png")
+    assets.gamepadIcon = love.graphics.newImage("images/gamepad.png")
     -- Weapon images
     assets.weapons = {}
     assets.weapons.pistolImg = love.graphics.newImage("images/weapons/pistol.png")

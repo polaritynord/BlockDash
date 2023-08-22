@@ -42,11 +42,11 @@ function weaponSprite.new()
             	target = utils.getMousePosition()
 			else
 				target = vec2.new(
-					w.parent.position.x + 60*Player.gamepad.rightStick.xAxis,
-					w.parent.position.y + 60*Player.gamepad.rightStick.yAxis
+					w.parent.position.x + 60*JRightStick.xAxis,
+					w.parent.position.y + 60*JRightStick.yAxis
 				)
 				-- Aim at 0 if stick not being used
-				if Player.gamepad.rightStick.yAxis == 0 and Player.gamepad.rightStick.xAxis == 0 then
+				if JRightStick.yAxis == 0 and JRightStick.xAxis == 0 then
 					target.x = w.parent.position.x + 60
 					target.y = w.parent.position.y
 				end

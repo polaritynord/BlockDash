@@ -49,11 +49,6 @@ function player.new()
 		missedBullets = 0;
 		aimLineWidth = 3;
 		dashDurationTimer = 0;
-		gamepad = {
-			rightStick = {xAxis = 0 ; yAxis = 0};
-			leftStick = {xAxis = 0 ; yAxis = 0};
-		};
-		oldGamepadDir = 0;
     }
 
 	-- Input-related love functions
@@ -82,7 +77,7 @@ function player.new()
 	function love.joystickpressed(joystick, button)
 		if joystick ~= Joystick then return end
 		ControlType = "gamepad"
-		Logger:log(button)
+		Logger:verboseLog(button)
 		if not GamePaused then
 			-- Slot switching buttons
 			if button == 11 then
@@ -97,6 +92,9 @@ function player.new()
 				Player.oldSlot = temp
 			end
 		end
+		-- Pause game
+		if button == 7 and GameState == "game" and not CurrentShader and not Player.dead then
+			GamePaused = not GamePaused end
 	end
 
     -- Bullet related functions
@@ -144,10 +142,10 @@ function player.new()
 		else
 			-- Make sure the right stick is being used
 			m = vec2.new(
-				p.position.x + 60*p.gamepad.rightStick.xAxis, p.position.y + 60*p.gamepad.rightStick.yAxis
+				p.position.x + 60*JRightStick.xAxis, p.position.y + 60*JRightStick.yAxis
 			)
 			-- Aim at 0 if stick not being used
-			if p.gamepad.rightStick.yAxis == 0 and p.gamepad.rightStick.xAxis == 0 then
+			if JRightStick.yAxis == 0 and JRightStick.xAxis == 0 then
 				m.x = p.position.x + 60
 				m.y = p.position.y
 			end
@@ -211,12 +209,13 @@ function player.new()
     	if not w or w.magAmmo < 1 or MotionSpeed < 0.9 then return end
     	-- Increment timer
     	p.shootCooldown = p.shootCooldown + delta * MotionSpeed
-    	if not love.mouse.isDown(1) or p.shootCooldown < w.shootTime then
+    	if (ControlType == "keyboard" and not love.mouse.isDown(1)) or p.shootCooldown < w.shootTime then
     	    return end
+		if ControlType == "gamepad" and Joystick:getAxis(6) < 0.1 then return end
         p.reloading = false
         local spread = 0
         if w.weaponType == "shotgun" then
-            local spread = -w.bulletSpread
+            spread = -w.bulletSpread
         end
 		-- Shake screen
 		if Save.settings[utils.indexOf(SettingNames, "Screen Shake")] then
@@ -313,7 +312,7 @@ function player.new()
 				p.inReloadTimer = p.inReloadTimer + delta
 		    end
     	    local intelliReload = w.magAmmo < w.magSize and not CurrentShader and Save.settings[utils.indexOf(SettingNames, "Auto Reload")]
-    	    if (love.keyboard.isScancodeDown("r") or w.magAmmo < 1 or (intelliReload and p.inReloadTimer > 0.75 and not love.mouse.isDown(1))) and w.magAmmo < w.magSize then
+    	    if (love.keyboard.isScancodeDown("r") or Joystick:isDown(3) or w.magAmmo < 1 or (intelliReload and p.inReloadTimer > 0.75 and not love.mouse.isDown(1))) and w.magAmmo < w.magSize then
 				p.reloading = true
 				p.reloadTimer = 0
 				p.inReloadTimer = 0
@@ -336,8 +335,8 @@ function player.new()
 				if love.keyboard.isScancodeDown("down", "s") then
 				p.velocity.y = p.velocity.y + 1 end
 			else
-				p.velocity.x = p.gamepad.leftStick.xAxis
-				p.velocity.y = p.gamepad.leftStick.yAxis
+				p.velocity.x = JLeftStick.xAxis
+				p.velocity.y = JLeftStick.yAxis
 			end
     	end
     	-- Set p.moving
@@ -393,13 +392,13 @@ function player.new()
 				assets.sounds.dashCancel:play()
 			end
 		end
-    	if CurrentShader and not love.mouse.isDown(2) then
+    	if CurrentShader and ((ControlType == "keyboard" and not love.mouse.isDown(2)) or (ControlType == "gamepad" and Joystick:getAxis(5) < 0.1)) then
 			p.dashDurationTimer = 0
     	    p.dashCooldownTimer = 0
 			p.dashTimer = 0
     	    p.dashRot = p.weaponSprite.rotation
     	    if p.facing == "left" then
-	    		p.dashRot = p.dashRot - 135 end
+	    		p.dashRot = p.dashRot - math.pi end
 			
 			if Save.settings[utils.indexOf(SettingNames, "Sounds")] then
     			assets.sounds.dash:play()
@@ -409,7 +408,7 @@ function player.new()
 
     function p.motionControl(delta)
     	if GamePaused then return end
-    	if love.mouse.isDown(2) and p.dashCooldownTimer > 2.5 and p.dashDurationTimer < 1.3 then
+    	if ((ControlType == "keyboard" and love.mouse.isDown(2)) or (ControlType == "gamepad" and Joystick:getAxis(5) > 0.1)) and p.dashCooldownTimer > 2.5 and p.dashDurationTimer < 1.3 then
 			if Save.settings[utils.indexOf(SettingNames, "Sounds")] and MotionSpeed ~= 0.25 then
 				assets.sounds.dashBegin:play()
 			end
@@ -439,7 +438,7 @@ function player.new()
                 p.regenTimer = 0 end
             -- Regenerate
             if p.regenTimer > 2.5 then
-                p.health = p.health + 8 * MotionSpeed * delta
+                p.health = p.health + 17 * MotionSpeed * delta
                 if p.health > 100 then p.health = 100 end
             end
         else
@@ -449,14 +448,14 @@ function player.new()
 
 	function p.drawLine()
 		if not p.weapons[p.slot] or p.reloading or not Save.settings[utils.indexOf(SettingNames, "Aim Line")] then return end
-		if ControlType == "gamepad" and p.gamepad.rightStick.yAxis == 0 and p.gamepad.rightStick.xAxis == 0 then
+		if ControlType == "gamepad" and JRightStick.yAxis == 0 and JRightStick.xAxis == 0 then
 			return end
 		-- Get pointing target
 		local x, y
 		if ControlType == "keyboard" then
 			x, y = love.mouse.getPosition()
 		else
-			x = p.gamepad.rightStick.xAxis ; y = p.gamepad.rightStick.yAxis
+			x = JRightStick.xAxis ; y = JRightStick.yAxis
 		end
 
 		local pos = vec2.new(p.position.x-Camera.position.x, p.position.y-Camera.position.y)
@@ -472,27 +471,6 @@ function player.new()
 		else
 			love.graphics.line({pos.x, pos.y, x, y})
 		end
-	end
-
-	function p.updateJoystickData()
-		if ControlType == "keyboard" then return end
-		-- Right Stick
-		local xAxis = Joystick:getAxis(3)
-		local yAxis = Joystick:getAxis(4)
-		-- Deadzone
-		if math.abs(xAxis) < 0.05 then xAxis = 0 end
-		if math.abs(yAxis) < 0.05 then yAxis = 0 end
-		p.gamepad.rightStick.xAxis = xAxis
-		p.gamepad.rightStick.yAxis = yAxis
-
-		-- Left Stick
-		xAxis = Joystick:getAxis(1)
-		yAxis = Joystick:getAxis(2)
-		-- Deadzone
-		if math.abs(xAxis) < 0.05 then xAxis = 0 end
-		if math.abs(yAxis) < 0.05 then yAxis = 0 end
-		p.gamepad.leftStick.xAxis = xAxis
-		p.gamepad.leftStick.yAxis = yAxis
 	end
 
     -- Event functions
@@ -518,7 +496,6 @@ function player.new()
         if p.health >= 1 then
 			Time = Time + delta
 			p.aimLineWidth = p.aimLineWidth + (3-p.aimLineWidth) * (8.25 * delta)
-			p.updateJoystickData()
         	p.switchSlot()
         	p.shoot(delta)
         	p.movement(delta)
