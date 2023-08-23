@@ -19,7 +19,8 @@ local fullscreen = table.contains(arg, "--fullscreen")
 CurrentShader = nil
 ControlType = "keyboard"
 Joystick = nil
-JRightStick, JLeftStick = nil, nil
+JRightStick = {xAxis = 0 ; yAxis = 0}
+JLeftStick = {xAxis = 0 ; yAxis = 0}
 local starPositions = {}
 local starCanvas = nil
 -- Massive credits to Bigfoot71 for helping with infinite stars - You a real one fr

@@ -312,7 +312,7 @@ function player.new()
 				p.inReloadTimer = p.inReloadTimer + delta
 		    end
     	    local intelliReload = w.magAmmo < w.magSize and not CurrentShader and Save.settings[utils.indexOf(SettingNames, "Auto Reload")]
-    	    if (love.keyboard.isScancodeDown("r") or Joystick:isDown(3) or w.magAmmo < 1 or (intelliReload and p.inReloadTimer > 0.75 and not love.mouse.isDown(1))) and w.magAmmo < w.magSize then
+    	    if (love.keyboard.isScancodeDown("r") or (ControlType == "gamepad" and Joystick:isDown(3)) or w.magAmmo < 1 or (intelliReload and p.inReloadTimer > 0.75 and not love.mouse.isDown(1))) and w.magAmmo < w.magSize then
 				p.reloading = true
 				p.reloadTimer = 0
 				p.inReloadTimer = 0
