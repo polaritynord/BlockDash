@@ -20,5 +20,5 @@ function love.conf(t)
 	t.window.vsync = 1
 	t.window.fullscreen = false
 	if table.contains(arg, "--no-vsync") then t.window.vsync = 0 end
-	Version = "1.3a"
+	Version = "1.3b"
 end

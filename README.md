@@ -1,6 +1,6 @@
 # BlockDash - A Fast-Paced Shooter Game
 
-[![Available on itch.io](http://jessemillar.github.io/available-on-itchio-badge/badge-bw.png)](https://zerpnord.itch.io/blockdash)
+[![Available on itch.io](http://jessemillar.github.io/available-on-itchio-badge/badge-bw.png)](https://polaritynord.itch.io/blockdash)
 
 BlockDash is a simple-graphics 2D game filled with action. Run, shoot, run, dash. just make sure you don't reload near those enemies. They can dash at you as well.
 

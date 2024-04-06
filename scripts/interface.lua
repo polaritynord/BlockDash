@@ -370,6 +370,7 @@ function interface:updateIntroMenu(delta)
         end
     end
     intro.title.color[4] = intro.titleAlpha
+    intro.titleNord.color[4] = intro.titleAlpha
     intro.zerpie.color[4] = intro.titleAlpha
 end
 
@@ -397,7 +398,7 @@ function interface:load()
     )
     self.menu.quit.sure = false
     self.menu:newTextLabel(
-        "versionInfo", vec2.new(5, 516), "v" .. Version .. " - Made by Zerpnord", 14, "x+", "left"
+        "versionInfo", vec2.new(5, 516), "v" .. Version .. " - Made by polaritynord", 14, "x+", "left"
     )
     -- About menu ----------------------------------------------------------------------------------------------
     self.about = zerpgui:newCanvas()
@@ -588,8 +589,9 @@ function interface:load()
     -- Intro ---------------------------------------------------------------------------------------------------
     self.introMenu = zerpgui:newCanvas()
     self.introMenu:newRectangle("background", vec2.new(), vec2.new(SC_WIDTH, SC_HEIGHT), "fill", {0, 0, 0, 0.8}, 0, "xx")
-    self.introMenu:newTextLabel("title", vec2.new(450, 220), "Made by\nZerpnord", 36, "00", "left", "Minecraftia", {1,1,1,0})
-    self.introMenu:newImage("zerpie", vec2.new(385, 270), 0, assets.profileImg, 0.3, {1,1,1,0}, "00")
+    self.introMenu:newTextLabel("title", vec2.new(415, 220), "Made by\nPolarity", 36, "00", "left", "Minecraftia", {1,1,1,0})
+    self.introMenu:newTextLabel("titleNord", vec2.new(595, 270), "nord", 24, "00", "left", "Minecraftia", {1,1,1,0})
+    self.introMenu:newImage("zerpie", vec2.new(350, 270), 0, assets.profileImg, 0.3, {1,1,1,0}, "00")
     self.introMenu.titleAlpha = 0
     self.introMenu.timer = 0
     self.introMenu.soundPlayed = false
