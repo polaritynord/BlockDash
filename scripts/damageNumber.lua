@@ -26,8 +26,8 @@ function damageNumber.new()
     function d.draw()
         SetFont("fonts/Minecraftia.ttf", 20)
         love.graphics.setColor(1, 1, 1, d.alpha)
-        local x = (d.position.x - Camera.position.x) * Camera.zoom
-        local y = (d.position.y - Camera.position.y) * Camera.zoom
+        local x = (d.position.x - Camera.position.x)/(SC_WIDTH/960) * Camera.zoom
+        local y = (d.position.y - Camera.position.y)/(SC_HEIGHT/540) * Camera.zoom
         love.graphics.print(tostring(math.floor(d.number)), x, y)
         love.graphics.setColor(1, 1, 1, 1)
     end

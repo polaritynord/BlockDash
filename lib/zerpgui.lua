@@ -1,6 +1,7 @@
 local utils = require("utils")
 local vec2 = require("lib/vec2")
 local assets = require("scripts/assets")
+local coreFuncs = require("scripts.coreFuncs")
 
 local zerpgui = {
     canvases = {};
@@ -10,7 +11,9 @@ local zerpgui = {
 local function calculateAlign(position, align, canvas)
     local x = position.x
     local y = position.y
-    -- Find x position
+
+    return vec2.new(x + canvas.position.x, y + canvas.position.y)
+    --[[ Find x position
     -- X Aligning
     if align:sub(1, 1) == "-" then
         -- Left align
@@ -35,6 +38,7 @@ local function calculateAlign(position, align, canvas)
     end
 
     return vec2.new(x + canvas.position.x, y + canvas.position.y)
+    ]]--
 end
 
 -- Thanks to @pgimeno at https://love2d.org/forums/viewtopic.php?f=4&t=93768&p=250899#p250899
@@ -142,8 +146,7 @@ function zerpgui:newCanvas(pos)
                 self.clickEvent()
             end
             local p = calculateAlign(self.position, self.align, canvas)
-            local mx = love.mouse.getX()
-            local my = love.mouse.getY()
+            local mx, my = coreFuncs.getRelativeMousePosition()
             if self.style == 1 then
                 -- Check for hover
                 if my > p.y and my < p.y + self.textSize then
@@ -244,8 +247,7 @@ function zerpgui:newCanvas(pos)
             p.x = p.x - self.size/2
             p.y = p.y - self.size/2
 
-            local mx = love.mouse.getX()
-            local my = love.mouse.getY()
+            local mx, my = coreFuncs.getRelativeMousePosition()
             if mx > p.x and mx < p.x + self.realSize and my > p.y and my < p.y + self.realSize then
                 self.mouseHover = true
                 self.mouseClick = love.mouse.isDown(1)

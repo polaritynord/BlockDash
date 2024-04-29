@@ -47,4 +47,9 @@ function coreFuncs.spawnHumanoidTrails(humanoid, delta)
     humanoid.trailCooldown = 0
 end
 
+function coreFuncs.getRelativeMousePosition()
+    local mX, mY = love.mouse.getPosition()
+    return mX/(SC_WIDTH/960), mY/(SC_HEIGHT/540)
+end
+
 return coreFuncs

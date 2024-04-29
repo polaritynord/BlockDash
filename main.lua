@@ -304,5 +304,8 @@ function love.draw()
 		drawWeaponDrops()
 		Player.draw()
     end
-    Interface:draw()
+    love.graphics.push()
+        love.graphics.scale(SC_WIDTH/960, SC_HEIGHT/540)
+        Interface:draw()
+    love.graphics.pop()
 end
